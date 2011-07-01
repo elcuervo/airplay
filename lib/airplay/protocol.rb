@@ -7,7 +7,7 @@ class Airplay::Protocol
 
   def initialize(host)
     @client = Net::HTTP.new(host, PORT)
-    @client.set_debug_output($stdout)
+    @client.set_debug_output($stdout) if ENV.has_key?('HTTP_DEBUG')
   end
 
 end
