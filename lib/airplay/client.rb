@@ -35,8 +35,8 @@ class Airplay::Client
     @servers
   end
 
-  def send_image(image)
-    Airplay::Protocol::Image.new(@active_server.ip).send(image)
+  def send_image(image, transition = :none)
+    Airplay::Protocol::Image.new(@active_server.ip).send(image, transition)
   end
 
 end
