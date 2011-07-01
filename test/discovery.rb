@@ -1,6 +1,6 @@
-require File.expand_path("helper", File.dirname(__FILE__))
 
 scope do
+
   setup do
     @airplay = Airplay::Client.new
   end
@@ -15,7 +15,7 @@ scope do
   end
 
   test "raise on not found" do
-    assert_raise Airplay::ServerNotFoundError do
+    assert_raise Airplay::Client::ServerNotFoundError do
       @airplay.find_by_name("NotARealAirplayServer")
     end
   end
@@ -23,11 +23,5 @@ scope do
   test "autoselect if only one server available" do
     assert_equal "elCuervo", @airplay.active_server.name
   end
-end
 
-scope do
-  test "send an image to the server" do
-    airplay = Airplay::Client.new
-    airplay.use("elCuervo")
-  end
 end

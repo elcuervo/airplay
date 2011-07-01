@@ -1,5 +1,3 @@
-class Airplay::ServerNotFoundError < StandardError; end;
-
 class Airplay::Client
   attr_reader :servers, :active_server
 
@@ -16,17 +14,31 @@ class Airplay::Client
     found_server =  @servers.detect do |server|
       server if server.name == name
     end
-    raise Airplay::ServerNotFoundError unless found_server
+    raise Airplay::Client::ServerNotFoundError unless found_server
     found_server
   end
 
   def browse
     @servers = []
-    DNSSD.browse!(Airplay::PROTOCOL_SEARCH) do |reply|
-      @servers << Airplay::Node.new(reply.name, reply.domain, Addrinfo.ip(reply.name).ip_address)
-      break if !reply.flags.more_coming?
+    DNSSD.browse!(Airplay::Protocol::SEARCH) do |reply|
+      resolver = DNSSD::Service.new
+      target = nil
+      resolver.resolve(reply) do |resolved|
+        target = resolved.target
+        break unless resolved.flags.more_coming?
+      end
+      info = Socket.getaddrinfo(target, nil, Socket::AF_INET)
+      ip_address = info[0][2]
+      @servers << Airplay::Node.new(reply.name, reply.domain, ip_address)
+      break unless reply.flags.more_coming?
     end
     @servers
   end
 
+  def send_image(image)
+    Airplay::Protocol::Image.new(@active_server.ip).send(image)
+  end
+
 end
+
+class Airplay::Client::ServerNotFoundError < StandardError; end;
