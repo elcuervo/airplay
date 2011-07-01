@@ -1,0 +1,18 @@
+require 'airplay'
+
+Gem::Specification.new do |s|
+  s.name              = "airplay"
+  s.version           = Airplay.VERSION
+  s.summary           = ""
+  s.description       = ""
+  s.authors           = ["elcuervo"]
+  s.email             = ["yo@brunoaguirre.com"]
+  s.homepage          = "http://github.com/elcuervo/airplay"
+  s.files = <%= Dir[
+    "LICENSE",
+    "README*",
+    "lib/**/*.rb"
+  ].inspect %>
+  s.add_dependency("dnssd")
+  s.add_development_dependency("cutest")
+end
