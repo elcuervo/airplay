@@ -1,7 +1,7 @@
 class Airplay::Protocol::Image < Airplay::Protocol
 
   def resource
-    "/photos"
+    "/photo"
   end
 
   def transitions
