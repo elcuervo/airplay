@@ -11,8 +11,10 @@ class Airplay::Protocol
   end
 
   def make_request(request)
-    response = @http.request(request)
-    raise Airplay::Protocol::InvalidRequestError if response.code == "404"
+    Thread.new do |t|
+      response = @http.request(request)
+      raise Airplay::Protocol::InvalidRequestError if response.code == "404"
+    end
     true
   end
 

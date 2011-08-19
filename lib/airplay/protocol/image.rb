@@ -11,7 +11,6 @@ class Airplay::Protocol::Image < Airplay::Protocol
     }
   end
 
-
   def transition_header(transition)
     {"X-Apple-Transition" => transitions.fetch(transition)}
   end
