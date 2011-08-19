@@ -3,7 +3,7 @@ class Airplay::Client
 
   def initialize(server = false)
     browse unless server
-    use servers.first if servers.size == 1
+    use servers.first if servers.any?
   end
 
   def use(server)
