@@ -7,7 +7,7 @@ scope do
   end
 
   test "browse for available airplay servers" do
-    assert_equal 1, @airplay.servers.size
+    assert @airplay.servers.size > 0
   end
 
   test "find servers by name" do
