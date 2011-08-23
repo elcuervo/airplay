@@ -22,25 +22,26 @@ class Airplay::Client
     @servers = []
     DNSSD.browse!(Airplay::Protocol::SEARCH) do |reply|
       resolver = DNSSD::Service.new
-      target = nil
+      target, port = nil
       resolver.resolve(reply) do |resolved|
+        port = resolved.port
         target = resolved.target
         break unless resolved.flags.more_coming?
       end
       info = Socket.getaddrinfo(target, nil, Socket::AF_INET)
       ip_address = info[0][2]
-      @servers << Airplay::Node.new(reply.name, reply.domain, ip_address)
+      @servers << Airplay::Node.new(reply.name, reply.domain, ip_address, port)
       break unless reply.flags.more_coming?
     end
     @servers
   end
 
   def send_image(image, transition = :none)
-    Airplay::Protocol::Image.new(@active_server.ip).send(image, transition)
+    Airplay::Protocol::Image.new(@active_server.ip, @active_server.port).send(image, transition)
   end
 
   def send_video(video, position = 0)
-    Airplay::Protocol::Video.new(@active_server.ip).send(video, position)
+    Airplay::Protocol::Video.new(@active_server.ip, @active_server.port).send(video, position)
   end
 
 end
