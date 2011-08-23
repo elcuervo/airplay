@@ -39,6 +39,10 @@ class Airplay::Client
     Airplay::Protocol::Image.new(@active_server.ip).send(image, transition)
   end
 
+  def send_video(video, position = 0)
+    Airplay::Protocol::Video.new(@active_server.ip).send(video, position)
+  end
+
 end
 
 class Airplay::Client::ServerNotFoundError < StandardError; end;

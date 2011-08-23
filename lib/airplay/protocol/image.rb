@@ -7,7 +7,7 @@ class Airplay::Protocol::Image < Airplay::Protocol
   def transitions
     {
       :none => "None",
-      :dissolve =>  "Dissolve"
+      :dissolve => "Dissolve"
     }
   end
 
