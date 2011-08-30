@@ -1,21 +1,21 @@
 class Airplay::Protocol::Video < Airplay::Protocol
 
   def resource
-    "/video"
+    "/play"
   end
 
-  def position_header(position = 0)
-    {"Start-Position" => position}
+  def position_body(position = 0)
+    "Start-Position: #{position}\n"
   end
 
-  def location_header(video)
-    {"Content-Location" => video }
+  def location_body(video)
+    "Content-Location: #{video}\n"
   end
 
   def send(video, position = 0)
-    headers = location_header(video)
-    headers.merge!(position_header(position.to_s))
-    post(resource, nil, headers)
+    body  = location_body(video)
+    body += position_body(position.to_s)
+    post(resource, body)
   end
 
   def play

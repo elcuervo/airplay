@@ -10,22 +10,17 @@ class Airplay::Protocol
     @http.set_debug_output($stdout) if ENV.has_key?('HTTP_DEBUG')
   end
 
-  def make_async_request(request)
-    Thread.new { |t| make_request(request) }
-    true
-  end
-
   def make_request(request)
     response = @http.request(request)
     raise Airplay::Protocol::InvalidRequestError if response.code == "404"
-    response
+    response.body
   end
 
   def put(resource, body = nil, headers = {})
     request = Net::HTTP::Put.new resource
     request.body = body
     request.initialize_http_header DEFAULT_HEADERS.merge(headers)
-    make_async_request(request)
+    make_request(request)
   end
 
  def post(resource, body = nil, headers = {})

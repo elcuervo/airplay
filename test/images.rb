@@ -13,12 +13,12 @@ scope do
   end
 
   test "send an image to the server" do
-    @airplay.use("elCuervo")
-    assert_equal true, @airplay.send_image("./test/fixtures/image.gif")
+    @airplay.use("Apple TV")
+    assert @airplay.send_image("./test/fixtures/image2.gif").kind_of?(String)
   end
 
   test "send an image to the server doing a dissolve" do
-    @airplay.use("elCuervo")
-    assert_equal true, @airplay.send_image("../test/fixtures/image.gif", :dissolve)
+    @airplay.use("Apple TV")
+    assert @airplay.send_image("./test/fixtures/image.gif", :dissolve).kind_of?(String)
   end
 end
