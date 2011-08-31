@@ -30,4 +30,7 @@ airplay.use "Apple TV"
 ```
 
 ## Contributors
-[pote](http://github.com/pote)
+
+Thanks to all the contributors:
+
+  * File handler support when sending an image. By [pote](http://github.com/pote)
