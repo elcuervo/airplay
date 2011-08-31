@@ -15,7 +15,9 @@ scope do
   test "send an image to the server" do
     VCR.use_cassette("send image to apple tv") do
       @airplay.use("Apple TV")
-      assert @airplay.send_image("./test/fixtures/image2.gif").kind_of?(String)
+      file_path = "./test/fixtures/image2.gif"
+      assert @airplay.send_image(file_path).kind_of?(String)
+      assert @airplay.send_image(File.open(file_path)).kind_of?(String)
     end
   end
 
