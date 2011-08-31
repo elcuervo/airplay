@@ -16,6 +16,7 @@ class Airplay::Protocol::Image < Airplay::Protocol
   end
 
   def send(image, transition = :none)
+    image = image.path if image.class == File
     body = File.exists?(image) ? File.read(image) : image
     put(resource, body, transition_header(transition))
   end
