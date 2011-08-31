@@ -13,8 +13,10 @@ scope do
   end
 
   test "check scrub status" do
-    @airplay.use("Apple TV")
-    assert @airplay.scrub.has_key?("duration")
-    assert @airplay.scrub.has_key?("position")
+    VCR.use_cassette("get current scrub from apple tv") do
+      @airplay.use("Apple TV")
+      assert @airplay.scrub.has_key?("duration")
+      assert @airplay.scrub.has_key?("position")
+    end
   end
 end

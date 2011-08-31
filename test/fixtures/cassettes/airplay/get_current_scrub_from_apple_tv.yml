@@ -1,0 +1,57 @@
+---
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: http://10.1.0.220:7000/scrub
+    body: !!null 
+    headers:
+      user-agent:
+      - MediaControl/1.0
+      content-type:
+      - text/x-apple-plist+xml
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      date:
+      - Wed, 31 Aug 2011 14:36:38 GMT
+      content-type:
+      - text/parameters
+      content-length:
+      - '38'
+    body: ! 'duration: 0.000000
+
+      position: 0.000000
+
+'
+    http_version: '1.1'
+  ignored: false
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: http://10.1.0.220:7000/scrub
+    body: !!null 
+    headers:
+      user-agent:
+      - MediaControl/1.0
+      content-type:
+      - text/x-apple-plist+xml
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      date:
+      - Wed, 31 Aug 2011 14:36:38 GMT
+      content-type:
+      - text/parameters
+      content-length:
+      - '38'
+    body: ! 'duration: 0.000000
+
+      position: 0.000000
+
+'
+    http_version: '1.1'
+  ignored: false

@@ -13,12 +13,16 @@ scope do
   end
 
   test "send an image to the server" do
-    @airplay.use("Apple TV")
-    assert @airplay.send_image("./test/fixtures/image2.gif").kind_of?(String)
+    VCR.use_cassette("send image to apple tv") do
+      @airplay.use("Apple TV")
+      assert @airplay.send_image("./test/fixtures/image2.gif").kind_of?(String)
+    end
   end
 
   test "send an image to the server doing a dissolve" do
-    @airplay.use("Apple TV")
-    assert @airplay.send_image("./test/fixtures/image.gif", :dissolve).kind_of?(String)
+    VCR.use_cassette("send image to apple tv") do
+      @airplay.use("Apple TV")
+      assert @airplay.send_image("./test/fixtures/image.gif", :dissolve).kind_of?(String)
+    end
   end
 end
