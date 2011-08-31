@@ -28,3 +28,6 @@ airplay.browse
 airplay.use "elCuervo"
 airplay.use "Apple TV"
 ```
+
+## Contributors
+[pote](http://github.com/pote)
