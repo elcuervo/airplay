@@ -5,13 +5,25 @@ class Airplay::Protocol
   SEARCH          = '_airplay._tcp.'
   PORT            = 7000
 
-  def initialize(host, port = PORT)
+  def initialize(host, port = PORT, password)
+    @password = password
     @http = Net::HTTP.new(host, port)
     @http.set_debug_output($stdout) if ENV.has_key?('HTTP_DEBUG')
   end
 
   def make_request(request)
+    uri = URI.parse "http://#{@http.address}:#{@http.port}#{request.path}"
+    uri.user = "Airplay"
+    uri.password = @password
+
     response = @http.request(request)
+    if response['www-authenticate']
+      digest_auth = Net::HTTP::DigestAuth.new
+      authentication = digest_auth.auth_header uri, response['www-authenticate'], request.method
+      request.add_field 'Authorization', authentication
+      response = @http.request(request)
+    end
+
     raise Airplay::Protocol::InvalidRequestError if response.code == "404"
     response.body
   end

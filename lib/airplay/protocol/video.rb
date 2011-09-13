@@ -28,7 +28,4 @@ class Airplay::Protocol::Video < Airplay::Protocol
   def stop
   end
 
-  def scrub
-  end
-
 end

@@ -1,0 +1,115 @@
+---
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: http://10.1.0.220:7000/scrub
+    body: !!null 
+    headers:
+      user-agent:
+      - MediaControl/1.0
+      content-type:
+      - text/x-apple-plist+xml
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 401
+      message: Unauthorized
+    headers:
+      date:
+      - Tue, 13 Sep 2011 15:39:56 GMT
+      content-length:
+      - '0'
+      www-authenticate:
+      - Digest realm="AirPlay", nonce="MTMxNTkyODM5NiA2qY0zAelgDNZNNIydwmb6"
+    body: !!null 
+    http_version: '1.1'
+  ignored: false
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: http://10.1.0.220:7000/scrub
+    body: !!null 
+    headers:
+      user-agent:
+      - MediaControl/1.0
+      content-type:
+      - text/x-apple-plist+xml
+      host:
+      - 10.1.0.220:7000
+      authorization:
+      - Digest username="Airplay", realm="AirPlay", uri="/scrub", nonce="MTMxNTkyODM5NiA2qY0zAelgDNZNNIydwmb6",
+        nc=00000000, cnonce="90ee1f84b26b39569e91c80b6e557dd4", response="40a9f0af92540c432013a1f3b104a0f9"
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      date:
+      - Tue, 13 Sep 2011 15:39:56 GMT
+      content-type:
+      - text/parameters
+      content-length:
+      - '38'
+    body: ! 'duration: 0.000000
+
+      position: 0.000000
+
+'
+    http_version: '1.1'
+  ignored: false
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: http://10.1.0.220:7000/scrub
+    body: !!null 
+    headers:
+      user-agent:
+      - MediaControl/1.0
+      content-type:
+      - text/x-apple-plist+xml
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 401
+      message: Unauthorized
+    headers:
+      date:
+      - Tue, 13 Sep 2011 15:39:57 GMT
+      content-length:
+      - '0'
+      www-authenticate:
+      - Digest realm="AirPlay", nonce="MTMxNTkyODM5NyChKLPuK9vasGcaXca1BxHX"
+    body: !!null 
+    http_version: '1.1'
+  ignored: false
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: http://10.1.0.220:7000/scrub
+    body: !!null 
+    headers:
+      user-agent:
+      - MediaControl/1.0
+      content-type:
+      - text/x-apple-plist+xml
+      host:
+      - 10.1.0.220:7000
+      authorization:
+      - Digest username="Airplay", realm="AirPlay", uri="/scrub", nonce="MTMxNTkyODM5NyChKLPuK9vasGcaXca1BxHX",
+        nc=00000000, cnonce="42d18af5171f6a79f01b98bbb3cd45e0", response="9d9eab10e3aaeeabc36de5860ea5c8e7"
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      date:
+      - Tue, 13 Sep 2011 15:39:57 GMT
+      content-type:
+      - text/parameters
+      content-length:
+      - '38'
+    body: ! 'duration: 0.000000
+
+      position: 0.000000
+
+'
+    http_version: '1.1'
+  ignored: false
