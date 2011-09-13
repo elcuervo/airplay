@@ -1,13 +1,14 @@
 class Airplay::Client
   attr_reader :servers, :active_server, :password
 
-  def initialize(server = false)
+  def initialize(server = false, server_browser = Airplay::Server::Browser)
+    @server_browser = server_browser
     browse unless server
-    use servers.first if servers.any?
+    use servers.first if !@servers.nil?
   end
 
   def use(server)
-    @active_server = server.is_a?(Airplay::Node) ? server : find_by_name(server)
+    @active_server = server.is_a?(Airplay::Server::Node) ? server : @server_browser.find_by_name(server)
   end
 
   def password(password)
@@ -15,29 +16,11 @@ class Airplay::Client
   end
 
   def find_by_name(name)
-    found_server =  @servers.detect do |server|
-      server if server.name == name
-    end
-    raise Airplay::Client::ServerNotFoundError unless found_server
-    found_server
+    @server_browser.find_by_name(name)
   end
 
   def browse
-    @servers = []
-    DNSSD.browse!(Airplay::Protocol::SEARCH) do |reply|
-      resolver = DNSSD::Service.new
-      target, port = nil
-      resolver.resolve(reply) do |resolved|
-        port = resolved.port
-        target = resolved.target
-        break unless resolved.flags.more_coming?
-      end
-      info = Socket.getaddrinfo(target, nil, Socket::AF_INET)
-      ip_address = info[0][2]
-      @servers << Airplay::Node.new(reply.name, reply.domain, ip_address, port)
-      break unless reply.flags.more_coming?
-    end
-    @servers
+    @servers = @server_browser.browse
   end
 
   def handler

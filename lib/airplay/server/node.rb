@@ -1,4 +1,4 @@
-class Airplay::Node
+class Airplay::Server::Node
   attr_reader :name, :domain, :ip, :port
 
   def initialize(name, domain, ip, port)

@@ -1,0 +1,2 @@
+class Airplay::Server
+end
