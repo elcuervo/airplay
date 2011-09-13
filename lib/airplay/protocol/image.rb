@@ -1,4 +1,8 @@
-class Airplay::Protocol::Image < Airplay::Protocol
+class Airplay::Protocol::Image
+
+  def initialize(protocol_handler)
+    @http = protocol_handler
+  end
 
   def resource
     "/photo"
@@ -27,7 +31,7 @@ class Airplay::Protocol::Image < Airplay::Protocol
                 image.read
               end
 
-    put(resource, content, transition_header(transition))
+    @http.put(resource, content, transition_header(transition))
   end
 
 end

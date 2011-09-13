@@ -1,4 +1,9 @@
-class Airplay::Protocol::Scrub < Airplay::Protocol
+class Airplay::Protocol::Scrub
+
+  def initialize(protocol_handler)
+    @http = protocol_handler
+  end
+
   def resource
     "/scrub"
   end
@@ -8,7 +13,7 @@ class Airplay::Protocol::Scrub < Airplay::Protocol
   end
 
   def send
-    response = get(resource, plist_headers)
+    response = @http.get(resource, plist_headers)
     result = {}
     response.delete(":").split.each_slice(2) do |key, value|
       result[key] = value

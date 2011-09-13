@@ -40,16 +40,20 @@ class Airplay::Client
     @servers
   end
 
+  def handler
+    Airplay::Protocol.new(@active_server.ip, @active_server.port, @password)
+  end
+
   def send_image(image, transition = :none)
-    Airplay::Protocol::Image.new(@active_server.ip, @active_server.port, @password).send(image, transition)
+    Airplay::Protocol::Image.new(handler).send(image, transition)
   end
 
   def send_video(video, position = 0)
-    Airplay::Protocol::Video.new(@active_server.ip, @active_server.port, @password).send(video, position)
+    Airplay::Protocol::Video.new(handler).send(video, position)
   end
 
   def scrub
-    Airplay::Protocol::Scrub.new(@active_server.ip, @active_server.port, @password).send
+    Airplay::Protocol::Scrub.new(handler).send
   end
 
 end

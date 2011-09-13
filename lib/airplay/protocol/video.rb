@@ -1,4 +1,8 @@
-class Airplay::Protocol::Video < Airplay::Protocol
+class Airplay::Protocol::Video
+
+  def initialize(protocol_handler)
+    @http = protocol_handler
+  end
 
   def resource
     "/play"
@@ -15,7 +19,7 @@ class Airplay::Protocol::Video < Airplay::Protocol
   def send(video, position = 0)
     body  = location_body(video)
     body += position_body(position.to_s)
-    post(resource, body)
+    @http.post(resource, body)
   end
 
   def play
