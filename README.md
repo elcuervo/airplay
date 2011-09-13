@@ -17,6 +17,18 @@ airplay.send_image("fancy_pants.jpg")
 airplay.send_video("http://www.yo-yo.org/mp4/yu2.mp4")
 ```
 
+## Password Authentication
+
+```ruby
+require 'airplay'
+
+airplay = Airplay::Client.new
+airplay.use "Apple TV"
+airplay.password "password"
+
+airplay.send_image("lolcatz.jpg")
+```
+
 ## Useful methods
 
 ```ruby
