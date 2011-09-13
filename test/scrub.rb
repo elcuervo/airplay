@@ -9,12 +9,11 @@ end
 
 scope do
   setup do
-    @airplay = Airplay::Client.new
+    @airplay = Airplay::Client.new(false, MockedBrowser)
   end
 
   test "check scrub status" do
     VCR.use_cassette("get current scrub from apple tv") do
-      @airplay.use("Apple TV")
       assert @airplay.scrub.has_key?("duration")
       assert @airplay.scrub.has_key?("position")
     end

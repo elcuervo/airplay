@@ -11,7 +11,6 @@ scope do
   end
 
   test "find servers by name" do
-    airplay = Airplay::Client.new
     assert @airplay.find_by_name("Mock TV").is_a?(Airplay::Server::Node)
   end
 

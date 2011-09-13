@@ -9,12 +9,11 @@ end
 
 scope do
   setup do
-    @airplay = Airplay::Client.new
+    @airplay = Airplay::Client.new(false, MockedBrowser)
   end
 
   test "send a video to the server" do
     VCR.use_cassette("send video to apple tv") do
-      @airplay.use("Apple TV")
       assert @airplay.send_video("http://www.yo-yo.org/mp4/yu.mp4").kind_of?(String)
     end
   end
