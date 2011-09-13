@@ -10,6 +10,8 @@ Gem::Specification.new do |s|
   s.test_files        = `git ls-files spec`.split("\n")
 
   s.add_dependency("dnssd")
+  s.add_dependency("net-http-digest_auth")
+
   s.add_development_dependency("cutest")
   s.add_development_dependency("mocha")
   s.add_development_dependency("capybara")
