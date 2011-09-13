@@ -13,7 +13,6 @@ Gem::Specification.new do |s|
   s.add_dependency("net-http-digest_auth")
 
   s.add_development_dependency("cutest")
-  s.add_development_dependency("mocha")
   s.add_development_dependency("capybara")
   s.add_development_dependency("fakeweb")
   s.add_development_dependency("vcr")
