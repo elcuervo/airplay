@@ -1,7 +1,5 @@
 # Airplay
 
-[![Build Status](https://secure.travis-ci.org/elcuervo/airplay.png)](http://travis-ci.org/elcuervo/airplay)
-
 A client (and someday a server) of the superfancy http content stream technique
 that Apple uses in its products.
 
