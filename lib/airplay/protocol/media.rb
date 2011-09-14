@@ -12,8 +12,8 @@ class Airplay::Protocol::Media
     "Start-Position: #{position}\n"
   end
 
-  def location_body(video)
-    "Content-Location: #{video}\n"
+  def location_body(media)
+    "Content-Location: #{media}\n"
   end
 
   def send(media, position = 0)
@@ -26,7 +26,7 @@ class Airplay::Protocol::Media
   end
 
   def pause
-    # TODO: know how to pause video
+    # TODO: know how to pause
   end
 
   def stop

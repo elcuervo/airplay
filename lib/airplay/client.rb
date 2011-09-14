@@ -36,7 +36,7 @@ class Airplay::Client
   end
 
   def send_audio(audio, position = 0)
-    Airplay::Protocol::Media.new(handler).send(video, position)
+    Airplay::Protocol::Media.new(handler).send(audio, position)
   end
 
   def scrub

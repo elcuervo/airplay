@@ -1,0 +1,25 @@
+---
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://10.1.0.220:7000/play
+    body: ! 'Content-Location: http://www.robtowns.com/music/blind_willie.mp3
+
+      Start-Position: 0
+
+'
+    headers:
+      user-agent:
+      - MediaControl/1.0
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      date:
+      - Wed, 14 Sep 2011 13:12:35 GMT
+      content-length:
+      - '0'
+    body: !!null 
+    http_version: '1.1'
+  ignored: false
