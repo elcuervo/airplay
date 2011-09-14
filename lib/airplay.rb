@@ -10,7 +10,7 @@ require 'airplay/server/node'
 
 require 'airplay/protocol'
 require 'airplay/protocol/image'
-require 'airplay/protocol/video'
+require 'airplay/protocol/media'
 require 'airplay/protocol/scrub'
 
 require 'airplay/client'

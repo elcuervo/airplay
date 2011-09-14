@@ -1,4 +1,4 @@
-class Airplay::Protocol::Video
+class Airplay::Protocol::Media
 
   def initialize(protocol_handler)
     @http = protocol_handler
@@ -16,8 +16,8 @@ class Airplay::Protocol::Video
     "Content-Location: #{video}\n"
   end
 
-  def send(video, position = 0)
-    body  = location_body(video)
+  def send(media, position = 0)
+    body  = location_body(media)
     body += position_body(position.to_s)
     @http.post(resource, body)
   end
