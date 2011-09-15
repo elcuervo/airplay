@@ -20,6 +20,7 @@ class Airplay::Protocol::Image
   end
 
   def send(image, transition = :none)
+    image = URI.parse(image) if !(image =~ URI::regexp).nil?
     content = case image
               when String
                 if File.exists?(image)
@@ -29,6 +30,8 @@ class Airplay::Protocol::Image
                 end
               when File
                 image.read
+              when URI::HTTP
+                Net::HTTP.get(image)
               end
 
     @http.put(resource, content, transition_header(transition))

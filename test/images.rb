@@ -17,6 +17,7 @@ scope do
       file_path = "./test/fixtures/image2.gif"
       assert @airplay.send_image(file_path).kind_of?(String)
       assert @airplay.send_image(File.open(file_path)).kind_of?(String)
+      assert @airplay.send_image("http://mine.icanhascheezburger.com/completestore/Wezinyercupz128401525895963750.jpg").kind_of?(String)
     end
   end
 
