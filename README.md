@@ -15,6 +15,7 @@ require 'airplay'
 airplay = Airplay::Client.new
 # To send an image
 airplay.send_image("fancy_pants.jpg")
+
 # To stream a video
 airplay.send_video("http://www.yo-yo.org/mp4/yu2.mp4")
 ```
