@@ -29,6 +29,16 @@ airplay.password "password"
 airplay.send_image("lolcatz.jpg")
 ```
 
+## Player
+
+```ruby
+require 'airplay'
+
+airplay = Airplay::Client.new
+player = airplay.send_video("http://www.yo-yo.org/mp4/yu2.mp4")
+player.stop
+```
+
 ## Useful methods
 
 ```ruby
