@@ -25,4 +25,10 @@ scope do
       assert @airplay.send_audio("http://www.robtowns.com/music/blind_willie.mp3")
     end
   end
+
+  test "raise an exception on invalid media url" do
+    assert_raise Airplay::Protocol::InvalidMediaError do
+      @airplay.send_video("Surculus Fructum!")
+    end
+  end
 end

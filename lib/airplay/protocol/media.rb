@@ -26,6 +26,7 @@ class Airplay::Protocol::Media
   end
 
   def play(media, position = 0)
+    raise Airplay::Protocol::InvalidMediaError if (media =~ URI::regexp).nil?
     body  = location_body(media)
     body += position_body(position.to_s)
     @http.post(resource, body)

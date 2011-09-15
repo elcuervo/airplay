@@ -51,3 +51,4 @@ class Airplay::Protocol
 end
 
 class Airplay::Protocol::InvalidRequestError < StandardError; end
+class Airplay::Protocol::InvalidMediaError   < StandardError; end
