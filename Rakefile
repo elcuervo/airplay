@@ -5,7 +5,7 @@ task :test do
   Cutest.run(Dir["test/*.rb"])
 
   class Cutest::Scope
-    include Capybara
+    include Capybara::DSL
   end
 end
 
