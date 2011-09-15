@@ -8,6 +8,10 @@ class Airplay::Protocol::Media
     "/play"
   end
 
+  def stop_resource
+    "/stop"
+  end
+
   def position_body(position = 0)
     "Start-Position: #{position}\n"
   end
@@ -17,19 +21,18 @@ class Airplay::Protocol::Media
   end
 
   def send(media, position = 0)
+    play(media, position)
+    self
+  end
+
+  def play(media, position = 0)
     body  = location_body(media)
     body += position_body(position.to_s)
     @http.post(resource, body)
   end
 
-  def play
-  end
-
-  def pause
-    # TODO: know how to pause
-  end
-
   def stop
+    @http.post(stop_resource)
   end
 
 end

@@ -17,7 +17,27 @@
       message: OK
     headers:
       date:
-      - Wed, 31 Aug 2011 14:36:39 GMT
+      - Thu, 15 Sep 2011 14:55:22 GMT
+      content-length:
+      - '0'
+    body: !!null 
+    http_version: '1.1'
+  ignored: false
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://10.1.0.220:7000/stop
+    body: !!null 
+    headers:
+      user-agent:
+      - MediaControl/1.0
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      date:
+      - Thu, 15 Sep 2011 14:55:22 GMT
       content-length:
       - '0'
     body: !!null 

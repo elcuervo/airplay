@@ -14,13 +14,15 @@ scope do
 
   test "send a video to the server" do
     VCR.use_cassette("send video to apple tv") do
-      assert @airplay.send_video("http://www.yo-yo.org/mp4/yu.mp4").kind_of?(String)
+      player = @airplay.send_video("http://www.yo-yo.org/mp4/yu.mp4")
+      assert player
+      assert player.stop.kind_of?(String)
     end
   end
 
   test "send audio to the server" do
     VCR.use_cassette("send audio to apple tv") do
-      assert @airplay.send_audio("http://www.robtowns.com/music/blind_willie.mp3").kind_of?(String)
+      assert @airplay.send_audio("http://www.robtowns.com/music/blind_willie.mp3")
     end
   end
 end
