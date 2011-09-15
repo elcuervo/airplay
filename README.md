@@ -17,6 +17,18 @@ airplay.send_image("fancy_pants.jpg")
 airplay.send_video("http://www.yo-yo.org/mp4/yu2.mp4")
 ```
 
+## Sending images
+
+```ruby
+require 'airplay'
+
+airplay = Airplay::Client.new
+
+airplay.send_image("fancy_pants.jpg")
+airplay.send_image(File.open("/home/userman/Pictures/fancy_pants.jpg"))
+airplay.send_image("http://mine.icanhascheezburger.com/completestore/Wezinyercupz128401525895963750.jpg")
+```
+
 ## Password Authentication
 
 ```ruby
