@@ -5,9 +5,9 @@ class Airplay::Protocol
   SEARCH          = '_airplay._tcp.'
   PORT            = 7000
 
-  def initialize(host, port = PORT, password)
+  def initialize(host, port, password)
     @password = password
-    @http = Net::HTTP.new(host, port)
+    @http = Net::HTTP.new(host, port || PORT)
     @http.set_debug_output($stdout) if ENV.has_key?('HTTP_DEBUG')
   end
 
