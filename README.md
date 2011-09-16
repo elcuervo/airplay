@@ -1,5 +1,7 @@
 # Airplay
 
+![Travis](https://secure.travis-ci.org/elcuervo/airplay.png)
+
 ![Ruby Airplay](http://elcuervo.co/images/posts/airplay/ruby_airplay.png)
 
 A client (and someday a server) of the superfancy http content stream technique
