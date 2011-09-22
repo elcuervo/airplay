@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name              = "airplay"
-  s.version           = "0.2.2"
+  s.version           = "0.2.3"
   s.summary           = "Airplay client"
   s.description       = "Send image/video to an airplay enabled device"
   s.authors           = ["elcuervo"]
