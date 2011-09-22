@@ -1,0 +1,121 @@
+---
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://10.1.0.220:7000/play
+    body: ! 'Content-Location: http://www.yo-yo.org/mp4/yu.mp4
+
+      Start-Position: 0
+
+'
+    headers:
+      user-agent:
+      - MediaControl/1.0
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      date:
+      - Thu, 22 Sep 2011 13:58:33 GMT
+      content-length:
+      - '0'
+    body: !!null 
+    http_version: '1.1'
+  ignored: false
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: http://10.1.0.220:7000/scrub
+    body: !!null 
+    headers:
+      user-agent:
+      - MediaControl/1.0
+      content-type:
+      - text/x-apple-plist+xml
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      date:
+      - Thu, 22 Sep 2011 13:58:33 GMT
+      content-type:
+      - text/parameters
+      content-length:
+      - '38'
+    body: ! 'duration: 0.000000
+
+      position: 0.000000
+
+'
+    http_version: '1.1'
+  ignored: false
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://10.1.0.220:7000/scrub?position=0
+    body: !!null 
+    headers:
+      user-agent:
+      - MediaControl/1.0
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      date:
+      - Thu, 22 Sep 2011 13:58:33 GMT
+      content-length:
+      - '0'
+    body: !!null 
+    http_version: '1.1'
+  ignored: false
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: http://10.1.0.220:7000/scrub
+    body: !!null 
+    headers:
+      user-agent:
+      - MediaControl/1.0
+      content-type:
+      - text/x-apple-plist+xml
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      date:
+      - Thu, 22 Sep 2011 13:58:33 GMT
+      content-type:
+      - text/parameters
+      content-length:
+      - '38'
+    body: ! 'duration: 0.000000
+
+      position: 0.000000
+
+'
+    http_version: '1.1'
+  ignored: false
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://10.1.0.220:7000/scrub?position=0
+    body: !!null 
+    headers:
+      user-agent:
+      - MediaControl/1.0
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      date:
+      - Thu, 22 Sep 2011 13:58:33 GMT
+      content-length:
+      - '0'
+    body: !!null 
+    http_version: '1.1'
+  ignored: false

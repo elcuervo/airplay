@@ -39,8 +39,13 @@ class Airplay::Client
     Airplay::Protocol::Media.new(handler).send(audio, position)
   end
 
-  def scrub
-    Airplay::Protocol::Scrub.new(handler).send
+  def scrub(position = false)
+    scrubber = Airplay::Protocol::Scrub.new(handler)
+    if position
+      scrubber.to position
+    else
+      scrubber.check
+    end
   end
 
 end
