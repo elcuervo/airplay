@@ -34,6 +34,30 @@ airplay.send_image(File.open("/home/userman/Pictures/fancy_pants.jpg"))
 airplay.send_image("http://mine.icanhascheezburger.com/completestore/Wezinyercupz128401525895963750.jpg")
 ```
 
+### Transitions
+
+```ruby
+require 'airplay'
+
+airplay = Airplay::Client.new
+
+airplay.send_image("fancy_pants.jpg", :dissolve)
+airplay.send_image("fancy_pants.jpg", :slide_left)
+airplay.send_image("fancy_pants.jpg", :slide_right)
+```
+
+## Scrub
+
+```ruby
+require 'airplay'
+
+airplay = Airplay::Client.new
+airplay.scrub
+# {:duration => 189, :position => 50}
+airplay.scrub(30) # Media goes to 30s
+airplay.scrub("10%") # Media goes to the 10% of its duration
+```
+
 ## Password Authentication
 
 ```ruby
@@ -53,6 +77,11 @@ require 'airplay'
 
 airplay = Airplay::Client.new
 player = airplay.send_video("http://www.yo-yo.org/mp4/yu2.mp4")
+player.pause
+player.resume
+player.scrub
+# {:duration => 189, :position => 50}
+player.scrub("50%") # Go to the half of the media
 player.stop
 ```
 
