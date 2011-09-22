@@ -10,13 +10,15 @@ class Airplay::Protocol::Image
 
   def transitions
     {
-      :none => "None",
-      :dissolve => "Dissolve"
+      :none         => "None",
+      :slide_left   => "SlideLeft",
+      :slide_right  => "SlideRight",
+      :dissolve     => "Dissolve"
     }
   end
 
   def transition_header(transition)
-    {"X-Apple-Transition" => transitions.fetch(transition)}
+    {"X-Apple-Transition" => transitions.fetch(transition, :none)}
   end
 
   def send(image, transition = :none)
