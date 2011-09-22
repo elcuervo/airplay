@@ -2,6 +2,7 @@ class Airplay::Protocol::Media
 
   def initialize(protocol_handler)
     @http = protocol_handler
+    @scrubber = Airplay::Protocol::Scrub.new(protocol_handler)
   end
 
   def resource
@@ -10,6 +11,10 @@ class Airplay::Protocol::Media
 
   def stop_resource
     "/stop"
+  end
+
+  def pause_resource
+    "/rate"
   end
 
   def position_body(position = 0)
@@ -30,6 +35,26 @@ class Airplay::Protocol::Media
     body  = location_body(media)
     body += position_body(position.to_s)
     @http.post(resource, body)
+  end
+
+  def pause
+    rate(0)
+  end
+
+  def scrub(position = false)
+    if position
+      @scrubber.to position
+    else
+      @scrubber.check
+    end
+  end
+
+  def resume
+    rate(1)
+  end
+
+  def rate(play = 1)
+    @http.post("#{pause_resource}?value=#{play}")
   end
 
   def stop
