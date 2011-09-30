@@ -11,19 +11,24 @@ module Airplay::Server::Browser
 
   def self.browse
     @servers = []
-    DNSSD.browse!(Airplay::Protocol::SEARCH) do |reply|
-      resolver = DNSSD::Service.new
-      target, port = nil
-      resolver.resolve(reply) do |resolved|
-        port = resolved.port
-        target = resolved.target
-        break unless resolved.flags.more_coming?
+    timeout 3 do
+      DNSSD.browse!(Airplay::Protocol::SEARCH) do |reply|
+        resolver = DNSSD::Service.new
+        target, port = nil
+        resolver.resolve(reply) do |resolved|
+          port = resolved.port
+          target = resolved.target
+          break unless resolved.flags.more_coming?
+        end
+        info = Socket.getaddrinfo(target, nil, Socket::AF_INET)
+        ip_address = info[0][2]
+        @servers << Airplay::Server::Node.new(reply.name, reply.domain, ip_address, port)
+        break unless reply.flags.more_coming?
       end
-      info = Socket.getaddrinfo(target, nil, Socket::AF_INET)
-      ip_address = info[0][2]
-      @servers << Airplay::Server::Node.new(reply.name, reply.domain, ip_address, port)
-      break unless reply.flags.more_coming?
     end
+  rescue Timeout::Error
+    raise Airplay::Client::ServerNotFoundError
+  else
     @servers
   end
 
