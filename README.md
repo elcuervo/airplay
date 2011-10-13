@@ -7,6 +7,8 @@
 A client (and someday a server) of the superfancy http content stream technique
 that Apple uses in its products.
 
+Now supports any Airplay-compatible device, like [Airserver](http://www.airserverapp.com/)
+
 You can try this in an AppleTV for instance.
 
 ## IMPORTANT!
