@@ -2,7 +2,7 @@
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :post
-    uri: http://192.168.1.101:7000/play
+    uri: http://mocktv.local:7000/play
     body: ! 'Content-Location: http://www.robtowns.com/music/blind_willie.mp3
 
       Start-Position: 0
@@ -21,7 +21,7 @@
       message: OK
     headers:
       date:
-      - Thu, 13 Oct 2011 01:39:12 GMT
+      - Thu, 13 Oct 2011 12:31:59 GMT
       content-length:
       - '0'
     body: !!null 

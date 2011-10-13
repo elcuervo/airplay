@@ -2,7 +2,7 @@
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :post
-    uri: http://192.168.1.101:7000/play
+    uri: http://mocktv.local:7000/play
     body: ! 'Content-Location: http://www.yo-yo.org/mp4/yu.mp4
 
       Start-Position: 0
@@ -21,7 +21,7 @@
       message: OK
     headers:
       date:
-      - Thu, 13 Oct 2011 01:39:12 GMT
+      - Thu, 13 Oct 2011 12:31:19 GMT
       content-length:
       - '0'
     body: !!null 
@@ -30,7 +30,7 @@
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :post
-    uri: http://192.168.1.101:7000/rate?value=0
+    uri: http://mocktv.local:7000/rate?value=0
     body: !!null 
     headers:
       user-agent:
@@ -45,7 +45,7 @@
       message: OK
     headers:
       date:
-      - Thu, 13 Oct 2011 01:39:12 GMT
+      - Thu, 13 Oct 2011 12:31:24 GMT
       content-length:
       - '0'
     body: !!null 
@@ -54,7 +54,7 @@
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :post
-    uri: http://192.168.1.101:7000/rate?value=1
+    uri: http://mocktv.local:7000/rate?value=1
     body: !!null 
     headers:
       user-agent:
@@ -69,7 +69,7 @@
       message: OK
     headers:
       date:
-      - Thu, 13 Oct 2011 01:39:12 GMT
+      - Thu, 13 Oct 2011 12:31:29 GMT
       content-length:
       - '0'
     body: !!null 
@@ -78,7 +78,7 @@
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :get
-    uri: http://192.168.1.101:7000/scrub
+    uri: http://mocktv.local:7000/scrub
     body: !!null 
     headers:
       user-agent:
@@ -95,14 +95,14 @@
       message: OK
     headers:
       date:
-      - Thu, 13 Oct 2011 01:39:12 GMT
+      - Thu, 13 Oct 2011 12:31:34 GMT
       content-type:
       - text/parameters
       content-length:
-      - '38'
-    body: ! 'duration: 0.000000
+      - '40'
+    body: ! 'duration: 189.321671
 
-      position: 0.000000
+      position: 8.553059
 
 '
     http_version: '1.1'
@@ -110,7 +110,7 @@
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :get
-    uri: http://192.168.1.101:7000/scrub
+    uri: http://mocktv.local:7000/scrub
     body: !!null 
     headers:
       user-agent:
@@ -127,14 +127,14 @@
       message: OK
     headers:
       date:
-      - Thu, 13 Oct 2011 01:39:12 GMT
+      - Thu, 13 Oct 2011 12:31:39 GMT
       content-type:
       - text/parameters
       content-length:
-      - '38'
-    body: ! 'duration: 0.000000
+      - '41'
+    body: ! 'duration: 189.321671
 
-      position: 0.000000
+      position: 13.649197
 
 '
     http_version: '1.1'
@@ -142,7 +142,7 @@
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :get
-    uri: http://192.168.1.101:7000/scrub
+    uri: http://mocktv.local:7000/scrub
     body: !!null 
     headers:
       user-agent:
@@ -159,14 +159,14 @@
       message: OK
     headers:
       date:
-      - Thu, 13 Oct 2011 01:39:12 GMT
+      - Thu, 13 Oct 2011 12:31:44 GMT
       content-type:
       - text/parameters
       content-length:
-      - '38'
-    body: ! 'duration: 0.000000
+      - '41'
+    body: ! 'duration: 189.321671
 
-      position: 0.000000
+      position: 18.645428
 
 '
     http_version: '1.1'
@@ -174,7 +174,7 @@
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :post
-    uri: http://192.168.1.101:7000/scrub?position=0
+    uri: http://mocktv.local:7000/scrub?position=18
     body: !!null 
     headers:
       user-agent:
@@ -189,7 +189,7 @@
       message: OK
     headers:
       date:
-      - Thu, 13 Oct 2011 01:39:12 GMT
+      - Thu, 13 Oct 2011 12:31:49 GMT
       content-length:
       - '0'
     body: !!null 
@@ -198,7 +198,7 @@
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :post
-    uri: http://192.168.1.101:7000/stop
+    uri: http://mocktv.local:7000/stop
     body: !!null 
     headers:
       user-agent:
@@ -213,7 +213,7 @@
       message: OK
     headers:
       date:
-      - Thu, 13 Oct 2011 01:39:12 GMT
+      - Thu, 13 Oct 2011 12:31:54 GMT
       content-length:
       - '0'
     body: !!null 

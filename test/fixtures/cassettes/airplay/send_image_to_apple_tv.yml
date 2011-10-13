@@ -2,7 +2,7 @@
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :put
-    uri: http://192.168.1.101:7000/photo
+    uri: http://mocktv.local:7000/photo
     body: !binary |-
       R0lGODdhIANYAuMAAMzMzJaWlr6+vrGxsaOjo5ycnLe3t8XFxaqqqgAAAAAA
       AAAAAAAAAAAAAAAAAAAAACwAAAAAIANYAgAE/hDISau9OOvNu/9gKI5kaZ5o
@@ -100,7 +100,7 @@
       message: OK
     headers:
       date:
-      - Thu, 13 Oct 2011 01:39:10 GMT
+      - Thu, 13 Oct 2011 12:28:59 GMT
       content-length:
       - '0'
     body: !!null 
@@ -109,7 +109,7 @@
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :put
-    uri: http://192.168.1.101:7000/photo
+    uri: http://mocktv.local:7000/photo
     body: !binary |-
       R0lGODdhIANYAuMAAMzMzJaWlr6+vrGxsaOjo5ycnLe3t8XFxaqqqgAAAAAA
       AAAAAAAAAAAAAAAAAAAAACwAAAAAIANYAgAE/hDISau9OOvNu/9gKI5kaZ5o
@@ -207,7 +207,7 @@
       message: OK
     headers:
       date:
-      - Thu, 13 Oct 2011 01:39:10 GMT
+      - Thu, 13 Oct 2011 12:29:04 GMT
       content-length:
       - '0'
     body: !!null 
@@ -227,13 +227,11 @@
       server:
       - nginx/0.8.36
       date:
-      - Thu, 13 Oct 2011 01:39:10 GMT
+      - Thu, 13 Oct 2011 12:29:04 GMT
       content-type:
       - image/jpeg
       connection:
       - keep-alive
-      vary:
-      - Accept-Encoding,User-Agent
       last-modified:
       - Thu, 19 May 2011 23:43:00 GMT
       etag:
@@ -243,7 +241,9 @@
       cache-control:
       - public, must-revalidate, proxy-revalidate
       expires:
-      - Thu, 11 Oct 2012 09:59:38 GMT
+      - Fri, 12 Oct 2012 12:21:36 GMT
+      vary:
+      - User-Agent
       pragma:
       - public
       x-powered-by:
@@ -436,7 +436,7 @@
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :put
-    uri: http://192.168.1.101:7000/photo
+    uri: http://mocktv.local:7000/photo
     body: !binary |-
       /9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsL
       DBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/
@@ -631,7 +631,7 @@
       message: OK
     headers:
       date:
-      - Thu, 13 Oct 2011 01:39:11 GMT
+      - Thu, 13 Oct 2011 12:29:11 GMT
       content-length:
       - '0'
     body: !!null 

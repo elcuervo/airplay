@@ -28,23 +28,26 @@ class Airplay::Client
   end
 
   def send_image(image, transition = :none)
-    Airplay::Protocol::Image.new(handler).send(image, transition)
+    @image_proxy ||= Airplay::Protocol::Image.new(handler)
+    @image_proxy.send(image, transition)
   end
 
   def send_video(video, position = 0)
-    Airplay::Protocol::Media.new(handler).send(video, position)
+    @media_proxy ||= Airplay::Protocol::Media.new(handler)
+    @media_proxy.send(video, position)
   end
 
   def send_audio(audio, position = 0)
-    Airplay::Protocol::Media.new(handler).send(audio, position)
+    @media_proxy ||= Airplay::Protocol::Media.new(handler)
+    @media_proxy.send(audio, position)
   end
 
   def scrub(position = false)
-    scrubber = Airplay::Protocol::Scrub.new(handler)
+    @scrub_proxy ||= Airplay::Protocol::Scrub.new(handler)
     if position
-      scrubber.to position
+      @scrub_proxy.to position
     else
-      scrubber.check
+      @scrub_proxy.check
     end
   end
 

@@ -2,7 +2,7 @@
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :get
-    uri: http://192.168.1.101:7000/scrub
+    uri: http://mocktv.local:7000/scrub
     body: !!null 
     headers:
       user-agent:
@@ -19,18 +19,18 @@
       message: Unauthorized
     headers:
       date:
-      - Thu, 13 Oct 2011 01:40:53 GMT
+      - Thu, 13 Oct 2011 12:22:53 GMT
       content-length:
       - '0'
       www-authenticate:
-      - Digest realm="AirPlay", nonce="MTMxODQ3MDA1MyCLYqeU6GyjP/SIKrzz9Xdl"
+      - Digest realm="AirPlay", nonce="MTMxODUwODU3MyAnPHQuK0fHAbH43SnwM2zd"
     body: !!null 
     http_version: '1.1'
   ignored: false
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :get
-    uri: http://192.168.1.101:7000/scrub
+    uri: http://mocktv.local:7000/scrub
     body: !!null 
     headers:
       user-agent:
@@ -44,17 +44,17 @@
       - 30
       - 30
       host:
-      - 192.168.1.101:7000
+      - mocktv.local:7000
       authorization:
-      - Digest username="Airplay", realm="AirPlay", uri="/scrub", nonce="MTMxODQ3MDA1MyCLYqeU6GyjP/SIKrzz9Xdl",
-        nc=00000000, cnonce="7b5d7a15a148d48d3b262ba3cffce384", response="175d37f9dbf57f5f5935f0673e5e550f"
+      - Digest username="Airplay", realm="AirPlay", uri="/scrub", nonce="MTMxODUwODU3MyAnPHQuK0fHAbH43SnwM2zd",
+        nc=00000000, cnonce="c2fc089b2e65ab801efe19f6c0748545", response="f90f23f345d03fb5e4ec4bd3e054731a"
   response: !ruby/struct:VCR::Response
     status: !ruby/struct:VCR::ResponseStatus
       code: 200
       message: OK
     headers:
       date:
-      - Thu, 13 Oct 2011 01:40:53 GMT
+      - Thu, 13 Oct 2011 12:22:58 GMT
       content-type:
       - text/parameters
       content-length:
@@ -69,7 +69,7 @@
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :get
-    uri: http://192.168.1.101:7000/scrub
+    uri: http://mocktv.local:7000/scrub
     body: !!null 
     headers:
       user-agent:
@@ -86,18 +86,18 @@
       message: Unauthorized
     headers:
       date:
-      - Thu, 13 Oct 2011 01:40:53 GMT
+      - Thu, 13 Oct 2011 12:23:03 GMT
       content-length:
       - '0'
       www-authenticate:
-      - Digest realm="AirPlay", nonce="MTMxODQ3MDA1MyCLYqeU6GyjP/SIKrzz9Xdl"
+      - Digest realm="AirPlay", nonce="MTMxODUwODU4MyAx+UiV/7xCkP81VM4Y1S/G"
     body: !!null 
     http_version: '1.1'
   ignored: false
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :get
-    uri: http://192.168.1.101:7000/scrub
+    uri: http://mocktv.local:7000/scrub
     body: !!null 
     headers:
       user-agent:
@@ -111,17 +111,17 @@
       - 30
       - 30
       host:
-      - 192.168.1.101:7000
+      - mocktv.local:7000
       authorization:
-      - Digest username="Airplay", realm="AirPlay", uri="/scrub", nonce="MTMxODQ3MDA1MyCLYqeU6GyjP/SIKrzz9Xdl",
-        nc=00000000, cnonce="f86894f4489b02319259ca7b59a09214", response="175d37f9dbf57f5f5935f0673e5e550f"
+      - Digest username="Airplay", realm="AirPlay", uri="/scrub", nonce="MTMxODUwODU4MyAx+UiV/7xCkP81VM4Y1S/G",
+        nc=00000000, cnonce="03d64d4bfe4b68f371eef278bea6efd1", response="de139d04d199649e1d4e9e9d96ec3f80"
   response: !ruby/struct:VCR::Response
     status: !ruby/struct:VCR::ResponseStatus
       code: 200
       message: OK
     headers:
       date:
-      - Thu, 13 Oct 2011 01:40:53 GMT
+      - Thu, 13 Oct 2011 12:23:08 GMT
       content-type:
       - text/parameters
       content-length:

@@ -2,7 +2,7 @@
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :put
-    uri: http://192.168.1.101:7000/photo
+    uri: http://mocktv.local:7000/photo
     body: !binary |-
       R0lGODdhAAXQAuMAAMzMzJaWlsXFxb6+vre3t6Ojo7GxsZycnKqqqgAAAAAA
       AAAAAAAAAAAAAAAAAAAAACwAAAAAAAXQAgAE/hDISau9OOvNu/9gKI5kaZ5o
@@ -136,7 +136,7 @@
       message: OK
     headers:
       date:
-      - Thu, 13 Oct 2011 01:39:11 GMT
+      - Thu, 13 Oct 2011 12:29:16 GMT
       content-length:
       - '0'
     body: !!null 
@@ -145,7 +145,7 @@
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :put
-    uri: http://192.168.1.101:7000/photo
+    uri: http://mocktv.local:7000/photo
     body: !binary |-
       R0lGODdhAAXQAuMAAMzMzJaWlsXFxb6+vre3t6Ojo7GxsZycnKqqqgAAAAAA
       AAAAAAAAAAAAAAAAAAAAACwAAAAAAAXQAgAE/hDISau9OOvNu/9gKI5kaZ5o
@@ -279,7 +279,7 @@
       message: OK
     headers:
       date:
-      - Thu, 13 Oct 2011 01:39:11 GMT
+      - Thu, 13 Oct 2011 12:29:21 GMT
       content-length:
       - '0'
     body: !!null 
@@ -288,7 +288,7 @@
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :put
-    uri: http://192.168.1.101:7000/photo
+    uri: http://mocktv.local:7000/photo
     body: !binary |-
       R0lGODdhAAXQAuMAAMzMzJaWlsXFxb6+vre3t6Ojo7GxsZycnKqqqgAAAAAA
       AAAAAAAAAAAAAAAAAAAAACwAAAAAAAXQAgAE/hDISau9OOvNu/9gKI5kaZ5o
@@ -422,7 +422,7 @@
       message: OK
     headers:
       date:
-      - Thu, 13 Oct 2011 01:39:11 GMT
+      - Thu, 13 Oct 2011 12:29:26 GMT
       content-length:
       - '0'
     body: !!null 
@@ -431,7 +431,7 @@
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :put
-    uri: http://192.168.1.101:7000/photo
+    uri: http://mocktv.local:7000/photo
     body: !binary |-
       R0lGODdhAAXQAuMAAMzMzJaWlsXFxb6+vre3t6Ojo7GxsZycnKqqqgAAAAAA
       AAAAAAAAAAAAAAAAAAAAACwAAAAAAAXQAgAE/hDISau9OOvNu/9gKI5kaZ5o
@@ -565,7 +565,7 @@
       message: OK
     headers:
       date:
-      - Thu, 13 Oct 2011 01:39:11 GMT
+      - Thu, 13 Oct 2011 12:29:31 GMT
       content-length:
       - '0'
     body: !!null 

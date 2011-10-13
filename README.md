@@ -9,6 +9,11 @@ that Apple uses in its products.
 
 You can try this in an AppleTV for instance.
 
+## IMPORTANT!
+
+Since iOS 5 there are some changes in the API so to keep playing something (like
+a video) you must keep the client alive!
+
 ## Basic Usage
 
 ```ruby
