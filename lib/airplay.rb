@@ -1,9 +1,10 @@
 require 'dnssd'
 require 'net/http'
+require 'net/http/persistent'
 require 'net/http/digest_auth'
 require 'uri'
 
-module Airplay; end;
+module Airplay end
 require 'airplay/server'
 require 'airplay/server/browser'
 require 'airplay/server/node'

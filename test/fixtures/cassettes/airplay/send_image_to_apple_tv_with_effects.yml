@@ -2,7 +2,7 @@
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :put
-    uri: http://10.1.0.220:7000/photo
+    uri: http://192.168.1.101:7000/photo
     body: !binary |-
       R0lGODdhAAXQAuMAAMzMzJaWlsXFxb6+vre3t6Ojo7GxsZycnKqqqgAAAAAA
       AAAAAAAAAAAAAAAAAAAAACwAAAAAAAXQAgAE/hDISau9OOvNu/9gKI5kaZ5o
@@ -126,13 +126,17 @@
       - MediaControl/1.0
       x-apple-transition:
       - None
+      connection:
+      - keep-alive
+      keep-alive:
+      - 30
   response: !ruby/struct:VCR::Response
     status: !ruby/struct:VCR::ResponseStatus
       code: 200
       message: OK
     headers:
       date:
-      - Thu, 22 Sep 2011 13:18:47 GMT
+      - Thu, 13 Oct 2011 01:39:11 GMT
       content-length:
       - '0'
     body: !!null 
@@ -141,7 +145,7 @@
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :put
-    uri: http://10.1.0.220:7000/photo
+    uri: http://192.168.1.101:7000/photo
     body: !binary |-
       R0lGODdhAAXQAuMAAMzMzJaWlsXFxb6+vre3t6Ojo7GxsZycnKqqqgAAAAAA
       AAAAAAAAAAAAAAAAAAAAACwAAAAAAAXQAgAE/hDISau9OOvNu/9gKI5kaZ5o
@@ -265,13 +269,17 @@
       - MediaControl/1.0
       x-apple-transition:
       - SlideLeft
+      connection:
+      - keep-alive
+      keep-alive:
+      - 30
   response: !ruby/struct:VCR::Response
     status: !ruby/struct:VCR::ResponseStatus
       code: 200
       message: OK
     headers:
       date:
-      - Thu, 22 Sep 2011 13:18:48 GMT
+      - Thu, 13 Oct 2011 01:39:11 GMT
       content-length:
       - '0'
     body: !!null 
@@ -280,7 +288,7 @@
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :put
-    uri: http://10.1.0.220:7000/photo
+    uri: http://192.168.1.101:7000/photo
     body: !binary |-
       R0lGODdhAAXQAuMAAMzMzJaWlsXFxb6+vre3t6Ojo7GxsZycnKqqqgAAAAAA
       AAAAAAAAAAAAAAAAAAAAACwAAAAAAAXQAgAE/hDISau9OOvNu/9gKI5kaZ5o
@@ -404,13 +412,17 @@
       - MediaControl/1.0
       x-apple-transition:
       - SlideRight
+      connection:
+      - keep-alive
+      keep-alive:
+      - 30
   response: !ruby/struct:VCR::Response
     status: !ruby/struct:VCR::ResponseStatus
       code: 200
       message: OK
     headers:
       date:
-      - Thu, 22 Sep 2011 13:18:48 GMT
+      - Thu, 13 Oct 2011 01:39:11 GMT
       content-length:
       - '0'
     body: !!null 
@@ -419,7 +431,7 @@
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :put
-    uri: http://10.1.0.220:7000/photo
+    uri: http://192.168.1.101:7000/photo
     body: !binary |-
       R0lGODdhAAXQAuMAAMzMzJaWlsXFxb6+vre3t6Ojo7GxsZycnKqqqgAAAAAA
       AAAAAAAAAAAAAAAAAAAAACwAAAAAAAXQAgAE/hDISau9OOvNu/9gKI5kaZ5o
@@ -543,13 +555,17 @@
       - MediaControl/1.0
       x-apple-transition:
       - Dissolve
+      connection:
+      - keep-alive
+      keep-alive:
+      - 30
   response: !ruby/struct:VCR::Response
     status: !ruby/struct:VCR::ResponseStatus
       code: 200
       message: OK
     headers:
       date:
-      - Thu, 22 Sep 2011 13:18:48 GMT
+      - Thu, 13 Oct 2011 01:39:11 GMT
       content-length:
       - '0'
     body: !!null 

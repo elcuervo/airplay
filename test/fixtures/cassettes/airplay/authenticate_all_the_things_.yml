@@ -2,49 +2,59 @@
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :get
-    uri: http://10.1.0.220:7000/scrub
+    uri: http://192.168.1.101:7000/scrub
     body: !!null 
     headers:
       user-agent:
       - MediaControl/1.0
       content-type:
       - text/x-apple-plist+xml
+      connection:
+      - keep-alive
+      keep-alive:
+      - 30
   response: !ruby/struct:VCR::Response
     status: !ruby/struct:VCR::ResponseStatus
       code: 401
       message: Unauthorized
     headers:
       date:
-      - Tue, 13 Sep 2011 15:39:56 GMT
+      - Thu, 13 Oct 2011 01:40:53 GMT
       content-length:
       - '0'
       www-authenticate:
-      - Digest realm="AirPlay", nonce="MTMxNTkyODM5NiA2qY0zAelgDNZNNIydwmb6"
+      - Digest realm="AirPlay", nonce="MTMxODQ3MDA1MyCLYqeU6GyjP/SIKrzz9Xdl"
     body: !!null 
     http_version: '1.1'
   ignored: false
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :get
-    uri: http://10.1.0.220:7000/scrub
+    uri: http://192.168.1.101:7000/scrub
     body: !!null 
     headers:
       user-agent:
       - MediaControl/1.0
       content-type:
       - text/x-apple-plist+xml
+      connection:
+      - keep-alive
+      - keep-alive
+      keep-alive:
+      - 30
+      - 30
       host:
-      - 10.1.0.220:7000
+      - 192.168.1.101:7000
       authorization:
-      - Digest username="Airplay", realm="AirPlay", uri="/scrub", nonce="MTMxNTkyODM5NiA2qY0zAelgDNZNNIydwmb6",
-        nc=00000000, cnonce="90ee1f84b26b39569e91c80b6e557dd4", response="40a9f0af92540c432013a1f3b104a0f9"
+      - Digest username="Airplay", realm="AirPlay", uri="/scrub", nonce="MTMxODQ3MDA1MyCLYqeU6GyjP/SIKrzz9Xdl",
+        nc=00000000, cnonce="7b5d7a15a148d48d3b262ba3cffce384", response="175d37f9dbf57f5f5935f0673e5e550f"
   response: !ruby/struct:VCR::Response
     status: !ruby/struct:VCR::ResponseStatus
       code: 200
       message: OK
     headers:
       date:
-      - Tue, 13 Sep 2011 15:39:56 GMT
+      - Thu, 13 Oct 2011 01:40:53 GMT
       content-type:
       - text/parameters
       content-length:
@@ -59,49 +69,59 @@
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :get
-    uri: http://10.1.0.220:7000/scrub
+    uri: http://192.168.1.101:7000/scrub
     body: !!null 
     headers:
       user-agent:
       - MediaControl/1.0
       content-type:
       - text/x-apple-plist+xml
+      connection:
+      - keep-alive
+      keep-alive:
+      - 30
   response: !ruby/struct:VCR::Response
     status: !ruby/struct:VCR::ResponseStatus
       code: 401
       message: Unauthorized
     headers:
       date:
-      - Tue, 13 Sep 2011 15:39:57 GMT
+      - Thu, 13 Oct 2011 01:40:53 GMT
       content-length:
       - '0'
       www-authenticate:
-      - Digest realm="AirPlay", nonce="MTMxNTkyODM5NyChKLPuK9vasGcaXca1BxHX"
+      - Digest realm="AirPlay", nonce="MTMxODQ3MDA1MyCLYqeU6GyjP/SIKrzz9Xdl"
     body: !!null 
     http_version: '1.1'
   ignored: false
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :get
-    uri: http://10.1.0.220:7000/scrub
+    uri: http://192.168.1.101:7000/scrub
     body: !!null 
     headers:
       user-agent:
       - MediaControl/1.0
       content-type:
       - text/x-apple-plist+xml
+      connection:
+      - keep-alive
+      - keep-alive
+      keep-alive:
+      - 30
+      - 30
       host:
-      - 10.1.0.220:7000
+      - 192.168.1.101:7000
       authorization:
-      - Digest username="Airplay", realm="AirPlay", uri="/scrub", nonce="MTMxNTkyODM5NyChKLPuK9vasGcaXca1BxHX",
-        nc=00000000, cnonce="42d18af5171f6a79f01b98bbb3cd45e0", response="9d9eab10e3aaeeabc36de5860ea5c8e7"
+      - Digest username="Airplay", realm="AirPlay", uri="/scrub", nonce="MTMxODQ3MDA1MyCLYqeU6GyjP/SIKrzz9Xdl",
+        nc=00000000, cnonce="f86894f4489b02319259ca7b59a09214", response="175d37f9dbf57f5f5935f0673e5e550f"
   response: !ruby/struct:VCR::Response
     status: !ruby/struct:VCR::ResponseStatus
       code: 200
       message: OK
     headers:
       date:
-      - Tue, 13 Sep 2011 15:39:57 GMT
+      - Thu, 13 Oct 2011 01:40:53 GMT
       content-type:
       - text/parameters
       content-length:

@@ -2,7 +2,7 @@
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :post
-    uri: http://10.1.0.220:7000/play
+    uri: http://192.168.1.101:7000/play
     body: ! 'Content-Location: http://www.yo-yo.org/mp4/yu.mp4
 
       Start-Position: 0
@@ -11,13 +11,17 @@
     headers:
       user-agent:
       - MediaControl/1.0
+      connection:
+      - keep-alive
+      keep-alive:
+      - 30
   response: !ruby/struct:VCR::Response
     status: !ruby/struct:VCR::ResponseStatus
       code: 200
       message: OK
     headers:
       date:
-      - Thu, 22 Sep 2011 14:12:17 GMT
+      - Thu, 13 Oct 2011 01:39:12 GMT
       content-length:
       - '0'
     body: !!null 
@@ -26,18 +30,22 @@
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :post
-    uri: http://10.1.0.220:7000/rate?value=0
+    uri: http://192.168.1.101:7000/rate?value=0
     body: !!null 
     headers:
       user-agent:
       - MediaControl/1.0
+      connection:
+      - keep-alive
+      keep-alive:
+      - 30
   response: !ruby/struct:VCR::Response
     status: !ruby/struct:VCR::ResponseStatus
       code: 200
       message: OK
     headers:
       date:
-      - Thu, 22 Sep 2011 14:12:17 GMT
+      - Thu, 13 Oct 2011 01:39:12 GMT
       content-length:
       - '0'
     body: !!null 
@@ -46,18 +54,22 @@
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :post
-    uri: http://10.1.0.220:7000/rate?value=1
+    uri: http://192.168.1.101:7000/rate?value=1
     body: !!null 
     headers:
       user-agent:
       - MediaControl/1.0
+      connection:
+      - keep-alive
+      keep-alive:
+      - 30
   response: !ruby/struct:VCR::Response
     status: !ruby/struct:VCR::ResponseStatus
       code: 200
       message: OK
     headers:
       date:
-      - Thu, 22 Sep 2011 14:12:17 GMT
+      - Thu, 13 Oct 2011 01:39:12 GMT
       content-length:
       - '0'
     body: !!null 
@@ -66,20 +78,24 @@
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :get
-    uri: http://10.1.0.220:7000/scrub
+    uri: http://192.168.1.101:7000/scrub
     body: !!null 
     headers:
       user-agent:
       - MediaControl/1.0
       content-type:
       - text/x-apple-plist+xml
+      connection:
+      - keep-alive
+      keep-alive:
+      - 30
   response: !ruby/struct:VCR::Response
     status: !ruby/struct:VCR::ResponseStatus
       code: 200
       message: OK
     headers:
       date:
-      - Thu, 22 Sep 2011 14:12:17 GMT
+      - Thu, 13 Oct 2011 01:39:12 GMT
       content-type:
       - text/parameters
       content-length:
@@ -94,20 +110,24 @@
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :get
-    uri: http://10.1.0.220:7000/scrub
+    uri: http://192.168.1.101:7000/scrub
     body: !!null 
     headers:
       user-agent:
       - MediaControl/1.0
       content-type:
       - text/x-apple-plist+xml
+      connection:
+      - keep-alive
+      keep-alive:
+      - 30
   response: !ruby/struct:VCR::Response
     status: !ruby/struct:VCR::ResponseStatus
       code: 200
       message: OK
     headers:
       date:
-      - Thu, 22 Sep 2011 14:12:17 GMT
+      - Thu, 13 Oct 2011 01:39:12 GMT
       content-type:
       - text/parameters
       content-length:
@@ -122,20 +142,24 @@
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :get
-    uri: http://10.1.0.220:7000/scrub
+    uri: http://192.168.1.101:7000/scrub
     body: !!null 
     headers:
       user-agent:
       - MediaControl/1.0
       content-type:
       - text/x-apple-plist+xml
+      connection:
+      - keep-alive
+      keep-alive:
+      - 30
   response: !ruby/struct:VCR::Response
     status: !ruby/struct:VCR::ResponseStatus
       code: 200
       message: OK
     headers:
       date:
-      - Thu, 22 Sep 2011 14:12:17 GMT
+      - Thu, 13 Oct 2011 01:39:12 GMT
       content-type:
       - text/parameters
       content-length:
@@ -150,18 +174,22 @@
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :post
-    uri: http://10.1.0.220:7000/scrub?position=0
+    uri: http://192.168.1.101:7000/scrub?position=0
     body: !!null 
     headers:
       user-agent:
       - MediaControl/1.0
+      connection:
+      - keep-alive
+      keep-alive:
+      - 30
   response: !ruby/struct:VCR::Response
     status: !ruby/struct:VCR::ResponseStatus
       code: 200
       message: OK
     headers:
       date:
-      - Thu, 22 Sep 2011 14:12:17 GMT
+      - Thu, 13 Oct 2011 01:39:12 GMT
       content-length:
       - '0'
     body: !!null 
@@ -170,18 +198,22 @@
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :post
-    uri: http://10.1.0.220:7000/stop
+    uri: http://192.168.1.101:7000/stop
     body: !!null 
     headers:
       user-agent:
       - MediaControl/1.0
+      connection:
+      - keep-alive
+      keep-alive:
+      - 30
   response: !ruby/struct:VCR::Response
     status: !ruby/struct:VCR::ResponseStatus
       code: 200
       message: OK
     headers:
       date:
-      - Thu, 22 Sep 2011 14:12:17 GMT
+      - Thu, 13 Oct 2011 01:39:12 GMT
       content-length:
       - '0'
     body: !!null 
