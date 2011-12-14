@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.email             = ["yo@brunoaguirre.com"]
   s.homepage          = "http://github.com/elcuervo/airplay"
   s.files             = `git ls-files`.split("\n")
-  s.test_files        = `git ls-files spec`.split("\n")
+  s.test_files        = `git ls-files test`.split("\n")
 
   s.add_dependency("dnssd")
   s.add_dependency("net-http-persistent")
