@@ -2,4 +2,4 @@ rvm:
   - 1.8.7
   - 1.9.2
   - 1.9.3
-before_script: sudo apt-get install -y libavahi-compat-libdnssd-dev && bundle install
+before_install: sudo apt-get install -y libavahi-compat-libdnssd-dev && bundle install
