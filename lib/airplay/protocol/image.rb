@@ -30,10 +30,13 @@ class Airplay::Protocol::Image
                 else
                   image
                 end
-              when File
-                image.read
-              when URI::HTTP
-                Net::HTTP.get(image)
+              when URI::HTTP then Net::HTTP.get(image)
+              else
+                if image.respond_to?(:read)
+                  image.read
+                else
+                  throw Airplay::Protocol::InvalidMediaError
+                end
               end
 
     @http.put(resource, content, transition_header(transition))
