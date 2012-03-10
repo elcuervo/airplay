@@ -13,14 +13,14 @@ scope do
   end
 
   test "check scrub status" do
-    VCR.use_cassette("get current scrub from apple tv") do
+    with_cassette("get current scrub from apple tv") do
       assert @airplay.scrub.has_key?("duration")
       assert @airplay.scrub.has_key?("position")
     end
   end
 
   test "move to a given position" do
-    VCR.use_cassette("go to a given position in the video") do
+    with_cassette("go to a given position in the video") do
       @airplay.send_video("http://www.yo-yo.org/mp4/yu.mp4")
       duration = @airplay.scrub.fetch("duration")
 

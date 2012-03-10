@@ -1,135 +1,139 @@
----
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
+--- 
+http_interactions: 
+- request: 
+    method: get
     uri: http://mocktv.local:7000/scrub
-    body: !!null 
-    headers:
-      user-agent:
+    body: 
+      encoding: US-ASCII
+      base64_string: ""
+    headers: 
+      user-agent: 
       - MediaControl/1.0
-      content-type:
+      content-type: 
       - text/x-apple-plist+xml
-      connection:
+      connection: 
       - keep-alive
-      keep-alive:
+      keep-alive: 
       - 30
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
+  response: 
+    status: 
       code: 401
       message: Unauthorized
-    headers:
-      date:
-      - Thu, 13 Oct 2011 12:22:53 GMT
-      content-length:
-      - '0'
-      www-authenticate:
-      - Digest realm="AirPlay", nonce="MTMxODUwODU3MyAnPHQuK0fHAbH43SnwM2zd"
-    body: !!null 
-    http_version: '1.1'
-  ignored: false
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
+    headers: 
+      date: 
+      - Sat, 10 Mar 2012 19:33:49 GMT
+      content-length: 
+      - "0"
+      www-authenticate: 
+      - Digest realm="AirPlay", nonce="MTMzMTQwODAyOSCx6A1yti7pxbknGR3OX7i7"
+    body: 
+      encoding: US-ASCII
+      base64_string: ""
+    http_version: "1.1"
+  recorded_at: Sat, 10 Mar 2012 19:33:48 GMT
+- request: 
+    method: get
     uri: http://mocktv.local:7000/scrub
-    body: !!null 
-    headers:
-      user-agent:
+    body: 
+      encoding: US-ASCII
+      base64_string: ""
+    headers: 
+      user-agent: 
       - MediaControl/1.0
-      content-type:
+      content-type: 
       - text/x-apple-plist+xml
-      connection:
+      connection: 
       - keep-alive
-      - keep-alive
-      keep-alive:
+      keep-alive: 
       - 30
-      - 30
-      host:
+      host: 
       - mocktv.local:7000
-      authorization:
-      - Digest username="Airplay", realm="AirPlay", uri="/scrub", nonce="MTMxODUwODU3MyAnPHQuK0fHAbH43SnwM2zd",
-        nc=00000000, cnonce="c2fc089b2e65ab801efe19f6c0748545", response="f90f23f345d03fb5e4ec4bd3e054731a"
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
+      authorization: 
+      - Digest username="Airplay", realm="AirPlay", uri="/scrub", nonce="MTMzMTQwODAyOSCx6A1yti7pxbknGR3OX7i7", nc=00000000, cnonce="9721ee02595f6074462076752fb405a9", response="6cf15072cc3b8747012e50904906fef3"
+  response: 
+    status: 
       code: 200
       message: OK
-    headers:
-      date:
-      - Thu, 13 Oct 2011 12:22:58 GMT
-      content-type:
+    headers: 
+      date: 
+      - Sat, 10 Mar 2012 19:33:54 GMT
+      content-type: 
       - text/parameters
-      content-length:
-      - '38'
-    body: ! 'duration: 0.000000
+      content-length: 
+      - "38"
+    body: 
+      encoding: US-ASCII
+      base64_string: |
+        ZHVyYXRpb246IDAuMDAwMDAwCnBvc2l0aW9uOiAwLjAwMDAwMAo=
 
-      position: 0.000000
-
-'
-    http_version: '1.1'
-  ignored: false
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
+    http_version: "1.1"
+  recorded_at: Sat, 10 Mar 2012 19:33:53 GMT
+- request: 
+    method: get
     uri: http://mocktv.local:7000/scrub
-    body: !!null 
-    headers:
-      user-agent:
+    body: 
+      encoding: US-ASCII
+      base64_string: ""
+    headers: 
+      user-agent: 
       - MediaControl/1.0
-      content-type:
+      content-type: 
       - text/x-apple-plist+xml
-      connection:
+      connection: 
       - keep-alive
-      keep-alive:
+      keep-alive: 
       - 30
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
+  response: 
+    status: 
       code: 401
       message: Unauthorized
-    headers:
-      date:
-      - Thu, 13 Oct 2011 12:23:03 GMT
-      content-length:
-      - '0'
-      www-authenticate:
-      - Digest realm="AirPlay", nonce="MTMxODUwODU4MyAx+UiV/7xCkP81VM4Y1S/G"
-    body: !!null 
-    http_version: '1.1'
-  ignored: false
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
+    headers: 
+      date: 
+      - Sat, 10 Mar 2012 19:33:59 GMT
+      content-length: 
+      - "0"
+      www-authenticate: 
+      - Digest realm="AirPlay", nonce="MTMzMTQwODAzOSAQD0VG18JFgHaxopQ+xCwo"
+    body: 
+      encoding: US-ASCII
+      base64_string: ""
+    http_version: "1.1"
+  recorded_at: Sat, 10 Mar 2012 19:33:58 GMT
+- request: 
+    method: get
     uri: http://mocktv.local:7000/scrub
-    body: !!null 
-    headers:
-      user-agent:
+    body: 
+      encoding: US-ASCII
+      base64_string: ""
+    headers: 
+      user-agent: 
       - MediaControl/1.0
-      content-type:
+      content-type: 
       - text/x-apple-plist+xml
-      connection:
+      connection: 
       - keep-alive
-      - keep-alive
-      keep-alive:
+      keep-alive: 
       - 30
-      - 30
-      host:
+      host: 
       - mocktv.local:7000
-      authorization:
-      - Digest username="Airplay", realm="AirPlay", uri="/scrub", nonce="MTMxODUwODU4MyAx+UiV/7xCkP81VM4Y1S/G",
-        nc=00000000, cnonce="03d64d4bfe4b68f371eef278bea6efd1", response="de139d04d199649e1d4e9e9d96ec3f80"
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
+      authorization: 
+      - Digest username="Airplay", realm="AirPlay", uri="/scrub", nonce="MTMzMTQwODAzOSAQD0VG18JFgHaxopQ+xCwo", nc=00000000, cnonce="72e0d8cdefca39501d3b91696e55c829", response="f26f1adfe142418a24cb9d578321b47a"
+  response: 
+    status: 
       code: 200
       message: OK
-    headers:
-      date:
-      - Thu, 13 Oct 2011 12:23:08 GMT
-      content-type:
+    headers: 
+      date: 
+      - Sat, 10 Mar 2012 19:34:04 GMT
+      content-type: 
       - text/parameters
-      content-length:
-      - '38'
-    body: ! 'duration: 0.000000
+      content-length: 
+      - "38"
+    body: 
+      encoding: US-ASCII
+      base64_string: |
+        ZHVyYXRpb246IDAuMDAwMDAwCnBvc2l0aW9uOiAwLjAwMDAwMAo=
 
-      position: 0.000000
-
-'
-    http_version: '1.1'
-  ignored: false
+    http_version: "1.1"
+  recorded_at: Sat, 10 Mar 2012 19:34:03 GMT
+recorded_with: VCR 2.0.0

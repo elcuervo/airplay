@@ -18,11 +18,14 @@ module MockedBrowser
       raise Airplay::Client::ServerNotFoundError
     end
   end
-
 end
 
-VCR.config do |c|
+VCR.configure do |c|
   c.cassette_library_dir = 'test/fixtures/cassettes/airplay'
   c.default_cassette_options = { :record => :once }
-  c.stub_with :fakeweb
+  c.hook_into :fakeweb
+end
+
+def with_cassette(name, &block)
+  VCR.use_cassette(name, :preserve_exact_body_bytes => true) { block.call if block }
 end

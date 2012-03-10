@@ -15,13 +15,13 @@ scope do
   end
 
   test "send a video to the server" do
-    VCR.use_cassette("send video to apple tv") do
+    with_cassette("send video to apple tv") do
       assert @airplay.send_video("http://www.yo-yo.org/mp4/yu.mp4")
     end
   end
 
   test "player capabilities" do
-    VCR.use_cassette("control a video being played in apple tv") do
+    with_cassette("control a video being played in apple tv") do
       player = @airplay.send_video("http://www.yo-yo.org/mp4/yu.mp4")
 
       assert player.pause
@@ -34,7 +34,7 @@ scope do
   end
 
   test "send audio to the server" do
-    VCR.use_cassette("send audio to apple tv") do
+    with_cassette("send audio to apple tv") do
       assert @airplay.send_audio("http://www.robtowns.com/music/blind_willie.mp3")
     end
   end

@@ -1,141 +1,157 @@
----
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :post
+--- 
+http_interactions: 
+- request: 
+    method: post
     uri: http://mocktv.local:7000/play
-    body: ! 'Content-Location: http://www.yo-yo.org/mp4/yu.mp4
+    body: 
+      encoding: US-ASCII
+      base64_string: |
+        Q29udGVudC1Mb2NhdGlvbjogaHR0cDovL3d3dy55by15by5vcmcvbXA0L3l1
+        Lm1wNApTdGFydC1Qb3NpdGlvbjogMAo=
 
-      Start-Position: 0
-
-'
-    headers:
-      user-agent:
+    headers: 
+      user-agent: 
       - MediaControl/1.0
-      connection:
+      connection: 
       - keep-alive
-      keep-alive:
+      keep-alive: 
       - 30
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
+  response: 
+    status: 
       code: 200
       message: OK
-    headers:
-      date:
-      - Thu, 13 Oct 2011 12:33:43 GMT
-      content-length:
-      - '0'
-    body: !!null 
-    http_version: '1.1'
-  ignored: false
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
+    headers: 
+      date: 
+      - Sat, 10 Mar 2012 19:32:01 GMT
+      content-length: 
+      - "0"
+    body: 
+      encoding: US-ASCII
+      base64_string: ""
+    http_version: "1.1"
+  recorded_at: Sat, 10 Mar 2012 19:32:00 GMT
+- request: 
+    method: get
     uri: http://mocktv.local:7000/scrub
-    body: !!null 
-    headers:
-      user-agent:
+    body: 
+      encoding: US-ASCII
+      base64_string: ""
+    headers: 
+      user-agent: 
       - MediaControl/1.0
-      content-type:
+      content-type: 
       - text/x-apple-plist+xml
-      connection:
+      connection: 
       - keep-alive
-      keep-alive:
+      keep-alive: 
       - 30
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
+  response: 
+    status: 
       code: 200
       message: OK
-    headers:
-      date:
-      - Thu, 13 Oct 2011 12:33:48 GMT
-      content-type:
+    headers: 
+      date: 
+      - Sat, 10 Mar 2012 19:32:06 GMT
+      content-type: 
       - text/parameters
-      content-length:
-      - '40'
-    body: ! 'duration: 189.321671
+      content-length: 
+      - "38"
+    body: 
+      encoding: US-ASCII
+      base64_string: |
+        ZHVyYXRpb246IDAuMDAwMDAwCnBvc2l0aW9uOiAwLjAwMDAwMAo=
 
-      position: 3.518487
+    http_version: "1.1"
+  recorded_at: Sat, 10 Mar 2012 19:32:05 GMT
+- request: 
+    method: post
+    uri: |
+      http://mocktv.local:7000/scrub?position=0
 
-'
-    http_version: '1.1'
-  ignored: false
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :post
-    uri: http://mocktv.local:7000/scrub?position=94
-    body: !!null 
-    headers:
-      user-agent:
+    body: 
+      encoding: US-ASCII
+      base64_string: ""
+    headers: 
+      user-agent: 
       - MediaControl/1.0
-      connection:
+      connection: 
       - keep-alive
-      keep-alive:
+      keep-alive: 
       - 30
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 200
-      message: OK
-    headers:
-      date:
-      - Thu, 13 Oct 2011 12:33:53 GMT
-      content-length:
-      - '0'
-    body: !!null 
-    http_version: '1.1'
-  ignored: false
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
+  response: 
+    status: 
+      code: 500
+      message: Internal Server Error
+    headers: 
+      date: 
+      - Sat, 10 Mar 2012 19:32:11 GMT
+      content-length: 
+      - "0"
+    body: 
+      encoding: US-ASCII
+      base64_string: ""
+    http_version: "1.1"
+  recorded_at: Sat, 10 Mar 2012 19:32:10 GMT
+- request: 
+    method: get
     uri: http://mocktv.local:7000/scrub
-    body: !!null 
-    headers:
-      user-agent:
+    body: 
+      encoding: US-ASCII
+      base64_string: ""
+    headers: 
+      user-agent: 
       - MediaControl/1.0
-      content-type:
+      content-type: 
       - text/x-apple-plist+xml
-      connection:
+      connection: 
       - keep-alive
-      keep-alive:
+      keep-alive: 
       - 30
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
+  response: 
+    status: 
       code: 200
       message: OK
-    headers:
-      date:
-      - Thu, 13 Oct 2011 12:33:58 GMT
-      content-type:
+    headers: 
+      date: 
+      - Sat, 10 Mar 2012 19:32:16 GMT
+      content-type: 
       - text/parameters
-      content-length:
-      - '41'
-    body: ! 'duration: 189.321671
+      content-length: 
+      - "38"
+    body: 
+      encoding: US-ASCII
+      base64_string: |
+        ZHVyYXRpb246IDAuMDAwMDAwCnBvc2l0aW9uOiAwLjAwMDAwMAo=
 
-      position: 98.691772
+    http_version: "1.1"
+  recorded_at: Sat, 10 Mar 2012 19:32:15 GMT
+- request: 
+    method: post
+    uri: |
+      http://mocktv.local:7000/scrub?position=0
 
-'
-    http_version: '1.1'
-  ignored: false
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :post
-    uri: http://mocktv.local:7000/scrub?position=94
-    body: !!null 
-    headers:
-      user-agent:
+    body: 
+      encoding: US-ASCII
+      base64_string: ""
+    headers: 
+      user-agent: 
       - MediaControl/1.0
-      connection:
+      connection: 
       - keep-alive
-      keep-alive:
+      keep-alive: 
       - 30
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 200
-      message: OK
-    headers:
-      date:
-      - Thu, 13 Oct 2011 12:34:04 GMT
-      content-length:
-      - '0'
-    body: !!null 
-    http_version: '1.1'
-  ignored: false
+  response: 
+    status: 
+      code: 500
+      message: Internal Server Error
+    headers: 
+      date: 
+      - Sat, 10 Mar 2012 19:32:21 GMT
+      content-length: 
+      - "0"
+    body: 
+      encoding: US-ASCII
+      base64_string: ""
+    http_version: "1.1"
+  recorded_at: Sat, 10 Mar 2012 19:32:20 GMT
+recorded_with: VCR 2.0.0

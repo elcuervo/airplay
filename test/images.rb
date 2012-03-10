@@ -13,7 +13,7 @@ scope do
   end
 
   test "send an image to the server" do
-    VCR.use_cassette("send image to apple tv") do
+    with_cassette("send image to apple tv") do
       file_path = "./test/fixtures/image2.gif"
       assert @airplay.send_image(file_path).kind_of?(String)
       assert @airplay.send_image(File.open(file_path)).kind_of?(String)
@@ -22,11 +22,10 @@ scope do
   end
 
   test "send an image to the server doing all the effects" do
-    VCR.use_cassette("send image to apple tv with effects") do
+    with_cassette("send image to apple tv with effects") do
       [:none, :slide_left, :slide_right, :dissolve].each do |effect|
         assert @airplay.send_image("./test/fixtures/image.gif", effect).kind_of?(String)
       end
     end
   end
-
 end

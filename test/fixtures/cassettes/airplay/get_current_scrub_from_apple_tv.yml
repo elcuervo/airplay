@@ -1,65 +1,69 @@
----
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
+--- 
+http_interactions: 
+- request: 
+    method: get
     uri: http://mocktv.local:7000/scrub
-    body: !!null 
-    headers:
-      user-agent:
+    body: 
+      encoding: US-ASCII
+      base64_string: ""
+    headers: 
+      user-agent: 
       - MediaControl/1.0
-      content-type:
+      content-type: 
       - text/x-apple-plist+xml
-      connection:
+      connection: 
       - keep-alive
-      keep-alive:
+      keep-alive: 
       - 30
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
+  response: 
+    status: 
       code: 200
       message: OK
-    headers:
-      date:
-      - Thu, 13 Oct 2011 12:33:12 GMT
-      content-type:
+    headers: 
+      date: 
+      - Sat, 10 Mar 2012 19:31:51 GMT
+      content-type: 
       - text/parameters
-      content-length:
-      - '38'
-    body: ! 'duration: 0.000000
+      content-length: 
+      - "38"
+    body: 
+      encoding: US-ASCII
+      base64_string: |
+        ZHVyYXRpb246IDAuMDAwMDAwCnBvc2l0aW9uOiAwLjAwMDAwMAo=
 
-      position: 0.000000
-
-'
-    http_version: '1.1'
-  ignored: false
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :get
+    http_version: "1.1"
+  recorded_at: Sat, 10 Mar 2012 19:31:50 GMT
+- request: 
+    method: get
     uri: http://mocktv.local:7000/scrub
-    body: !!null 
-    headers:
-      user-agent:
+    body: 
+      encoding: US-ASCII
+      base64_string: ""
+    headers: 
+      user-agent: 
       - MediaControl/1.0
-      content-type:
+      content-type: 
       - text/x-apple-plist+xml
-      connection:
+      connection: 
       - keep-alive
-      keep-alive:
+      keep-alive: 
       - 30
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
+  response: 
+    status: 
       code: 200
       message: OK
-    headers:
-      date:
-      - Thu, 13 Oct 2011 12:33:17 GMT
-      content-type:
+    headers: 
+      date: 
+      - Sat, 10 Mar 2012 19:31:56 GMT
+      content-type: 
       - text/parameters
-      content-length:
-      - '38'
-    body: ! 'duration: 0.000000
+      content-length: 
+      - "38"
+    body: 
+      encoding: US-ASCII
+      base64_string: |
+        ZHVyYXRpb246IDAuMDAwMDAwCnBvc2l0aW9uOiAwLjAwMDAwMAo=
 
-      position: 0.000000
-
-'
-    http_version: '1.1'
-  ignored: false
+    http_version: "1.1"
+  recorded_at: Sat, 10 Mar 2012 19:31:55 GMT
+recorded_with: VCR 2.0.0
