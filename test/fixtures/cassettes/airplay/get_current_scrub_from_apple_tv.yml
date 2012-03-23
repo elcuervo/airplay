@@ -21,7 +21,7 @@ http_interactions:
       message: OK
     headers: 
       date: 
-      - Sat, 10 Mar 2012 19:31:51 GMT
+      - Fri, 23 Mar 2012 22:41:06 GMT
       content-type: 
       - text/parameters
       content-length: 
@@ -32,7 +32,7 @@ http_interactions:
         ZHVyYXRpb246IDAuMDAwMDAwCnBvc2l0aW9uOiAwLjAwMDAwMAo=
 
     http_version: "1.1"
-  recorded_at: Sat, 10 Mar 2012 19:31:50 GMT
+  recorded_at: Fri, 23 Mar 2012 22:41:06 GMT
 - request: 
     method: get
     uri: http://mocktv.local:7000/scrub
@@ -54,7 +54,7 @@ http_interactions:
       message: OK
     headers: 
       date: 
-      - Sat, 10 Mar 2012 19:31:56 GMT
+      - Fri, 23 Mar 2012 22:41:11 GMT
       content-type: 
       - text/parameters
       content-length: 
@@ -65,5 +65,5 @@ http_interactions:
         ZHVyYXRpb246IDAuMDAwMDAwCnBvc2l0aW9uOiAwLjAwMDAwMAo=
 
     http_version: "1.1"
-  recorded_at: Sat, 10 Mar 2012 19:31:55 GMT
+  recorded_at: Fri, 23 Mar 2012 22:41:11 GMT
 recorded_with: VCR 2.0.0

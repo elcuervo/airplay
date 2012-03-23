@@ -103,14 +103,14 @@ http_interactions:
       message: OK
     headers: 
       date: 
-      - Sat, 10 Mar 2012 19:26:43 GMT
+      - Fri, 23 Mar 2012 22:39:38 GMT
       content-length: 
       - "0"
     body: 
       encoding: US-ASCII
       base64_string: ""
     http_version: "1.1"
-  recorded_at: Sat, 10 Mar 2012 19:26:42 GMT
+  recorded_at: Fri, 23 Mar 2012 22:39:38 GMT
 - request: 
     method: put
     uri: http://mocktv.local:7000/photo
@@ -214,14 +214,14 @@ http_interactions:
       message: OK
     headers: 
       date: 
-      - Sat, 10 Mar 2012 19:26:48 GMT
+      - Fri, 23 Mar 2012 22:39:43 GMT
       content-length: 
       - "0"
     body: 
       encoding: US-ASCII
       base64_string: ""
     http_version: "1.1"
-  recorded_at: Sat, 10 Mar 2012 19:26:47 GMT
+  recorded_at: Fri, 23 Mar 2012 22:39:43 GMT
 - request: 
     method: get
     uri: http://cdn.mactrast.com/wp-content/uploads/2011/04/Steve-Jobs-Apple-CEO.jpg
@@ -241,7 +241,7 @@ http_interactions:
       server: 
       - nginx/0.8.36
       date: 
-      - Sat, 10 Mar 2012 19:26:46 GMT
+      - Fri, 23 Mar 2012 22:39:44 GMT
       content-type: 
       - image/jpeg
       connection: 
@@ -255,7 +255,7 @@ http_interactions:
       cache-control: 
       - public, must-revalidate, proxy-revalidate
       expires: 
-      - Sun, 10 Mar 2013 19:11:20 GMT
+      - Sat, 23 Mar 2013 22:32:53 GMT
       vary: 
       - User-Agent
       pragma: 
@@ -449,7 +449,7 @@ http_interactions:
         ACiiigAooooAKKKKACiiigAooooA/9k=
 
     http_version: "1.1"
-  recorded_at: Sat, 10 Mar 2012 19:26:48 GMT
+  recorded_at: Fri, 23 Mar 2012 22:39:45 GMT
 - request: 
     method: put
     uri: http://mocktv.local:7000/photo
@@ -650,12 +650,12 @@ http_interactions:
       message: OK
     headers: 
       date: 
-      - Sat, 10 Mar 2012 19:26:54 GMT
+      - Fri, 23 Mar 2012 22:39:49 GMT
       content-length: 
       - "0"
     body: 
       encoding: US-ASCII
       base64_string: ""
     http_version: "1.1"
-  recorded_at: Sat, 10 Mar 2012 19:26:53 GMT
+  recorded_at: Fri, 23 Mar 2012 22:39:50 GMT
 recorded_with: VCR 2.0.0

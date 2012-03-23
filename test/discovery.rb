@@ -21,7 +21,7 @@ scope do
   end
 
   test "autoselect if only one server available" do
-    assert_equal "Mock TV", @airplay.active_server.name
+    assert_equal "Mock TV", @airplay.active.name
   end
 
 end

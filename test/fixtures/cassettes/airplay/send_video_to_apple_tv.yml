@@ -22,12 +22,12 @@ http_interactions:
       message: OK
     headers: 
       date: 
-      - Sat, 10 Mar 2012 19:28:56 GMT
+      - Fri, 23 Mar 2012 22:40:15 GMT
       content-length: 
       - "0"
     body: 
       encoding: US-ASCII
       base64_string: ""
     http_version: "1.1"
-  recorded_at: Sat, 10 Mar 2012 19:28:55 GMT
+  recorded_at: Fri, 23 Mar 2012 22:40:16 GMT
 recorded_with: VCR 2.0.0

@@ -36,7 +36,7 @@ class Airplay::Protocol
   private
 
   def make_request
-    path = "http://#{@device.fetch(:host)}:#{@device.fetch(:port)}#{@request.path}"
+    path = "http://#{@device[:host]}:#{@device[:port]}#{@request.path}"
     @uri = URI.parse(path)
     @uri.user = "Airplay"
     @uri.password = @password
@@ -59,12 +59,13 @@ class Airplay::Protocol
   def authenticate
     response = @http.request(@uri, @request) {}
     auth = response['www-authenticate']
-    digest_authentication(request, auth) if auth
+    digest_authentication(auth) if auth
   end
 
-  def digest_authentication(request, auth)
-    digest_auth = Net::HTTP::DigestAuth.new
-    @authentications[@uri.path] ||= digest_auth.auth_header(@uri, auth, @request.method)
+  def digest_authentication(auth)
+    digest = Net::HTTP::DigestAuth.new
+    @authentications[@uri.path] ||=
+      digest.auth_header(@uri, auth, @request.method)
   end
 
 end
