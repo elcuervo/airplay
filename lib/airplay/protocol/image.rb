@@ -22,14 +22,10 @@ class Airplay::Protocol::Image
   end
 
   def send(image, transition = :none)
-    image = URI.parse(image) if !(image =~ URI::regexp).nil?
+    image = URI.parse(image) if !!(image =~ URI::regexp)
     content = case image
               when String
-                if File.exists?(image)
-                  File.read(image)
-                else
-                  image
-                end
+                File.exists?(image) ? File.read(image) : image
               when URI::HTTP then Net::HTTP.get(image)
               else
                 if image.respond_to?(:read)
