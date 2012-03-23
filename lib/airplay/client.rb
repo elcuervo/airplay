@@ -1,5 +1,5 @@
 class Airplay::Client
-  attr_reader :servers, :active_server, :password
+  attr_reader :servers, :active, :password
 
   def initialize(server = false, server_browser = Airplay::Server::Browser)
     @server_browser = server_browser
@@ -8,7 +8,11 @@ class Airplay::Client
   end
 
   def use(server)
-    @active_server = server.is_a?(Airplay::Server::Node) ? server : @server_browser.find_by_name(server)
+    @active = if server.is_a?(Airplay::Server::Node)
+                       server
+                     else
+                       @server_browser.find_by_name(server)
+                     end
   end
 
   def password(password)
@@ -24,7 +28,7 @@ class Airplay::Client
   end
 
   def handler
-    Airplay::Protocol.new(@active_server.ip, @active_server.port, @password)
+    @_handler ||= Airplay::Protocol.new(@active.ip, @active.port, @password)
   end
 
   def send_image(image, transition = :none)
