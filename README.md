@@ -2,7 +2,7 @@
 
 ![Travis](https://secure.travis-ci.org/elcuervo/airplay.png)
 
-![Ruby Airplay](http://elcuervo.co/images/posts/airplay/ruby_airplay.png)
+![Ruby Airplay](http://elcuervo.co/images/posts/airplay/ruby_airplay.png?1)
 
 A client (and someday a server) of the superfancy http content stream technique
 that Apple uses in its products.
