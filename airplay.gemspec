@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name              = "airplay"
-  s.version           = "0.2.8"
+  s.version           = "0.2.9"
   s.summary           = "Airplay client"
   s.description       = "Send image/video to an airplay enabled device"
   s.authors           = ["elcuervo"]
@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.test_files        = `git ls-files test`.split("\n")
 
   s.add_dependency("dnssd", "~> 2.0")
-  s.add_dependency("net-http-persistent", "~> 2.5")
+  s.add_dependency("net-http-persistent", ">= 2.6")
   s.add_dependency("net-http-digest_auth", "~> 1.2")
 
   s.add_development_dependency("cutest", "~> 1.1")

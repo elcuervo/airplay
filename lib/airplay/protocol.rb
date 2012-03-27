@@ -10,7 +10,7 @@ class Airplay::Protocol
     @password = password
     @authentications = {}
     @http = Net::HTTP::Persistent.new
-    @http.idle_timeout = 900 # until nil works
+    @http.idle_timeout = nil
     @http.debug_output = $stdout if ENV.has_key?('HTTP_DEBUG')
   end
 
