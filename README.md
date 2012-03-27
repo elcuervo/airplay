@@ -109,3 +109,4 @@ airplay.use "Apple TV"
 Thanks to all the contributors:
 
   * File handler support when sending an image. By [pote](http://github.com/pote)
+  * Persistent connections debugging. By [sodabrew](http://github.com/sodabrew)
