@@ -18,7 +18,8 @@ class Airplay::Protocol::Image
   end
 
   def transition_header(transition)
-    {"X-Apple-Transition" => transitions.fetch(transition, :none)}
+    # The fallback value should be whatever transitions[:none] is above
+    {"X-Apple-Transition" => transitions.fetch(transition, "None")}
   end
 
   def send(image, transition = :none)
