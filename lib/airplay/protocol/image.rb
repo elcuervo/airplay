@@ -22,7 +22,11 @@ class Airplay::Protocol::Image
     {"X-Apple-Transition" => transitions.fetch(transition, "None")}
   end
 
-  def send(image, transition = :none)
+  def send(image, transition = :none, args={})
+    if args.fetch(:raw, false)
+      return @http.put(resource, content, transition_header(transition))
+    end
+
     image = URI.parse(image) if !!(image =~ URI::regexp)
     content = case image
               when String

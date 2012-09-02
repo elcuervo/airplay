@@ -31,9 +31,9 @@ class Airplay::Client
     @_handler ||= Airplay::Protocol.new(@active.ip, @active.port, @password)
   end
 
-  def send_image(image, transition = :none)
+  def send_image(image, transition = :none, *args)
     @image_proxy ||= Airplay::Protocol::Image.new(handler)
-    @image_proxy.send(image, transition)
+    @image_proxy.send(image, transition, *args)
   end
 
   def send_video(video, position = 0)
