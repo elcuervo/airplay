@@ -14,15 +14,16 @@ module Airplay::Server::Browser
     timeout 3 do
       DNSSD.browse!(Airplay::Protocol::SEARCH) do |node|
         resolver = DNSSD::Service.new
-        target, port = nil
+        target, port, extra = nil
         resolver.resolve(node) do |resolved|
           port = resolved.port
           target = resolved.target
+          extra = resolved.text_record
           break unless resolved.flags.more_coming?
         end
         info = Socket.getaddrinfo(target, nil, Socket::AF_INET)
         ip = info[0][2]
-        @servers << Airplay::Server::Node.new(node.name, node.domain, ip, port)
+        @servers << Airplay::Server::Node.new(node.name, node.domain, ip, port, extra)
         break unless node.flags.more_coming?
       end
     end
