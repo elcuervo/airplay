@@ -6,8 +6,9 @@ require 'uri'
 
 module Airplay end
 require 'airplay/server'
-require 'airplay/server/browser'
 require 'airplay/server/node'
+require 'airplay/server/browser'
+require 'airplay/server/features'
 
 require 'airplay/protocol'
 require 'airplay/protocol/image'
