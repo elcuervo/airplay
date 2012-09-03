@@ -24,7 +24,7 @@ class Airplay::Protocol::Image
 
   def send(image, transition = :none, args={})
     if args.fetch(:raw, false)
-      return @http.put(resource, content, transition_header(transition))
+      return @http.put(resource, image, transition_header(transition))
     end
 
     image = URI.parse(image) if !!(image =~ URI::regexp)
