@@ -3,16 +3,24 @@ class Airplay::Client
 
   def initialize(server = false, server_browser = Airplay::Server::Browser)
     @server_browser = server_browser
-    browse unless server
-    use servers.first if !@servers.nil?
+
+    case server
+    when Airplay::Server::Node
+      @active = server
+    when String
+      find_by_name server
+    else
+      browse
+      use servers.first if !@servers.nil?
+    end
   end
 
   def use(server)
     @active = if server.is_a?(Airplay::Server::Node)
-                       server
-                     else
-                       @server_browser.find_by_name(server)
-                     end
+                server
+              else
+                @server_browser.find_by_name(server)
+              end
   end
 
   def password(password)
