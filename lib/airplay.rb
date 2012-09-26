@@ -7,7 +7,7 @@ module Airplay
   class << self
     extend Forwardable
 
-    def_delegators :client, :nodes, :active
+    def_delegators :client, :nodes, :active, :use
 
     private
 

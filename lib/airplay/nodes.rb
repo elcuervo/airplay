@@ -8,6 +8,10 @@ module Airplay
       @items = []
     end
 
+    def find_by_name(node_name)
+      @items.find { |node| node.name == node_name }
+    end
+
     def each(&block)
       @items.each(&block)
     end
