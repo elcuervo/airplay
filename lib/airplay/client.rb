@@ -10,5 +10,9 @@ module Airplay
     def nodes
       @browser.nodes
     end
+
+    def active
+      @_active ||= @browser.nodes.first
+    end
   end
 end

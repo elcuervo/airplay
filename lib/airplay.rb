@@ -1,17 +1,13 @@
-require "celluloid"
-require "dnssd"
+require "forwardable"
 
 require "airplay/structure"
 require "airplay/client"
 
 module Airplay
-  class Player
-  end
-
   class << self
-    def nodes
-      client.nodes
-    end
+    extend Forwardable
+
+    def_delegators :client, :nodes, :active
 
     private
 
