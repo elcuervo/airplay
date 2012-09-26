@@ -1,0 +1,7 @@
+require_relative "../test_helper"
+
+describe "Airplay node discovery" do
+  it "should find a node in the network" do
+    assert Airplay.nodes.size > 0, "At least a node should be found"
+  end
+end
