@@ -11,6 +11,7 @@ class Airplay::Protocol
     @authentications = {}
     @http = Net::HTTP::Persistent.new
     @http.idle_timeout = nil
+    @http.retry_change_requests = true # If a persistent connection is restarted, allow PUT/POST to retry
     @http.debug_output = $stdout if ENV.has_key?('HTTP_DEBUG')
   end
 
@@ -46,6 +47,7 @@ class Airplay::Protocol
 
     response = @http.request(@uri, @request) {}
 
+    raise Airplay::Protocol::WrongPasswordError if response.code == "401"
     raise Airplay::Protocol::InvalidRequestError if response.code == "404"
     response.body
   end
@@ -71,5 +73,6 @@ class Airplay::Protocol
 
 end
 
+class Airplay::Protocol::WrongPasswordError  < StandardError; end
 class Airplay::Protocol::InvalidRequestError < StandardError; end
 class Airplay::Protocol::InvalidMediaError   < StandardError; end
