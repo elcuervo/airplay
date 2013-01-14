@@ -4,9 +4,11 @@ class Airplay::Server::Node
 
   def initialize(name, domain, ip, port, info)
     @name, @domain, @ip, @port = name, domain, ip, port
-    @features = Airplay::Server::Features.new info.fetch('features', '0').hex
-    @deviceid = info.fetch('deviceid', nil)
-    @srcvers  = info.fetch('srcvers', nil)
-    @model    = info.fetch('model', nil)
+    if info
+      @features = Airplay::Server::Features.new info.fetch('features', '0').hex
+      @deviceid = info.fetch('deviceid', nil)
+      @srcvers  = info.fetch('srcvers', nil)
+      @model    = info.fetch('model', nil)
+    end
   end
 end

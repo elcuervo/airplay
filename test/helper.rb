@@ -8,7 +8,7 @@ module MockedBrowser
   attr_reader :servers
 
   def self.browse
-    @servers = [Airplay::Server::Node.new("Mock TV", ".local", "mocktv.local", 7000)]
+    @servers = [Airplay::Server::Node.new("Mock TV", ".local", "mocktv.local", 7000, nil)]
   end
 
   def self.find_by_name(name)
