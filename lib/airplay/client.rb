@@ -1,20 +1,11 @@
 require "celluloid"
 require "net/http/persistent"
 require "airplay/browser"
+require "airplay/protocol"
+require "airplay/client/events"
 
 module Airplay
   class Client
-    class Connection
-      include Celluloid
-
-      def initialize(name, uri, request)
-        @http = Net::HTTP::Persistent.new(name)
-        @http.idle_timeout = nil
-        @http.debug_output = $stdout if ENV.has_key?('HTTP_DEBUG')
-        @http.request(uri, request)
-      end
-    end
-
     attr_reader :active
 
     def initialize(node = false, browser = Browser)
@@ -23,19 +14,16 @@ module Airplay
     end
 
     def use(node_name)
-      @active = nodes.find_by_name(node_name)
+      @active = if node_name.is_a?(Airplay::Node)
+                  node_name
+                else
+                  nodes.find_by_name(node_name)
+                end
     end
 
-    def connections
-      @_connections ||= begin
-        uri = URI.parse("http://#{active.address}")
-        events = Net::HTTP::Post.new("/server-info")
-
-        [
-          Connection.new(:events,   uri, events),
-          Connection.new(:outbound, uri, events)
-        ]
-      end
+    def view(media_or_io, options = {})
+      handler = Airplay::Protocol::Image.new(media_or_io, options)
+      handler.broadcast
     end
 
     def nodes

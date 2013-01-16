@@ -1,13 +1,18 @@
 require "forwardable"
 
 require "airplay/structure"
+require "airplay/connection"
 require "airplay/client"
 
 module Airplay
   class << self
     extend Forwardable
 
-    def_delegators :client, :nodes, :active, :use
+    def_delegators :client, :nodes, :active, :use, :view
+
+    def connection
+      @_connection ||= Connection.new
+    end
 
     private
 
