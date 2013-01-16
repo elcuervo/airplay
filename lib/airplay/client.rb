@@ -6,10 +6,11 @@ require "airplay/client/events"
 
 module Airplay
   class Client
-    attr_reader :active
+    attr_reader :active, :slideshow
 
     def initialize(node = false, browser = Browser)
       @browser = browser.new
+      @slideshow = Airplay::Protocol::Slideshow.new
       @browser.browse
     end
 

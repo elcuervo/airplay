@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: post
-    uri: http://192.168.100.205:7000/photo
+    uri: http://192.168.1.2:7000/photo
     body:
       encoding: UTF-8
       base64_string: ! 'iVBORw0KGgoAAAANSUhEUgAAAS8AAAE2CAYAAAAwBxSLAAAAGXRFWHRTb2Z0
@@ -4385,12 +4385,12 @@ http_interactions:
       message: OK
     headers:
       date:
-      - Tue, 15 Jan 2013 20:17:37 GMT
+      - Wed, 16 Jan 2013 01:53:31 GMT
       content-length:
       - '0'
     body:
       encoding: US-ASCII
       base64_string: ''
     http_version: '1.1'
-  recorded_at: Tue, 15 Jan 2013 22:17:37 GMT
+  recorded_at: Wed, 16 Jan 2013 01:53:31 GMT
 recorded_with: VCR 2.4.0

@@ -12,16 +12,22 @@ module Airplay
     def post(resource, body, headers = {})
       request = Net::HTTP::Post.new(resource)
       request.body = body
-      request.initialize_http_header(DEFAULT_HEADERS.merge(headers))
 
-      send_request(request)
+      send_request(request, headers)
     end
 
-    def send_request(request)
+    def get(resource, headers = {})
+      request = Net::HTTP::Get.new(resource)
+
+      send_request(request, headers)
+    end
+
+    def send_request(request, headers)
       server = Airplay.active
       path = "http://#{server.ip}:#{server.port}#{request.path}"
       uri = URI.parse(path)
 
+      request.initialize_http_header(DEFAULT_HEADERS.merge(headers))
       @http.request(uri, request)
     end
   end

@@ -10,6 +10,5 @@ describe "Airplay feature discovery" do
       assert features.video
       assert features.photo
     end
-
   end
 end

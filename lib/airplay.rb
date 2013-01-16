@@ -8,7 +8,7 @@ module Airplay
   class << self
     extend Forwardable
 
-    def_delegators :client, :nodes, :active, :use, :view
+    def_delegators :client, :nodes, :active, :use, :view, :slideshow
 
     def connection
       @_connection ||= Connection.new

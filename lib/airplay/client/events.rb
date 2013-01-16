@@ -23,13 +23,9 @@ module Airplay
         request["X-Apple-Purpose"] = "event"
 
         @ptth.request(request) do |incoming_request|
-          plist = Nokogiri::XML(incoming_request.body.read)
-          response = {}
-          plist.search("dict/*").each_slice(2) do |key, value|
-            response[key.text] = value.text
-          end
+          plist = Plist.parse_xml(incoming_request.body.read)
 
-          (@callback || Proc.new {}).call(response)
+          (@callback || Proc.new {}).call(plist)
         end
       end
     end
