@@ -26,14 +26,15 @@ describe "Airplay protocol events connection" do
   end
 
   it "should get events from the server" do
-    events = Airplay::Protocol::Events.new("http://localhost:12345")
-    events.callback = proc do |response|
+    reverse = Airplay::Protocol::Reverse.new("http://localhost:12345")
+    reverse.callbacks[:event] = proc do |response|
       assert_equal "video",   response["category"]
       assert_equal "loading", response["state"]
 
-      events.disconnect
+      reverse.disconnect
     end
 
-    events.connect
+    reverse.connect
+    sleep 0.5
   end
 end

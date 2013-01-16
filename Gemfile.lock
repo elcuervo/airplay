@@ -3,10 +3,11 @@ PATH
   specs:
     airplay (0.3.0.pre)
       celluloid (~> 0.12.4)
+      cuba (~> 3.1.0)
       dnssd (~> 2.0)
       net-http-digest_auth (~> 1.2.1)
       net-http-persistent (>= 2.8)
-      net-ptth (~> 0.0.2)
+      net-ptth (~> 0.0.3)
       plist (~> 3.1.0)
 
 GEM
@@ -19,6 +20,8 @@ GEM
       celluloid (~> 0.12.0)
       nio4r (>= 0.4.0)
     columnize (0.3.6)
+    cuba (3.1.0)
+      rack
     debugger (1.2.0)
       columnize (>= 0.3.1)
       debugger-linecache (~> 1.1.1)
@@ -33,7 +36,7 @@ GEM
     minitest (4.4.0)
     net-http-digest_auth (1.2.1)
     net-http-persistent (2.8)
-    net-ptth (0.0.2)
+    net-ptth (0.0.3)
       celluloid-io (~> 0.12.1)
       http-parser-lite (~> 0.6.0)
       rack (~> 1.4.4)

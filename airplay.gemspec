@@ -11,8 +11,9 @@ Gem::Specification.new do |s|
 
   s.add_dependency("dnssd", "~> 2.0")
   s.add_dependency("plist", "~> 3.1.0")
+  s.add_dependency("cuba", "~> 3.1.0")
   s.add_dependency("celluloid", "~> 0.12.4")
-  s.add_dependency("net-ptth", "~> 0.0.2")
+  s.add_dependency("net-ptth", "~> 0.0.3")
   s.add_dependency("net-http-persistent", ">= 2.8")
   s.add_dependency("net-http-digest_auth", "~> 1.2.1")
 
