@@ -21,7 +21,7 @@ http_interactions:
       message: OK
     headers:
       date:
-      - Wed, 16 Jan 2013 01:58:58 GMT
+      - Wed, 16 Jan 2013 02:24:04 GMT
       content-type:
       - text/x-apple-plist+xml
       content-length:
@@ -342,5 +342,5 @@ http_interactions:
 
 '
     http_version: '1.1'
-  recorded_at: Wed, 16 Jan 2013 01:58:59 GMT
+  recorded_at: Wed, 16 Jan 2013 02:24:06 GMT
 recorded_with: VCR 2.4.0

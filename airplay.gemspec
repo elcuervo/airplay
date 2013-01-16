@@ -11,7 +11,6 @@ Gem::Specification.new do |s|
 
   s.add_dependency("dnssd", "~> 2.0")
   s.add_dependency("plist", "~> 3.1.0")
-  s.add_dependency("nokogiri", "~> 1.5.6")
   s.add_dependency("celluloid", "~> 0.12.4")
   s.add_dependency("net-ptth", "~> 0.0.2")
   s.add_dependency("net-http-persistent", ">= 2.8")

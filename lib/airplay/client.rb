@@ -2,7 +2,6 @@ require "celluloid"
 require "net/http/persistent"
 require "airplay/browser"
 require "airplay/protocol"
-require "airplay/client/events"
 
 module Airplay
   class Client

@@ -1,7 +1,7 @@
 require_relative "../test_helper"
 require "net/ptth/test"
 
-describe "Airplay client events connection" do
+describe "Airplay protocol events connection" do
   before do
     request = Net::HTTP::Post.new("/events")
     request.body = <<-EOS.gsub(/^\s+/, '')
@@ -26,7 +26,7 @@ describe "Airplay client events connection" do
   end
 
   it "should get events from the server" do
-    events = Airplay::Client::Events.new("http://localhost:12345")
+    events = Airplay::Protocol::Events.new("http://localhost:12345")
     events.callback = proc do |response|
       assert_equal "video",   response["category"]
       assert_equal "loading", response["state"]
