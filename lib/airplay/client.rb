@@ -1,3 +1,4 @@
+require "uuid"
 require "celluloid"
 require "net/http/persistent"
 require "airplay/browser"
@@ -5,10 +6,12 @@ require "airplay/protocol"
 
 module Airplay
   class Client
-    attr_reader :active, :slideshow
+    attr_reader :active, :slideshow, :app, :session
 
     def initialize(node = false, browser = Browser)
       @browser = browser.new
+      @session = UUID.generate
+      @app = Airplay::Protocol::App
       @slideshow = Airplay::Protocol::Slideshow.new
       @browser.browse
     end
