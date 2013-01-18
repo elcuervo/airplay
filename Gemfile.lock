@@ -8,7 +8,7 @@ PATH
       dnssd (~> 2.0)
       net-http-digest_auth (~> 1.2.1)
       net-http-persistent (>= 2.8)
-      net-ptth (~> 0.0.4)
+      net-ptth (~> 0.0.5)
       plist (~> 3.1.0)
       uuid (~> 2.3.6)
 
@@ -41,7 +41,7 @@ GEM
     minitest (4.4.0)
     net-http-digest_auth (1.2.1)
     net-http-persistent (2.8)
-    net-ptth (0.0.4)
+    net-ptth (0.0.5)
       celluloid-io (~> 0.12.1)
       http-parser-lite (~> 0.6.0)
       rack (~> 1.4.4)

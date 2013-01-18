@@ -6,4 +6,11 @@ describe "Airplay sending media" do
       Airplay.view("test/fixtures/files/logo.png")
     end
   end
+
+  it "should stop any transmission" do
+    with_cassette("stop any transmission") do
+      Airplay.view("test/fixtures/files/logo.png")
+      Airplay.stop
+    end
+  end
 end

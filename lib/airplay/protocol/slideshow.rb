@@ -24,10 +24,6 @@ module Airplay::Protocol
       @images[position]
     end
 
-    def stop
-      Airplay.connection.post("stop")
-    end
-
     def play
 
       content = {

@@ -29,6 +29,10 @@ module Airplay
       handler.broadcast
     end
 
+    def stop
+      Airplay.connection.post("/stop")
+    end
+
     def nodes
       @browser.nodes
     end

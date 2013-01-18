@@ -9,7 +9,7 @@ module Airplay
     extend Forwardable
 
     def_delegators :client, :nodes, :active, :use, :view, :slideshow, :app,
-                   :session
+                   :session, :stop
 
     def connection
       @_connection ||= Connection.new
