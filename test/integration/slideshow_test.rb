@@ -9,6 +9,8 @@ describe "Airplay should list the slideshow features" do
   end
 
   it "should start a slideshow of images" do
+    skip("There are some missing parts in the reverse streaming")
+
     with_cassette("playing a given slideshow") do
       Airplay.slideshow << [
         "test/fixtures/files/image_01.jpg",
