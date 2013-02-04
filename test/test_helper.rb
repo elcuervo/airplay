@@ -21,7 +21,7 @@ def stubbed_nodes
   nodes = Airplay::Nodes.new
   node = Airplay::Node.create(
     name: "MockTV",
-    address: "127.0.0.1:7000",
+    address: "127.0.0.1:12345",
     domain: "MockTV.local"
   )
 

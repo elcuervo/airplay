@@ -1,5 +1,3 @@
-require "uuid"
-
 module Airplay::Protocol
   class Slideshow
     def initialize
@@ -12,7 +10,10 @@ module Airplay::Protocol
           "Accept-Language" => "English"
         })
 
-        Plist.parse_xml(response.body)["themes"]
+        plist = CFPropertyList::List.new(data: response.body)
+        native_plist = CFPropertyList.native_types(plist.value)
+
+        native_plist["themes"]
       end
     end
 
@@ -25,29 +26,24 @@ module Airplay::Protocol
     end
 
     def play
+      @reverse = Airplay::Protocol::Reverse.new(Airplay.active, "slideshow")
+      @reverse.async.connect
 
       content = {
         settings: {
           slideDuration: 3,
-          theme: "Dissolve"
+          theme: "Dissolve".upcase
         },
         state: "playing"
       }
 
-      Airplay.connection.reverse.callbacks[:event] << proc do |response|
-        if response["category"] == "slideshow"
-          puts response
-        end
-      end
+      plist = CFPropertyList::List.new
+      plist.value = CFPropertyList.guess(content)
 
-      response = Airplay.connection.put("/slideshows/1", Plist::Emit.dump(content), {
+      response = Airplay.connection.async.put("/slideshows/1", plist.to_str(2), {
         "Content-Type" => "text/x-apple-plist+xml"
       })
 
-      @reverse ||= Airplay::Protocol::Reverse.new("http://#{Airplay.active.address}", "slideshow")
-      @reverse.async.connect
-
-      response.code == "200"
     end
 
     def stop

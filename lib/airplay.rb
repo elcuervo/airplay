@@ -1,4 +1,5 @@
 require "forwardable"
+require "uuid"
 
 require "airplay/structure"
 require "airplay/connection"
@@ -9,7 +10,11 @@ module Airplay
     extend Forwardable
 
     def_delegators :client, :nodes, :active, :use, :view, :slideshow, :app,
-                   :session, :stop
+                   :stop
+
+    def session
+      @_session ||= UUID.generate
+    end
 
     def connection
       @_connection ||= Connection.new

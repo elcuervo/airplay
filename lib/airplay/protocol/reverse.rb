@@ -8,19 +8,16 @@ module Airplay::Protocol
     include Celluloid
 
     attr_accessor :callbacks
-    attr_reader :state
+    attr_reader   :state
 
-    def initialize(server, purpose = "event")
-      @ptth = Net::PTTH.new(server)
+    def initialize(node, purpose = "event")
+      @ptth = Net::PTTH.new("http://#{node.address}")
       @ptth.set_debug_output = $stdout if ENV["HTTP_DEBUG"]
       @state = "disconnected"
       @purpose = purpose
       @ptth.app = Airplay.app
 
-      @callbacks = {
-        event: [],
-        slideshow: []
-      }
+      @callbacks = []
 
       async.pipeline
       @ptth.app.pipeline = self.async
@@ -36,7 +33,6 @@ module Airplay::Protocol
       request["X-Apple-Purpose"] = @purpose
       request["X-Apple-Session-ID"] = Airplay.session
       request["X-Apple-Device-ID"] = "0x581faa7c9754"
-      request["Content-Length"] = 0
 
       @ptth.request(request)
       @state = "connected"
@@ -45,7 +41,7 @@ module Airplay::Protocol
     def pipeline
       loop do
         message = receive { |msg| msg.is_a? Message }
-        @callbacks[message.type.to_sym].each do |callback|
+        @callbacks.each do |callback|
           callback.call(message.content)
         end
       end

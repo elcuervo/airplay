@@ -1,10 +1,14 @@
+require "celluloid"
+
 module Airplay
   class Connection
     attr_accessor :reverse
 
+    include Celluloid
+
     def initialize
       @http = Net::HTTP::Persistent.new
-      @reverse = Airplay::Protocol::Reverse.new("http://#{Airplay.active.address}")
+      @reverse = Airplay::Protocol::Reverse.new(Airplay.active)
 
       @reverse.async.connect
       @http.idle_timeout = nil

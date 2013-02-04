@@ -1,7 +1,6 @@
 require "cuba"
 require "base64"
 require "cfpropertylist"
-require "plist"
 
 module Airplay::Protocol
   class App < Cuba
@@ -15,24 +14,27 @@ module Airplay::Protocol
 
     define do
       on post, "event" do
-        plist = Plist.parse_xml(req.body)
+        plist = CFPropertyList::List.new(data: req.body.read)
+        native_plist = CFPropertyList.native_types(plist.value)
+
         message = Message.create(
-          type: :event,
-          content: plist
+          type:    :event,
+          content: native_plist
         )
 
         pipe << message
-
-        res.write ""
       end
 
       on "slideshows/1/assets/:id" do |id|
-        image = File.read("test/fixtures/files/logo.jpeg")
-        image.force_encoding('BINARY')
+        image = File.read("test/fixtures/files/logo.png")
+        image.force_encoding("BINARY")
 
         data = {
           data: CFPropertyList::Blob.new(image),
-          info: { id: 1, key: 1 }
+          info: {
+            id: 1,
+            key: id
+          }
         }
 
         res["Content-Type"] = "application/x-apple-binary-plist"
@@ -41,7 +43,6 @@ module Airplay::Protocol
         plist.value = CFPropertyList.guess(data)
         binary_plist = plist.to_str
 
-        res["Content-Length"] = 10
         res.write binary_plist
       end
 

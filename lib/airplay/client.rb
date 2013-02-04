@@ -6,11 +6,10 @@ require "airplay/protocol"
 
 module Airplay
   class Client
-    attr_reader :active, :slideshow, :app, :session
+    attr_reader :active, :slideshow, :app
 
     def initialize(node = false, browser = Browser)
       @browser = browser.new
-      @session = UUID.generate
       @app = Airplay::Protocol::App
       @slideshow = Airplay::Protocol::Slideshow.new
       @browser.browse
