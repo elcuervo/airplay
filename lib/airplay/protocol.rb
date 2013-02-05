@@ -1,4 +1,6 @@
 module Airplay
+  # Public: The protocol module
+  #
   module Protocol
   end
 end

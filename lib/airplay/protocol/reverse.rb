@@ -4,6 +4,8 @@ require "net/http"
 require "airplay/protocol/app"
 
 module Airplay::Protocol
+  # Public: Handles the reverse connection
+  #
   class Reverse
     include Celluloid
 
@@ -23,11 +25,15 @@ module Airplay::Protocol
       @ptth.app.pipeline = self.async
     end
 
+    # Public: Disconnects the current connection
+    #
     def disconnect
       @state = "disconnected"
       @ptth.close
     end
 
+    # Public: Connects to the reverse resource and starts the switching
+    #
     def connect
       request = Net::HTTP::Post.new("/reverse")
       request["X-Apple-Purpose"] = @purpose
@@ -38,6 +44,8 @@ module Airplay::Protocol
       @state = "connected"
     end
 
+    # Public: Pipelines all the incomming messages to the callback ppol
+    #
     def pipeline
       loop do
         message = receive { |msg| msg.is_a? Message }

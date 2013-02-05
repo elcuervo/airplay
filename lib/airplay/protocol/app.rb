@@ -3,6 +3,8 @@ require "base64"
 require "cfpropertylist"
 
 module Airplay::Protocol
+  # Public: The app to be mounted on the reverse connection
+  #
   class App < Cuba
     class << self
       attr_accessor :pipeline

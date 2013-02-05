@@ -2,9 +2,13 @@ require "dnssd"
 require "airplay/nodes"
 
 module Airplay
+  # Public: Browser class to find Airplay-enabled devices in the network
+  #
   class Browser
     SEARCH = "_airplay._tcp."
 
+    # Public: Browses in the search of devices and adds them to the nodes
+    #
     def browse
       timeout(3) do
         DNSSD.browse!(SEARCH) do |node|
@@ -30,6 +34,8 @@ module Airplay
       end
     end
 
+    # Public: Access to the node list
+    #
     def nodes
       @_nodes ||= Nodes.new
     end

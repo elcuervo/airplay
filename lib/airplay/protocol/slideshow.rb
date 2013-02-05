@@ -1,9 +1,15 @@
 module Airplay::Protocol
+  # Public: Handles the slideshows
+  #
   class Slideshow
     def initialize
       @images = []
     end
 
+    # Public: Lists all the slideshow features for the active device
+    #
+    # Returns the available themes hash
+    #
     def features
       @_features ||= begin
         response = Airplay.connection.get("/slideshow-features", {
@@ -17,14 +23,24 @@ module Airplay::Protocol
       end
     end
 
+    # Public: Adds images to the slideshow pool
+    #
+    #   images - An array of images to be added
+    #
     def <<(*images)
       images.each { |image| @images << image }
     end
 
+    # Public: Gets an images given a position on the list
+    #
+    #   position - The position on the list
+    #
     def [](position)
       @images[position]
     end
 
+    # Public: Pays the current slideshow
+    #
     def play
       @reverse = Airplay::Protocol::Reverse.new(Airplay.active, "slideshow")
       @reverse.async.connect
@@ -44,10 +60,6 @@ module Airplay::Protocol
         "Content-Type" => "text/x-apple-plist+xml"
       })
 
-    end
-
-    def stop
-      Airplay.connection.post("/stop")
     end
   end
 end
