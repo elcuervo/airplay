@@ -27,3 +27,7 @@ module Airplay
     end
   end
 end
+
+at_exit {
+  Airplay.stop
+}
