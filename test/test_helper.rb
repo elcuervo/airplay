@@ -7,8 +7,11 @@ require "minitest/autorun"
 require "vcr"
 require "airplay"
 
+ENV["TEST"] = "yes"
+
 VCR.configure do |c|
   c.cassette_library_dir = 'test/fixtures/cassettes/airplay'
+  c.allow_http_connections_when_no_cassette = true
   c.default_cassette_options = { record: :new_episodes }
   c.hook_into :fakeweb
 end
