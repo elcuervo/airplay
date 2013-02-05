@@ -1,0 +1,71 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: http://192.168.100.205:7000/play
+    body:
+      encoding: ASCII-8BIT
+      base64_string: ! 'YnBsaXN0MDDSAQIDBF8QEENvbnRlbnQtTG9jYXRpb25eU3RhcnQtUG9zaXRp
+
+        b25fEDdodHRwOi8vc3RhdGljLmJvdW5jaW5nbWluZHMuY29tL2Fkcy8xNXNl
+
+        Y3MvZG9nc182MDAubXA0IwAAAAAAAAAACA0gL2kAAAAAAAABAQAAAAAAAAAF
+
+        AAAAAAAAAAAAAAAAAAAAcg==
+
+'
+    headers:
+      user-agent:
+      - MediaControl/1.0
+      x-apple-session-id:
+      - ecef98b0-51f1-0130-f436-705681a9dd8d
+      content-type:
+      - application/x-apple-binary-plist
+      connection:
+      - keep-alive
+      keep-alive:
+      - 30
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      date:
+      - Tue, 05 Feb 2013 16:43:58 GMT
+      content-length:
+      - '0'
+    body:
+      encoding: US-ASCII
+      base64_string: ''
+    http_version: '1.1'
+  recorded_at: Tue, 05 Feb 2013 18:43:58 GMT
+- request:
+    method: post
+    uri: http://192.168.100.205:7000/rate?value=1
+    body:
+      encoding: US-ASCII
+      base64_string: ''
+    headers:
+      user-agent:
+      - MediaControl/1.0
+      x-apple-session-id:
+      - ecef98b0-51f1-0130-f436-705681a9dd8d
+      connection:
+      - keep-alive
+      keep-alive:
+      - 30
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      date:
+      - Tue, 05 Feb 2013 16:43:58 GMT
+      content-length:
+      - '0'
+    body:
+      encoding: US-ASCII
+      base64_string: ''
+    http_version: '1.1'
+  recorded_at: Tue, 05 Feb 2013 18:43:58 GMT
+recorded_with: VCR 2.4.0
