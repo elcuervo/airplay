@@ -1,6 +1,6 @@
 # Airplay
 
-![Airplay](test/fixtures/files.logo.png)
+![Airplay](test/fixtures/files/logo.png)
 
 # WARNING: THIS IS WORK IN PROGRESS REWRITE
 
@@ -14,7 +14,7 @@ Airplay.view("my_superhero.png")
 
 ## Playing video
 
-```
+```ruby
 Airplay.play("http://static.bouncingminds.com/ads/15secs/dogs_600.mp4")
 
 # Wait until the video is finished
