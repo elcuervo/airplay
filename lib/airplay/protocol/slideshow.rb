@@ -55,8 +55,9 @@ module Airplay::Protocol
 
       plist = CFPropertyList::List.new
       plist.value = CFPropertyList.guess(content)
+      binary = plist.to_str(2)
 
-      response = Airplay.connection.async.put("/slideshows/1", plist.to_str(2), {
+      response = Airplay.connection.async.put("/slideshows/1", binary, {
         "Content-Type" => "text/x-apple-plist+xml"
       })
 

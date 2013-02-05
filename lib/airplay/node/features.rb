@@ -1,6 +1,8 @@
 require "airplay/structure"
 
 module Airplay
+  # Public: Represents an Airplay Node
+  #
   class Node
     # Public: The feature list of a given node
     #

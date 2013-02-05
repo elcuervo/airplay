@@ -15,7 +15,11 @@ module Airplay::Protocol
       @machine = MicroMachine.new(:stopped)
 
       @machine.when(:loading, :stopped => :loading)
-      @machine.when(:playing, :paused  => :playing, :loading => :playing, :stopped => :playing)
+      @machine.when(:playing, {
+        :paused  => :playing,
+        :loading => :playing,
+        :stopped => :playing
+      })
       @machine.when(:paused,  :loading => :paused,  :playing => :paused)
       @machine.when(:stopped, :playing => :played,  :paused  => :played)
 
