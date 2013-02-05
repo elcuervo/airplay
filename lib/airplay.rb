@@ -39,5 +39,5 @@ end
 # Stops any open conection
 #
 at_exit {
-  Airplay.stop
+  Airplay.stop unless ENV["TEST"]
 }
