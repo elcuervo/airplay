@@ -10,7 +10,7 @@ module Airplay
     extend Forwardable
 
     def_delegators :client, :nodes, :active, :use, :view, :slideshow, :app,
-                   :stop
+                   :stop, :play, :player
 
     def session
       @_session ||= UUID.generate

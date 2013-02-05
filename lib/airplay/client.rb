@@ -6,12 +6,14 @@ require "airplay/protocol"
 
 module Airplay
   class Client
-    attr_reader :active, :slideshow, :app
+    attr_reader :active, :slideshow, :app, :player
 
     def initialize(node = false, browser = Browser)
-      @browser = browser.new
-      @app = Airplay::Protocol::App
-      @slideshow = Airplay::Protocol::Slideshow.new
+      @browser    = browser.new
+      @app        = Airplay::Protocol::App
+      @slideshow  = Airplay::Protocol::Slideshow.new
+      @player     = Airplay::Protocol::Player.new
+
       @browser.browse
     end
 
@@ -26,6 +28,10 @@ module Airplay
     def view(media_or_io, options = {})
       handler = Airplay::Protocol::Image.new(media_or_io, options)
       handler.broadcast
+    end
+
+    def play(io_or_url, options = {})
+      @player.play(io_or_url, options)
     end
 
     def stop

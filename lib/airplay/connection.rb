@@ -2,7 +2,7 @@ require "celluloid"
 
 module Airplay
   class Connection
-    attr_accessor :reverse
+    attr_accessor :reverse, :events
 
     include Celluloid
 
