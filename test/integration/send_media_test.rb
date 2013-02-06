@@ -10,6 +10,13 @@ describe "Airplay sending media" do
     end
   end
 
+  it "should play transitions through images" do
+    Airplay.transitions.each_with_index do |transition, i|
+      assert Airplay.view("test/fixtures/files/transition_#{i}.png", transition: transition)
+      sleep 0.1
+    end
+  end
+
   it "should play an entire video" do
     skip("Works, but I need a way to make Net::PTTH to work with VCR :/")
 

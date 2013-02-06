@@ -26,6 +26,12 @@ module Airplay
       @_connection ||= Connection.new
     end
 
+    # Public: Lists all the available image transitions
+    #
+    def transitions
+      %w(None Dissolve SlideLeft SlideRight)
+    end
+
     private
 
     # Private: The client instance
