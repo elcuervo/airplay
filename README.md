@@ -10,6 +10,11 @@
 require "airplay"
 
 Airplay.view("my_superhero.png")
+
+Airplay.view("url_to_the_image", transition: "Dissolve")
+
+# View all transitions
+Airplay.transitions
 ```
 
 ## Playing video
