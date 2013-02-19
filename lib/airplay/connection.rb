@@ -66,6 +66,13 @@ module Airplay
 
     private
 
+    def default_headers
+      {
+        "User-Agent"         => "MediaControl/1.0",
+        "X-Apple-Session-Id" => Airplay.session
+      }
+    end
+
     # Private: Sends a request to the Node
     #
     #   request - The Request object
@@ -74,17 +81,12 @@ module Airplay
     # Returns a response object
     #
     def send_request(request, headers)
-      default_headers = {
-        "User-Agent"         => "MediaControl/1.0",
-        "X-Apple-Session-Id" => Airplay.session
-      }
-
       server = Airplay.active
-      path = "http://#{server.ip}:#{server.port}#{request.path}"
+      path = "http://#{server.address}#{request.path}"
       uri = URI.parse(path)
 
       request.initialize_http_header(default_headers.merge(headers))
-      @logger.info("Sending request to #{server.name} (#{server.ip}:#{server.port})")
+      @logger.info("Sending request to #{server.name} (#{server.address})")
       @persistent.request(request) {}
     end
   end
