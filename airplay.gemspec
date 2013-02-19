@@ -12,6 +12,7 @@ Gem::Specification.new do |s|
   s.add_dependency("dnssd",                "~> 2.0")
   s.add_dependency("uuid",                 "~> 2.3.6")
   s.add_dependency("CFPropertyList",       "~> 2.2.0")
+  s.add_dependency("log4r",                "~> 1.1.10")
   s.add_dependency("cuba",                 "~> 3.1.0")
   s.add_dependency("micromachine",         "~> 1.0.4")
   s.add_dependency("celluloid",            "~> 0.12.4")
