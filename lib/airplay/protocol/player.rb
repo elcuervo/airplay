@@ -68,8 +68,12 @@ module Airplay::Protocol
     def progress(&block)
       every(1) do
         unless played? || stopped?
-          progress_meter = scrub
-          block.call(progress_meter) if progress_meter
+          progress_meter = info
+          if progress_meter.any?
+            block.call(progress_meter)
+          else
+            @machine.trigger(:stopped)
+          end
         end
       end
     end
