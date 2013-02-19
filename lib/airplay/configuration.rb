@@ -16,7 +16,12 @@ module Airplay
     # Public: Loads the configuration into the affected parts
     #
     def load
-      level = @log_level.is_a?(Fixnum) ? @log_level : Log4r.const_get(@log_level.upcase)
+      level = if @log_level.is_a?(Fixnum)
+                @log_level
+              else
+                Log4r.const_get(@log_level.upcase)
+              end
+
       Log4r::Logger.root.add @output
       Log4r::Logger.root.level = level
     end
