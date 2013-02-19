@@ -30,6 +30,29 @@ module Airplay
 
     private
 
+    # Private: Resolves a node given a node and a resolver
+    #
+    #   node - The given node
+    #   resolver - The DNSSD::Server that is resolving nodes
+    #
+    # Returns if there are more nodes coming
+    #
+    def node_resolver(node, resolved)
+      info = Socket.getaddrinfo(resolved.target, nil, Socket::AF_INET)
+      ip = info[0][2]
+
+      airplay_node = Node.create(
+        name:     node.name,
+        address: "#{ip}:#{resolved.port}",
+        domain:   node.domain
+      )
+      airplay_node.parse_info(resolved.text_record)
+
+      nodes << airplay_node
+
+      resolved.flags.more_coming?
+    end
+
     # Private: Resolves the node information given a node
     #
     #   node - The node from the DNSSD browsing
@@ -38,19 +61,7 @@ module Airplay
       @logger.info("Node found #{node}")
       resolver = DNSSD::Service.new
       resolver.resolve(node) do |resolved|
-        info = Socket.getaddrinfo(resolved.target, nil, Socket::AF_INET)
-        ip = info[0][2]
-
-        airplay_node = Node.create(
-          name:     node.name,
-          address: "#{ip}:#{resolved.port}",
-          domain:   node.domain
-        )
-        airplay_node.parse_info(resolved.text_record)
-
-        nodes << airplay_node
-
-        break unless resolved.flags.more_coming?
+        break unless node_resolver(node, resolved)
       end
     end
   end
