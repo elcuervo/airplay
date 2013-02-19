@@ -1,12 +1,21 @@
 require "airplay"
 
 Airplay.use "Apple TV"
-Airplay.configure do |c|
-  c.log_level = "debug"
+
+video = "http://trailers.apple.com/movies/marvel/ironman3/ironman3-tlr1-m4mb0_h1080p.mov"
+
+Airplay.play video
+puts "Starts playing: #{video}"
+
+Airplay.player.progress do |status|
+  if status["readyToPlay"]
+    total = status["duration"]
+    current = status["position"]
+    percent = (current*100/total).round
+
+    print "\r|#{"=" * percent}> #{percent}%"
+  end
 end
 
-Airplay.play "http://static.bouncingminds.com/ads/30secs/country_life_butter.mp4"
-Airplay.player.progress do |status|
-  puts status
-end
 Airplay.player.wait
+puts "Video playback finished!"
