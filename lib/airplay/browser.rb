@@ -7,6 +7,10 @@ module Airplay
   class Browser
     SEARCH = "_airplay._tcp."
 
+    def initialize
+      @logger = Airplay::Logger.new("airplay::browser")
+    end
+
     # Public: Browses in the search of devices and adds them to the nodes
     #
     def browse
@@ -31,6 +35,7 @@ module Airplay
     #   node - The node from the DNSSD browsing
     #
     def resolve(node)
+      @logger.info("Node found #{node}")
       resolver = DNSSD::Service.new
       resolver.resolve(node) do |resolved|
         info = Socket.getaddrinfo(resolved.target, nil, Socket::AF_INET)

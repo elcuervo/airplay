@@ -1,9 +1,9 @@
 require "forwardable"
 require "uuid"
-require "log4r"
 
 require "airplay/structure"
 require "airplay/configuration"
+require "airplay/logger"
 require "airplay/connection"
 require "airplay/client"
 

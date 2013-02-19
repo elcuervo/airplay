@@ -9,8 +9,7 @@ module Airplay
     include Celluloid
 
     def initialize
-      @logger = Log4r::Logger.new("airplay::connection")
-      @logger.add Airplay.configuration.output
+      @logger = Airplay::Logger.new("airplay::connection")
 
       @http = Net::HTTP::Persistent.new
       @reverse = Airplay::Protocol::Reverse.new(Airplay.active)
@@ -18,7 +17,7 @@ module Airplay
       @reverse.async.connect
       @http.idle_timeout = nil
       @http.retry_change_requests = true
-      @http.debug_output = $stdout if ENV.has_key?('HTTP_DEBUG')
+      @http.debug_output = @logger
     end
 
     # Public: Executes a POST to a resource

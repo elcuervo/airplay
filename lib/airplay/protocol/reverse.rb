@@ -13,11 +13,10 @@ module Airplay::Protocol
     attr_reader   :state
 
     def initialize(node, purpose = "event")
-      @logger = Log4r::Logger.new("airplay::protocol::reverse")
-      @logger.add Airplay.configuration.output
+      @logger = Airplay::Logger.new("airplay::protocol::reverse")
 
       @ptth = Net::PTTH.new("http://#{node.address}")
-      @ptth.set_debug_output = $stdout if ENV["HTTP_DEBUG"]
+      @ptth.set_debug_output = @logger
       @state = "disconnected"
       @purpose = purpose
       @ptth.app = Airplay.app
