@@ -1,4 +1,5 @@
 require "celluloid"
+require "airplay/connection/persistent"
 
 module Airplay
   # Public: The class that handles all the outgoing basic HTTP connections
@@ -11,13 +12,10 @@ module Airplay
     def initialize
       @logger = Airplay::Logger.new("airplay::connection")
 
-      @http = Net::HTTP::Persistent.new
+      @persistent = Airplay::Connection::Persistent.new
       @reverse = Airplay::Protocol::Reverse.new(Airplay.active)
 
       @reverse.async.connect
-      @http.idle_timeout = nil
-      @http.retry_change_requests = true
-      @http.debug_output = @logger
     end
 
     # Public: Executes a POST to a resource
@@ -87,7 +85,7 @@ module Airplay
 
       request.initialize_http_header(default_headers.merge(headers))
       @logger.info("Sending request to #{server.name} (#{server.ip}:#{server.port})")
-      @http.request(uri, request) {}
+      @persistent.request(request) {}
     end
   end
 end
