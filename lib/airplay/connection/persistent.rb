@@ -2,6 +2,8 @@ require "net/http/persistent"
 require "uuid"
 
 module Airplay
+  # Public: The class that handles all the outgoing basic HTTP connections
+  #
   class Connection
     # Public: Class that wraps a persistent connection to point to the airplay
     #         server and other configuration
