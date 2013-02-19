@@ -29,7 +29,7 @@ module Airplay
         server = Airplay.active
         path = "http://#{server.address}#{request.path}"
         uri = URI.parse(path)
-        @logger.info("Sending request to #{server.name} (#{server.ip}:#{server.port})")
+        @logger.info("Sending request to #{server.name} (#{server.address})")
         super(uri, request, &block)
       end
     end
