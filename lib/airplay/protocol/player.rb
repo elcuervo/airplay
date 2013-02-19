@@ -20,6 +20,7 @@ module Airplay::Protocol
         :loading => :playing,
         :stopped => :playing
       })
+
       @machine.when(:paused,  :loading => :paused,  :playing => :paused)
       @machine.when(:stopped, :playing => :played,  :paused  => :played)
 
@@ -54,11 +55,9 @@ module Airplay::Protocol
       plist = CFPropertyList::List.new
       plist.value = CFPropertyList.guess(content)
 
-      Airplay.connection.async.post("/play", plist.to_str, {
+      Airplay.connection.post("/play", plist.to_str, {
         "Content-Type" => "application/x-apple-binary-plist"
       })
-
-      resume
     end
 
     # Public: Handles the progress of the playback, the given &block get's
@@ -67,13 +66,10 @@ module Airplay::Protocol
     #   &block - Block to be executed in every playable second.
     #
     def progress(&block)
-      timer = after(1) do
-        if played? || stopped?
-          timer.cancel
-        else
+      every(1) do
+        unless played? || stopped?
           progress_meter = scrub
           block.call(progress_meter) if progress_meter
-          timer.reset
         end
       end
     end
@@ -87,6 +83,12 @@ module Airplay::Protocol
       response = Airplay.connection.get("/scrub")
       parts = response.body.split("\n")
       Hash[parts.collect { |v| v.split(": ") }]
+    end
+
+    def info
+      response = Airplay.connection.get("/playback-info")
+      plist = CFPropertyList::List.new(data: response.body)
+      CFPropertyList.native_types(plist.value)
     end
 
     # Public: Resumes a paused video
