@@ -10,7 +10,8 @@ module Airplay
 
     def initialize
       @logger = Log4r::Logger.new("airplay::connection")
-      @logger.outputters = Log4r::Outputter.stdout
+      @logger.add Airplay.configuration.output
+
       @http = Net::HTTP::Persistent.new
       @reverse = Airplay::Protocol::Reverse.new(Airplay.active)
 

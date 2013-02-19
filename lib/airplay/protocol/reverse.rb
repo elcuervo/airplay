@@ -14,7 +14,7 @@ module Airplay::Protocol
 
     def initialize(node, purpose = "event")
       @logger = Log4r::Logger.new("airplay::protocol::reverse")
-      @logger.outputters = Log4r::Outputter.stdout
+      @logger.add Airplay.configuration.output
 
       @ptth = Net::PTTH.new("http://#{node.address}")
       @ptth.set_debug_output = $stdout if ENV["HTTP_DEBUG"]

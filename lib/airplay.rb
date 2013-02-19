@@ -3,6 +3,7 @@ require "uuid"
 require "log4r"
 
 require "airplay/structure"
+require "airplay/configuration"
 require "airplay/connection"
 require "airplay/client"
 
@@ -21,6 +22,11 @@ module Airplay
       @_session ||= UUID.generate
     end
 
+    def configure(&block)
+      yield(configuration) if block
+      configuration.load
+    end
+
     # Public: Access the connections
     #
     def connection
@@ -31,6 +37,10 @@ module Airplay
     #
     def transitions
       %w(None Dissolve SlideLeft SlideRight)
+    end
+
+    def configuration
+      @_configuration ||= Configuration.new
     end
 
     private
