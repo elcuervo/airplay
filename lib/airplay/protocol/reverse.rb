@@ -13,6 +13,9 @@ module Airplay::Protocol
     attr_reader   :state
 
     def initialize(node, purpose = "event")
+      @logger = Log4r::Logger.new("airplay::protocol::reverse")
+      @logger.outputters = Log4r::Outputter.stdout
+
       @ptth = Net::PTTH.new("http://#{node.address}")
       @ptth.set_debug_output = $stdout if ENV["HTTP_DEBUG"]
       @state = "disconnected"
@@ -35,9 +38,9 @@ module Airplay::Protocol
     # Public: Connects to the reverse resource and starts the switching
     #
     def connect
+      @logger.info "Connecting with purpose: #{@purpose}"
       request = Net::HTTP::Post.new("/reverse")
       request["X-Apple-Purpose"] = @purpose
-      request["X-Apple-Session-ID"] = Airplay.session
       request["X-Apple-Device-ID"] = "0x581faa7c9754"
 
       @ptth.request(request)
@@ -49,6 +52,7 @@ module Airplay::Protocol
     def pipeline
       loop do
         message = receive { |msg| msg.is_a? Message }
+        @logger.debug "Incomming message from the event pipeline: #{message}"
         @callbacks.each do |callback|
           callback.call(message.content)
         end

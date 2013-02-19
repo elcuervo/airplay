@@ -9,6 +9,8 @@ module Airplay
     include Celluloid
 
     def initialize
+      @logger = Log4r::Logger.new("airplay::connection")
+      @logger.outputters = Log4r::Outputter.stdout
       @http = Net::HTTP::Persistent.new
       @reverse = Airplay::Protocol::Reverse.new(Airplay.active)
 
@@ -27,6 +29,7 @@ module Airplay
     # Returns a response object
     #
     def post(resource, body = "", headers = {})
+      @logger.info("POST #{resource} with #{body.bytesize} bytes")
       request = Net::HTTP::Post.new(resource)
       request.body = body
 
@@ -42,6 +45,7 @@ module Airplay
     # Returns a response object
     #
     def put(resource, body = "", headers = {})
+      @logger.info("PUT #{resource} with #{body.bytesize} bytes")
       request = Net::HTTP::Put.new(resource)
       request.body = body
 
@@ -56,6 +60,7 @@ module Airplay
     # Returns a response object
     #
     def get(resource, headers = {})
+      @logger.info("GET #{resource}")
       request = Net::HTTP::Get.new(resource)
 
       send_request(request, headers)
@@ -81,7 +86,8 @@ module Airplay
       uri = URI.parse(path)
 
       request.initialize_http_header(default_headers.merge(headers))
-      @http.request(uri, request)
+      @logger.info("Sending request to #{server.name} (#{server.ip}:#{server.port})")
+      @http.request(uri, request) {}
     end
   end
 end
