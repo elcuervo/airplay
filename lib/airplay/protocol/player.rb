@@ -27,11 +27,15 @@ module Airplay::Protocol
       @machine.on(:played) { stop }
 
       @callback = proc do |event|
-        @machine.trigger(event["state"].to_sym) if event["category"] == "video"
+        if event["category"] == "video" && event.has_key?("state")
+          @machine.trigger(event["state"].to_sym)
+        end
       end
-    end
+      end
 
-    # Public: Plays a given url or file
+    # Public: Plays a given url or file.
+    #         Creates a new persistent connection to ensure that
+    #         the socket will be kept alive
     #
     #   file_or_url - The url or file to be reproduced
     #   options - Optional starting time
@@ -40,12 +44,12 @@ module Airplay::Protocol
       add_events_callback
 
       media_url = case true
-              when File.exists?(file_or_url)
-              when !!(file_or_url =~ URI::regexp)
-                file_or_url
-              else
-                raise Errno::ENOENT, file_or_url
-              end
+                  when File.exists?(file_or_url)
+                  when !!(file_or_url =~ URI::regexp)
+                    file_or_url
+                  else
+                    raise Errno::ENOENT, file_or_url
+                  end
 
       content = {
         "Content-Location" => media_url,
@@ -54,10 +58,15 @@ module Airplay::Protocol
 
       plist = CFPropertyList::List.new
       plist.value = CFPropertyList.guess(content)
+      data = plist.to_str
 
-      Airplay.connection.post("/play", plist.to_str, {
-        "Content-Type" => "application/x-apple-binary-plist"
-      })
+      post = Net::HTTP::Post.new "/play"
+      post["Content-Type"] = "application/x-apple-binary-plist"
+      post.body = data
+
+      persistent = Airplay::Connection::Persistent.new
+      persistent.request(post)
+      keep_alive(persistent)
     end
 
     # Public: Handles the progress of the playback, the given &block get's
@@ -89,6 +98,10 @@ module Airplay::Protocol
       Hash[parts.collect { |v| v.split(": ") }]
     end
 
+    # Public: checks current playback information
+    #
+    # Returns a hash with the playback information
+    #
     def info
       response = Airplay.connection.get("/playback-info")
       plist = CFPropertyList::List.new(data: response.body)
@@ -126,6 +139,17 @@ module Airplay::Protocol
     end
 
     private
+
+    # Private: Keeps alive a persistent connection fetching the
+    #          /scrub resource while the video is not stopped
+    #
+    def keep_alive(persistent)
+      request = Net::HTTP::Get.new "/scrub"
+      while !played? || !stopped? do
+        persistent.request(request)
+        sleep 1
+      end
+    end
 
     # Private: Adds the callback to the reverse connection callback pool
     #
