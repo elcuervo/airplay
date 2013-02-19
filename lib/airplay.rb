@@ -24,7 +24,6 @@ module Airplay
 
     def configure(&block)
       yield(configuration) if block
-      configuration.load
     end
 
     # Public: Access the connections

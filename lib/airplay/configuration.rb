@@ -1,6 +1,8 @@
 require 'log4r/config'
 
 module Airplay
+  # Public: Handles the Airplay configuration
+  #
   class Configuration
     attr_accessor :log_level, :output
 
@@ -11,9 +13,12 @@ module Airplay
       @output = Log4r::Outputter.stdout
     end
 
+    # Public: Loads the configuration into the affected parts
+    #
     def load
+      level = @log_level.is_a?(Fixnum) ? @log_level : Log4r.const_get(@log_level.upcase)
       Log4r::Logger.root.add @output
-      Log4r::Logger.root.level = Log4r.const_get(@log_level.upcase)
+      Log4r::Logger.root.level = level
     end
   end
 end

@@ -14,6 +14,8 @@ module Airplay
     attr_reader :active, :slideshow, :app, :player
 
     def initialize(node = false, browser = Browser)
+      Airplay.configuration.load
+
       @browser    = browser.new
       @app        = Airplay::Protocol::App
       @slideshow  = Airplay::Protocol::Slideshow.new
@@ -52,7 +54,7 @@ module Airplay
     # Returns a Player object to control the playback
     #
     def play(file_or_url, options = {})
-      @player.play(file_or_url, options)
+      @player.async.play(file_or_url, options)
     end
 
     # Public: Stops current playback
