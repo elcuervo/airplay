@@ -12,26 +12,8 @@ module Airplay::Protocol
     def_delegators :@machine, :state, :on
 
     def initialize
-      @machine = MicroMachine.new(:stopped)
-
-      @machine.when(:loading, :stopped => :loading)
-      @machine.when(:playing, {
-        :paused  => :playing,
-        :loading => :playing,
-        :stopped => :playing
-      })
-
-      @machine.when(:paused,  :loading => :paused,  :playing => :paused)
-      @machine.when(:stopped, :playing => :played,  :paused  => :played)
-
-      @machine.on(:played) { stop }
-
-      @callback = proc do |event|
-        if event["category"] == "video" && event.has_key?("state")
-          @machine.trigger(event["state"].to_sym)
-        end
-      end
-      end
+      start_the_machine
+    end
 
     # Public: Plays a given url or file.
     #         Creates a new persistent connection to ensure that
@@ -140,6 +122,24 @@ module Airplay::Protocol
 
     private
 
+    # Private: Get ready the state machine
+    #
+    def start_the_machine
+      @machine = MicroMachine.new(:stopped)
+
+      @machine.when(:loading, :stopped => :loading)
+      @machine.when(:playing, {
+        :paused  => :playing,
+        :loading => :playing,
+        :stopped => :playing
+      })
+
+      @machine.when(:paused,  :loading => :paused,  :playing => :paused)
+      @machine.when(:stopped, :playing => :played,  :paused  => :played)
+
+      @machine.on(:played) { stop }
+    end
+
     # Private: Keeps alive a persistent connection fetching the
     #          /scrub resource while the video is not stopped
     #
@@ -154,8 +154,10 @@ module Airplay::Protocol
     # Private: Adds the callback to the reverse connection callback pool
     #
     def add_events_callback
-      if !Airplay.connection.reverse.callbacks.include?(@callback)
-        Airplay.connection.reverse.callbacks << @callback
+      Airplay.connection.reverse.callbacks << proc do |event|
+        if event["category"] == "video" && event.has_key?("state")
+          @machine.trigger(event["state"].to_sym)
+        end
       end
     end
 
