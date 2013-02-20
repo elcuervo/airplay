@@ -66,6 +66,8 @@ module Airplay
 
     private
 
+    # Private: The defaults connection headers
+    #
     def default_headers
       {
         "User-Agent"         => "MediaControl/1.0",
