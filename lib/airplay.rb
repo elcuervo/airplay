@@ -29,7 +29,7 @@ module Airplay
     # Public: Access the connections
     #
     def connection
-      @_connection ||= Connection.new
+      @_connection ||= Airplay::Connection.new
     end
 
     # Public: Lists all the available image transitions

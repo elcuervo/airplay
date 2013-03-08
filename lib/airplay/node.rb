@@ -3,7 +3,7 @@ require "airplay/structure"
 module Airplay
   # Public: Represents an Airplay Node
   #
-  class Node < Structure.new(:name, :address, :domain)
+  class Node < Structure.new(:name, :address, :domain, :password)
     attr_accessor :features, :ip, :port, :info
 
     def initialize(*)
@@ -18,6 +18,10 @@ module Airplay
     def parse_info(info)
       @info = Info.create(info)
       @features = Features.load(info.fetch("features", "0").hex)
+    end
+
+    def password?
+      !password.empty?
     end
 
     private

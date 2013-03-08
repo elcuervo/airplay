@@ -23,8 +23,6 @@ module Airplay::Protocol
     #   options - Optional starting time
     #
     def play(file_or_url, options = {})
-      add_events_callback
-
       media_url = case true
                   when File.exists?(file_or_url)
                   when !!(file_or_url =~ URI::regexp)
@@ -42,13 +40,16 @@ module Airplay::Protocol
       plist.value = CFPropertyList.guess(content)
       data = plist.to_str
 
-      post = Net::HTTP::Post.new "/play"
-      post["Content-Type"] = "application/x-apple-binary-plist"
-      post.body = data
+      connection = Airplay::Connection.new
+      response = connection.post("/play", data, {
+        "Content-Type" => "application/x-apple-binary-plist"
+      })
 
-      persistent = Airplay::Connection::Persistent.new
-      persistent.request(post)
-      keep_alive(persistent)
+      connection.start_reverse_connection
+      add_events_callback(connection)
+      keep_alive(response.connection)
+
+      resume
     end
 
     # Public: Handles the progress of the playback, the given &block get's
@@ -85,7 +86,7 @@ module Airplay::Protocol
     # Returns a hash with the playback information
     #
     def info
-      response = Airplay.connection.get("/playback-info")
+      response = Airplay.connection.get("/playback-info").response
       plist = CFPropertyList::List.new(data: response.body)
       CFPropertyList.native_types(plist.value)
     end
@@ -144,7 +145,14 @@ module Airplay::Protocol
     #          /scrub resource while the video is not stopped
     #
     def keep_alive(persistent)
-      request = Net::HTTP::Get.new "/scrub"
+      request = Net::HTTP::Get.new("/scrub")
+
+      # TODO: This part must be refactored
+      if Airplay.active.password?
+        authentication = Airplay::Connection::Authentication.new(persistent)
+        request = authentication.sign(request)
+      end
+
       while !played? || !stopped? do
         persistent.request(request)
         sleep 1
@@ -153,8 +161,8 @@ module Airplay::Protocol
 
     # Private: Adds the callback to the reverse connection callback pool
     #
-    def add_events_callback
-      Airplay.connection.reverse.callbacks << proc do |event|
+    def add_events_callback(connection)
+      connection.reverse.callbacks << proc do |event|
         if event["category"] == "video" && event.has_key?("state")
           @machine.trigger(event["state"].to_sym)
         end

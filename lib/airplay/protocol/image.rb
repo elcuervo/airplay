@@ -5,14 +5,17 @@ module Airplay::Protocol
   #
   class Image
     def initialize(media_or_io, options = {})
+      @logger = Airplay::Logger.new("airplay::protocol::image")
       @content = get_content(media_or_io)
+      @logger.info "Fetched content (#{@content.bytesize} bytes)"
       @transition = options.fetch(:transition, "None")
     end
 
     # Public: Broadcasts the content to the device
     #
     def broadcast
-      Airplay.connection.put("/photo", @content, {
+      @logger.debug "PUT /photo with transition: #{@transition}"
+      response = Airplay.connection.put("/photo", @content, {
         "X-Apple-Transition" => @transition
       })
     end

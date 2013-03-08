@@ -47,10 +47,6 @@ module Airplay::Protocol
 
         res.write binary_plist
       end
-
-      on default do
-        require 'ruby-debug';debugger;1
-      end
     end
   end
 end

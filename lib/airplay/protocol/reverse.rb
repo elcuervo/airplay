@@ -2,6 +2,7 @@ require "celluloid"
 require "net/ptth"
 require "net/http"
 require "airplay/protocol/app"
+require "airplay/connection/authentication"
 
 module Airplay::Protocol
   # Public: Handles the reverse connection
@@ -38,9 +39,16 @@ module Airplay::Protocol
     #
     def connect
       @logger.info "Connecting with purpose: #{@purpose}"
+
       request = Net::HTTP::Post.new("/reverse")
+
       request["X-Apple-Purpose"] = @purpose
       request["X-Apple-Device-ID"] = "0x581faa7c9754"
+
+      if Airplay.active.password?
+        authentication = Airplay::Connection::Authentication.new(@ptth)
+        request = authentication.sign(request)
+      end
 
       @ptth.request(request)
       @state = "connected"

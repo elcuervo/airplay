@@ -1,20 +1,25 @@
 require "celluloid"
 require "airplay/connection/persistent"
+require "airplay/connection/authentication"
 
 module Airplay
   # Public: The class that handles all the outgoing basic HTTP connections
   #
   class Connection
-    attr_accessor :reverse, :events
+    class Response < Struct.new(:connection, :response)
+    end
+
+    attr_accessor :reverse, :events, :persistent
 
     include Celluloid
 
     def initialize
       @logger = Airplay::Logger.new("airplay::connection")
-
       @persistent = Airplay::Connection::Persistent.new
-      @reverse = Airplay::Protocol::Reverse.new(Airplay.active)
+    end
 
+    def start_reverse_connection
+      @reverse = Airplay::Protocol::Reverse.new(Airplay.active)
       @reverse.async.connect
     end
 
@@ -84,12 +89,17 @@ module Airplay
     #
     def send_request(request, headers)
       server = Airplay.active
-      path = "http://#{server.address}#{request.path}"
-      uri = URI.parse(path)
-
       request.initialize_http_header(default_headers.merge(headers))
+
+      if server.password?
+        authentication = Airplay::Connection::Authentication.new(@persistent)
+        request = authentication.sign(request)
+      end
+
       @logger.info("Sending request to #{server.name} (#{server.address})")
-      @persistent.request(request) {}
+      response = @persistent.request(request) {}
+
+      Airplay::Connection::Response.new(@persistent, response)
     end
   end
 end

@@ -28,12 +28,19 @@ module Airplay
     #
     #   node_name - Node or string to be setted
     #
-    def use(node_name)
+    def use(node_name, password = "")
       @active = if node_name.is_a?(Airplay::Node)
                   node_name
                 else
                   nodes.find_by_name(node_name)
                 end
+
+      password(password)
+    end
+
+    def password(password)
+      @active.password = password
+      @active
     end
 
     # Public: Sends a given image to the device

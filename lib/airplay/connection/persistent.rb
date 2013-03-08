@@ -25,12 +25,17 @@ module Airplay
       #   request - The Net::HTTP request to be executed
       #   &block  - An optional block to be executed within the block
       #
-      def request(request, &block)
+      def request(request, request_uri = nil, &block)
+        server = Airplay.active
+        request_uri ||= uri(request)
+        @logger.info("Sending request to #{server.name} (#{server.address})")
+        super(request_uri, request, &block)
+      end
+
+      def uri(request)
         server = Airplay.active
         path = "http://#{server.address}#{request.path}"
-        uri = URI.parse(path)
-        @logger.info("Sending request to #{server.name} (#{server.address})")
-        super(uri, request, &block)
+        URI.parse(path)
       end
     end
   end

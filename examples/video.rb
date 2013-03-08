@@ -1,6 +1,10 @@
 require "airplay"
 
-Airplay.use "Apple TV"
+Airplay.configure do |c|
+  c.log_level = "debug"
+end
+
+Airplay.use "corax"
 
 video = "http://trailers.apple.com/movies/marvel/ironman3/ironman3-tlr1-m4mb0_h1080p.mov"
 
