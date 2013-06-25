@@ -1,4 +1,4 @@
-require_relative "../test_helper"
+require "test_helper"
 
 describe "Airplay sending media" do
   it "should send an image" do

@@ -1,4 +1,4 @@
-require_relative "../test_helper"
+require "test_helper"
 
 describe "Airplay should list the slideshow features" do
   it "should a list of features" do

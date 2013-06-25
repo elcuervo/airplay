@@ -1,4 +1,4 @@
-require_relative "../test_helper"
+require "test_helper"
 
 describe "Airplay::Node" do
   it "should represent an Airplay node" do

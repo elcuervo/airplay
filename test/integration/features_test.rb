@@ -1,5 +1,5 @@
-require_relative "../test_helper"
 require "minitest/mock"
+require "test_helper"
 
 describe "Airplay feature discovery" do
   it "should get the node feature support" do
