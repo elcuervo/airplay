@@ -63,6 +63,10 @@ class Airplay::Client
     end
   end
 
+  def close
+    handler.close
+  end
+
 end
 
 class Airplay::Client::ServerNotFoundError < StandardError; end;
