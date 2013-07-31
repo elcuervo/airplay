@@ -35,6 +35,10 @@ class Airplay::Protocol
     make_request
   end
 
+  def close
+    @http.shutdown
+  end
+
   private
 
   def make_request
