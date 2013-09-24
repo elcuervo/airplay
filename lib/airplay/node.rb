@@ -21,7 +21,7 @@ module Airplay
     end
 
     def password?
-      !password.empty?
+      !!password && !password.empty?
     end
 
     private
