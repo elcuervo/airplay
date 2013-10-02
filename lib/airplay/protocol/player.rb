@@ -13,6 +13,7 @@ module Airplay::Protocol
 
     def initialize
       start_the_machine
+      check_for_playback_status
     end
 
     # Public: Plays a given url or file.
@@ -36,20 +37,19 @@ module Airplay::Protocol
         "Start-Position" => options.fetch(:time, 0.0)
       }
 
-      plist = CFPropertyList::List.new
-      plist.value = CFPropertyList.guess(content)
-      data = plist.to_str
+      data = content.map { |k, v| "#{k}: #{v}" }.join("\r\n")
 
-      connection = Airplay::Connection.new
-      response = connection.post("/play", data, {
-        "Content-Type" => "application/x-apple-binary-plist"
+      connection = Airplay::Connection.new(keep_alive: true)
+      response = connection.async.post("/play", data + "\r\n", {
+        "Content-Type" => "text/parameters"
       })
 
-      connection.start_reverse_connection
-      add_events_callback(connection)
-      keep_alive(response.connection)
+      @timer && @timer.reset
 
-      resume
+     #connection.start_reverse_connection
+     #add_events_callback(connection)
+     #keep_alive(response.connection)
+
     end
 
     # Public: Handles the progress of the playback, the given &block get's
@@ -57,16 +57,9 @@ module Airplay::Protocol
     #
     #   &block - Block to be executed in every playable second.
     #
-    def progress(&block)
+    def progress(callback)
       every(1) do
-        unless played? || stopped?
-          progress_meter = info
-          if progress_meter.any?
-            block.call(progress_meter)
-          else
-            @machine.trigger(:stopped)
-          end
-        end
+        callback.call(info) if playing?
       end
     end
 
@@ -117,11 +110,31 @@ module Airplay::Protocol
     # Public: Locks the execution until the video gets fully played
     #
     def wait
-      sleep 0.1 while !played?
+      sleep 0.1 while !played? || stopped?
       stop
     end
 
     private
+
+    def check_for_playback_status
+      @timer = every(1) do
+
+        if info.empty?
+          @machine.trigger(:stopped) if playing?
+          @timer.cancel
+        end
+
+        if !info.empty?
+          if info.keys.size > 2 && !info["rate"].zero?
+            @machine.trigger(:playing) if !playing?
+          else
+            @machine.trigger(:stopped) if playing? && info.keys.size == 2
+            @machine.trigger(:paused)  if playing?
+          end
+        end
+
+      end
+    end
 
     # Private: Get ready the state machine
     #
@@ -140,34 +153,5 @@ module Airplay::Protocol
 
       @machine.on(:played) { stop }
     end
-
-    # Private: Keeps alive a persistent connection fetching the
-    #          /scrub resource while the video is not stopped
-    #
-    def keep_alive(persistent)
-      request = Net::HTTP::Get.new("/scrub")
-
-      # TODO: This part must be refactored
-      if Airplay.active.password?
-        authentication = Airplay::Connection::Authentication.new(persistent)
-        request = authentication.sign(request)
-      end
-
-      while !played? || !stopped? do
-        persistent.request(request)
-        sleep 1
-      end
-    end
-
-    # Private: Adds the callback to the reverse connection callback pool
-    #
-    def add_events_callback(connection)
-      connection.reverse.callbacks << proc do |event|
-        if event["category"] == "video" && event.has_key?("state")
-          @machine.trigger(event["state"].to_sym)
-        end
-      end
-    end
-
   end
 end
