@@ -6,16 +6,15 @@ module Airplay
   # Public: The class that handles all the outgoing basic HTTP connections
   #
   class Connection
-    class Response < Struct.new(:connection, :response)
-    end
+    Response = Struct.new(:connection, :response)
 
     attr_accessor :reverse, :events, :persistent
 
     include Celluloid
 
-    def initialize
+    def initialize(options = {})
       @logger = Airplay::Logger.new("airplay::connection")
-      @persistent = Airplay::Connection::Persistent.new
+      @persistent = Airplay::Connection::Persistent.new(options)
     end
 
     def start_reverse_connection
@@ -97,7 +96,7 @@ module Airplay
       end
 
       @logger.info("Sending request to #{server.name} (#{server.address})")
-      response = @persistent.request(request) {}
+      response = @persistent.request(request)
 
       Airplay::Connection::Response.new(@persistent, response)
     end
