@@ -44,9 +44,7 @@ module Airplay
       airplay_node = Node.create(
         name:     node.name,
         address: "#{ip}:#{resolved.port}",
-        domain:   node.domain
       )
-      airplay_node.parse_info(resolved.text_record)
 
       nodes << airplay_node
 
@@ -58,7 +56,7 @@ module Airplay
     #   node - The node from the DNSSD browsing
     #
     def resolve(node)
-      @logger.info("Node found #{node}")
+      @logger.info("Node found '#{node.name}'")
       resolver = DNSSD::Service.new
       resolver.resolve(node) do |resolved|
         break unless node_resolver(node, resolved)

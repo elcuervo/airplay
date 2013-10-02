@@ -3,21 +3,23 @@ require "airplay/structure"
 module Airplay
   # Public: Represents an Airplay Node
   #
-  class Node < Structure.new(:name, :address, :domain, :password)
-    attr_accessor :features, :ip, :port, :info
+
+  Node = Structure.new(:name, :address, :password) do
+    attr_accessor :features
 
     def initialize(*)
       super
-      parse_address
     end
 
-    # Public: Parses features of a given feature list
-    #
-    #   info: The info fetched from the text record
-    #
-    def parse_info(info)
-      @info = Info.create(info)
-      @features = Features.load(info.fetch("features", "0").hex)
+    def ip
+      @_ip ||= address.split(":").last
+    end
+
+    def resolution
+    end
+
+    def password=(passwd)
+      @password = passwd
     end
 
     def password?
@@ -26,14 +28,17 @@ module Airplay
 
     private
 
-    # Private: Parses ip and port information
+    def get_features
+    end
+
+    # Private: Parses features of a given feature list
     #
-    def parse_address
-      @ip, port = address.split(":")
-      @port = port.to_i
+    #   info: The info fetched from the text record
+    #
+    def parse_info(info)
+      @features = Features.load(info.fetch("features", "0").hex)
     end
   end
 end
 
-require "airplay/node/info"
 require "airplay/node/features"

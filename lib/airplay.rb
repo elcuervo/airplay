@@ -1,5 +1,4 @@
-require "forwardable"
-require "uuid"
+require "airplay/browser"
 
 require "airplay/structure"
 require "airplay/configuration"
@@ -11,31 +10,18 @@ require "airplay/client"
 #
 module Airplay
   class << self
-    extend Forwardable
-
-    def_delegators :client, :nodes, :active, :use, :view, :slideshow, :app,
-                   :stop, :play, :player
-
-    # Public: Access the current instance session
-    #
-    def session
-      @_session ||= UUID.generate
-    end
-
     def configure(&block)
       yield(configuration) if block
     end
 
-    # Public: Access the connections
-    #
-    def connection
-      @_connection ||= Airplay::Connection.new
+    def browse
+      browser.browse
     end
 
-    # Public: Lists all the available image transitions
+    # Public: Lists found nodes
     #
-    def transitions
-      %w(None Dissolve SlideLeft SlideRight)
+    def nodes
+      browser.nodes
     end
 
     def configuration
@@ -44,16 +30,9 @@ module Airplay
 
     private
 
-    # Private: The client instance
-    #
-    def client
-      @_client ||= Client.new
+    def browser
+      @_browser ||= Browser.new
     end
   end
 end
 
-# Stops any open conection
-#
-at_exit {
-  Airplay.stop unless ENV["TEST"]
-}

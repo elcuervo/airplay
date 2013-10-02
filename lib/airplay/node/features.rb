@@ -6,11 +6,12 @@ module Airplay
   class Node
     # Public: The feature list of a given node
     #
-    class Features < Structure.new(:video, :photo, :video_fair_play,
-                                :video_volume_control, :video_http_live_stream,
-                                :slideshow, :screen, :screen_rotate, :audio,
-                                :audio_redundant, :FPSAPv2pt5_AES_GCM,
-                                :photo_caching)
+    Features = Structure.new(:video, :photo, :video_fair_play,
+                             :video_volume_control, :video_http_live_stream,
+                             :slideshow, :screen, :screen_rotate, :audio,
+                             :audio_redundant, :FPSAPv2pt5_AES_GCM,
+                             :photo_caching) do
+
       # Public: Initializates a class with a complete feature list
       #
       #   features - The features hex value
