@@ -14,7 +14,7 @@ module Airplay
     # Public: Browses in the search of devices and adds them to the nodes
     #
     def browse
-      timeout(3) do
+      timeout(5) do
         DNSSD.browse!(SEARCH) do |node|
           resolve(node)
           break unless node.flags.more_coming?
@@ -42,7 +42,7 @@ module Airplay
       ip = info[0][2]
 
       airplay_node = Node.create(
-        name:     node.name,
+        name:     node.name.gsub(/\u00a0/, ' '),
         address: "#{ip}:#{resolved.port}",
       )
 
@@ -56,7 +56,6 @@ module Airplay
     #   node - The node from the DNSSD browsing
     #
     def resolve(node)
-      @logger.info("Node found '#{node.name}'")
       resolver = DNSSD::Service.new
       resolver.resolve(node) do |resolved|
         break unless node_resolver(node, resolved)

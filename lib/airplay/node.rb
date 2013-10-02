@@ -12,7 +12,7 @@ module Airplay
     end
 
     def ip
-      @_ip ||= address.split(":").last
+      @_ip ||= address.split(":").first
     end
 
     def resolution

@@ -7,6 +7,7 @@ Airplay.nodes.each do |node|
 end
 
 apple_tv = Airplay["Apple TV"]
+require 'ruby-debug';debugger;1
 player = apple_tv.play("video")
 player.progress do |info|
 end

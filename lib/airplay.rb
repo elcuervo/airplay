@@ -28,6 +28,10 @@ module Airplay
       @_configuration ||= Configuration.new
     end
 
+    def [](node_name)
+      nodes.find_by_name(node_name)
+    end
+
     private
 
     def browser
