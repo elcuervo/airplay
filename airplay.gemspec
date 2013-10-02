@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name         = "airplay"
-  s.version      = "0.3.0.pre"
+  s.version      = "0.3.0.pre1"
   s.summary      = "Airplay client"
   s.description  = "Send image/video to an airplay enabled device"
   s.authors      = ["elcuervo"]
@@ -15,8 +15,8 @@ Gem::Specification.new do |s|
   s.add_dependency("log4r",                "~> 1.1.10")
   s.add_dependency("cuba",                 "~> 3.1.0")
   s.add_dependency("micromachine",         "~> 1.0.4")
-  s.add_dependency("celluloid",            "~> 0.12.4")
-  s.add_dependency("net-ptth",             "~> 0.0.5")
+  s.add_dependency("celluloid",            "~> 0.15.0")
+  s.add_dependency("net-ptth",             "~> 0.0.6")
   s.add_dependency("net-http-persistent",  ">= 2.8")
   s.add_dependency("net-http-digest_auth", "~> 1.2.1")
 
