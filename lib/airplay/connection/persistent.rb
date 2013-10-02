@@ -18,6 +18,10 @@ module Airplay
         @socket.socket
       end
 
+      def close
+        socket.close
+      end
+
       def socket
         @socket.socket
       end

@@ -39,17 +39,12 @@ module Airplay::Protocol
 
       data = content.map { |k, v| "#{k}: #{v}" }.join("\r\n")
 
-      connection = Airplay::Connection.new(keep_alive: true)
-      response = connection.async.post("/play", data + "\r\n", {
+      @connection = Airplay::Connection.new(keep_alive: true)
+      response = @connection.async.post("/play", data + "\r\n", {
         "Content-Type" => "text/parameters"
       })
 
       @timer && @timer.reset
-
-     #connection.start_reverse_connection
-     #add_events_callback(connection)
-     #keep_alive(response.connection)
-
     end
 
     # Public: Handles the progress of the playback, the given &block get's
@@ -121,6 +116,7 @@ module Airplay::Protocol
 
         if info.empty?
           @machine.trigger(:stopped) if playing?
+          @connection.close
           @timer.cancel
         end
 

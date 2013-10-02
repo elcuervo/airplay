@@ -22,6 +22,10 @@ module Airplay
       @reverse.async.connect
     end
 
+    def close
+      @persistent.close
+    end
+
     # Public: Executes a POST to a resource
     #
     #   resource - The resource on the currently active Node
