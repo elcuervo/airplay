@@ -134,7 +134,7 @@ module Airplay::Protocol
         end
 
         if !info.empty?
-          if info.keys.size > 2 && !info["rate"].zero?
+          if info.has_key?("rate") && !info["rate"].zero?
             @machine.trigger(:playing) if !playing?
           else
             @machine.trigger(:stopped) if playing? && info.keys.size == 2
