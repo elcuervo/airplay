@@ -2,37 +2,73 @@
 
 ![Airplay](test/fixtures/files/logo.png)
 
-# WARNING: THIS IS WORK IN PROGRESS REWRITE
+Airplay attempts to be compatible with the latest AppleTV firmware but I'd like
+to add compatibility to other servers.
 
-## Sending images
+## Installation
+
+`gem install airplay`
+
+## CLI
+
+### View nodes
+
+`air list`
+
+### Play a video
+
+`air play [url to video]`
+
+### Show images
+
+`air view [url to image or image folder]`
+
+## Library
+
+### Finding nodes
 
 ```ruby
 require "airplay"
 
-Airplay.view("my_superhero.png")
-
-Airplay.view("url_to_the_image", transition: "Dissolve")
-
-# View all transitions
-Airplay.transitions
+Airplay.nodes.each do |node|
+  puts node.name
+end
 ```
 
-## Playing video
+### Sending images
 
 ```ruby
-Airplay.play("http://static.bouncingminds.com/ads/15secs/dogs_600.mp4")
+require "airplay"
+
+apple_tv = Airplay["Apple TV"]
+apple_tv.view("my_image.png")
+apple_tv.view("url_to_the_image", transition: "Dissolve")
+
+# View all transitions
+apple_tv.transitions
+```
+
+### Playing video
+
+```ruby
+require "airplay"
+
+apple_tv = Airplay["Apple TV"]
+trailer = "http://movietrailers.apple.com/movies/dreamworks/needforspeed/needforspeed-tlr1xxzzs2_480p.mov"
+
+player = apple_tv.play(trailer)
 
 # Wait until the video is finished
-Airplay.player.wait
+player.wait
 
 # Actions
-Airplay.player.pause
-Airplay.player.resume
-Airplay.player.stop
-Airplay.player.scrub
+player.pause
+player.resume
+player.stop
+player.scrub
 
 # Access the playback time per second
-Airplay.player.progress do |progress|
+player.progress do |progress|
   puts "I'm viewing #{progress["position"]} of #{progress["duration"]}"
 end
 ```
