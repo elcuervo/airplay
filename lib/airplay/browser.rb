@@ -1,4 +1,7 @@
 require "dnssd"
+require "timeout"
+
+require "airplay/logger"
 require "airplay/nodes"
 
 module Airplay

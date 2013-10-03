@@ -1,3 +1,5 @@
+require "airplay/protocol/player"
+
 module Airplay
   module Playable
 

@@ -1,10 +1,5 @@
-require "airplay/browser"
-
-require "airplay/structure"
 require "airplay/configuration"
-require "airplay/logger"
-require "airplay/connection"
-require "airplay/client"
+require "airplay/browser"
 
 # Public: Airplay core module
 #

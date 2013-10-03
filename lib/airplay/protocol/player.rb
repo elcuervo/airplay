@@ -1,6 +1,10 @@
 require "uri"
 require "forwardable"
 require "micromachine"
+require "celluloid"
+require "cfpropertylist"
+
+require "airplay/connection"
 
 module Airplay::Protocol
   # Public: The class that handles all the video playback
