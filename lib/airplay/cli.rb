@@ -1,4 +1,5 @@
 require "airplay"
+require "ruby-progressbar"
 
 module Airplay
   module CLI
@@ -12,6 +13,19 @@ module Airplay
       def play(video, options)
         node = options[:node]
         player = node.play(video)
+        bar = ProgressBar.create(
+          title: node.name,
+          format: "%a [%B] %p%% %t"
+        )
+
+        player.progress -> info {
+          total   = info["duration"]
+          current = info["position"]
+          percent = (current*100)/total
+
+          bar.progress = percent.floor
+        }
+
         player.wait
       end
 
