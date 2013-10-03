@@ -3,24 +3,35 @@ require "open-uri"
 module Airplay::Protocol
   # Public: The class to handle image broadcast to a device
   #
-  class Image
-    def initialize(media_or_io, options = {})
+  class Viewer
+    TRANSITIONS = %w(None Dissolve SlideLeft SlideRight)
+
+    def initialize(node)
+      @node = node
       @logger = Airplay::Logger.new("airplay::protocol::image")
-      @content = get_content(media_or_io)
-      @logger.info "Fetched content (#{@content.bytesize} bytes)"
-      @transition = options.fetch(:transition, "None")
     end
 
     # Public: Broadcasts the content to the device
     #
-    def broadcast
-      @logger.debug "PUT /photo with transition: #{@transition}"
-      response = Airplay.connection.put("/photo", @content, {
-        "X-Apple-Transition" => @transition
+    def view(media_or_io, options = {})
+      content = get_content(media_or_io)
+      transition = options.fetch(:transition, "None")
+
+      @logger.info "Fetched content (#{content.bytesize} bytes)"
+      @logger.debug "PUT /photo with transition: #{transition}"
+
+      response = connection.put("/photo", content, {
+        "X-Apple-Transition" => transition
       })
     end
 
+    def transitions; TRANSITIONS end
+
     private
+
+    def connection
+      @_connection ||= Airplay::Connection.new(@node)
+    end
 
     # Private: Gets the content of the possible media_or_io
     #

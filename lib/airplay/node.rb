@@ -1,5 +1,6 @@
 require "airplay/structure"
 require "airplay/playable"
+require "airplay/viewable"
 
 module Airplay
   # Public: Represents an Airplay Node
@@ -9,6 +10,7 @@ module Airplay
     attr_accessor :features
 
     include Playable
+    include Viewable
 
     def initialize(*)
       super

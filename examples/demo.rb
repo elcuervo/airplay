@@ -8,8 +8,15 @@ end
 video = "http://trailers.apple.com/movies/marvel/ironman3/ironman3-tlr1-m4mb0_h1080p.mov"
 
 apple_tv = Airplay["Apple TV"]
+
+puts apple_tv.transitions
+
+apple_tv.view("./test/fixtures/files/logo.png", transition: "SlideLeft")
+sleep 2
+
 player = apple_tv.play(video)
 player.progress -> info {
+  puts info
 }
 player.wait
 
