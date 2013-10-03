@@ -11,7 +11,9 @@ module Airplay::Protocol
 
     def_delegators :@machine, :state, :on
 
-    def initialize
+    def initialize(node)
+      @node = node
+
       start_the_machine
       check_for_playback_status
     end
@@ -39,8 +41,7 @@ module Airplay::Protocol
 
       data = content.map { |k, v| "#{k}: #{v}" }.join("\r\n")
 
-      @connection = Airplay::Connection.new(keep_alive: true)
-      response = @connection.async.post("/play", data + "\r\n", {
+      response = persistent.async.post("/play", data + "\r\n", {
         "Content-Type" => "text/parameters"
       })
 
@@ -64,7 +65,7 @@ module Airplay::Protocol
     #
     def scrub
       return unless playing?
-      response = Airplay.connection.get("/scrub")
+      response = connection.get("/scrub")
       parts = response.body.split("\n")
       Hash[parts.collect { |v| v.split(": ") }]
     end
@@ -74,7 +75,7 @@ module Airplay::Protocol
     # Returns a hash with the playback information
     #
     def info
-      response = Airplay.connection.get("/playback-info").response
+      response = connection.get("/playback-info").response
       plist = CFPropertyList::List.new(data: response.body)
       CFPropertyList.native_types(plist.value)
     end
@@ -82,19 +83,19 @@ module Airplay::Protocol
     # Public: Resumes a paused video
     #
     def resume
-      Airplay.connection.async.post("/rate?value=1")
+      connection.async.post("/rate?value=1")
     end
 
     # Public: Pauses a playing video
     #
     def pause
-      Airplay.connection.async.post("/rate?value=0")
+      connection.async.post("/rate?value=0")
     end
 
     # Public: Stops the video
     #
     def stop
-      Airplay.stop
+      connection.post("/stop")
     end
 
     def playing?; state == :playing end
@@ -111,12 +112,20 @@ module Airplay::Protocol
 
     private
 
+    def connection
+      @_connection ||= Airplay::Connection.new(@node)
+    end
+
+    def persistent
+      @_persistent ||= Airplay::Connection.new(@node, keep_alive: true)
+    end
+
     def check_for_playback_status
       @timer = every(1) do
 
         if info.empty?
           @machine.trigger(:stopped) if playing?
-          @connection.close
+          persistent.close
           @timer.cancel
         end
 

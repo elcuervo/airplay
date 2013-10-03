@@ -21,6 +21,7 @@ module Airplay
     # Public: Lists found nodes
     #
     def nodes
+      browse if browser.nodes.empty?
       browser.nodes
     end
 

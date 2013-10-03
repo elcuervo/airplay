@@ -5,17 +5,21 @@ module Airplay
   # Public: The class that handles all the outgoing basic HTTP connections
   #
   class Connection
+    attr_reader :session
+
     # Public: Class that wraps a persistent connection to point to the airplay
     #         server and other configuration
     #
     class Persistent
-      def initialize(options = {})
+      def initialize(address, options = {})
         @logger = Airplay::Logger.new("airplay::connection::persistent")
-        @socket = Net::PTTH.new("http://" + Airplay.active.address, options)
-        @name = UUID.generate
-        @socket.set_debug_output = @logger
+        @socket = Net::PTTH.new(address, options)
 
         @socket.socket
+      end
+
+      def session
+        @_session ||= UUID.generate
       end
 
       def close

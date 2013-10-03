@@ -1,3 +1,4 @@
+require "forwardable"
 require "airplay/node"
 
 module Airplay
@@ -5,6 +6,9 @@ module Airplay
   #
   class Nodes
     include Enumerable
+    extend  Forwardable
+
+    def_delegators :@items, :each, :size, :empty?
 
     def initialize
       @items = []
@@ -24,24 +28,12 @@ module Airplay
       find_by_block { |node| node if node.ip == ip }
     end
 
-    # Public: Iterates through all the nodes
-    #
-    def each(&block)
-      @items.each(&block)
-    end
-
     # Public: Adds a node to the list
     #
     #   value - The Node
     def <<(node)
       return if find_by_ip(node.ip)
       @items << node
-    end
-
-    # Public: The current size of the node list
-    #
-    def size
-      @items.size
     end
 
     private

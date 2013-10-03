@@ -1,16 +1,17 @@
 require "airplay"
 
-Airplay.browse
 puts Airplay.nodes.count
 Airplay.nodes.each do |node|
-  puts node.address
+  puts node.name
 end
 
+video = "http://trailers.apple.com/movies/marvel/ironman3/ironman3-tlr1-m4mb0_h1080p.mov"
+
 apple_tv = Airplay["Apple TV"]
-require 'ruby-debug';debugger;1
-player = apple_tv.play("video")
-player.progress do |info|
-end
+player = apple_tv.play(video)
+player.progress -> info {
+}
+player.wait
 
 Airplay.group["Backyard"] << Airplay["Pool TV"]
 Airplay.group["Backyard"] << Airplay.nodes.add("BBQTV", "192.168.1.12")

@@ -1,4 +1,5 @@
 require "airplay/structure"
+require "airplay/playable"
 
 module Airplay
   # Public: Represents an Airplay Node
@@ -7,8 +8,12 @@ module Airplay
   Node = Structure.new(:name, :address, :password) do
     attr_accessor :features
 
+    include Playable
+
     def initialize(*)
       super
+
+      Airplay.configuration.load
     end
 
     def ip
