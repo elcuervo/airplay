@@ -21,8 +21,11 @@ module Airplay::Protocol
       @logger.debug "PUT /photo with transition: #{transition}"
 
       response = connection.put("/photo", content, {
+        "Content-Length" => content.bytesize.to_s,
         "X-Apple-Transition" => transition
       })
+
+      response.response.status == 200
     end
 
     def transitions; TRANSITIONS end

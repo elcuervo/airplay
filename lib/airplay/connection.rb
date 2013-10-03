@@ -14,8 +14,12 @@ module Airplay
 
     def initialize(node, options = {})
       @node = node
+      @options = options
       @logger = Airplay::Logger.new("airplay::connection")
-      @persistent = Airplay::Connection::Persistent.new("http://#{node.address}", options)
+    end
+
+    def persistent
+      @_persistent ||= Airplay::Connection::Persistent.new("http://#{@node.address}", @options)
     end
 
     def start_reverse_connection
@@ -24,7 +28,8 @@ module Airplay
     end
 
     def close
-      @persistent.close
+      persistent.close
+      @_persistent = nil
     end
 
     # Public: Executes a POST to a resource
@@ -80,7 +85,7 @@ module Airplay
     def default_headers
       {
         "User-Agent"         => "MediaControl/1.0",
-        "X-Apple-Session-Id" => @persistent.session
+        "X-Apple-Session-Id" => persistent.session
       }
     end
 
@@ -95,14 +100,14 @@ module Airplay
       request.initialize_http_header(default_headers.merge(headers))
 
       if @node.password?
-        authentication = Airplay::Connection::Authentication.new(@persistent)
+        authentication = Airplay::Connection::Authentication.new(persistent)
         request = authentication.sign(request)
       end
 
       @logger.info("Sending request to #{@node.name} (#{@node.address})")
-      response = @persistent.request(request)
+      response = persistent.request(request)
 
-      Airplay::Connection::Response.new(@persistent, response)
+      Airplay::Connection::Response.new(persistent, response)
     end
   end
 end

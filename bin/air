@@ -1,0 +1,12 @@
+#!/usr/bin/env ruby
+
+require "clap"
+require "airplay/cli"
+
+Clap.run ARGV,
+  "-n"   => lambda { |node_name| @node_name = Airplay[node_name] },
+
+  "list" => Airplay::CLI.method(:list),
+  "view" => lambda { |file| Airplay::CLI.view(file, @node_name || Airplay.nodes.first) }
+
+# vim: ft=ruby

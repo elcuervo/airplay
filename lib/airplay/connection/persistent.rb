@@ -14,6 +14,7 @@ module Airplay
       def initialize(address, options = {})
         @logger = Airplay::Logger.new("airplay::connection::persistent")
         @socket = Net::PTTH.new(address, options)
+        @socket.set_debug_output = @logger
 
         @socket.socket
       end
