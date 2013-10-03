@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    airplay (0.3.0.pre1)
+    airplay (1.0.0.beta1)
       CFPropertyList (~> 2.2.0)
       celluloid (~> 0.15.0)
       cuba (~> 3.1.0)
