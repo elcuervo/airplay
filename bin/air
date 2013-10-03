@@ -4,8 +4,9 @@ require "clap"
 require "airplay/cli"
 
 Clap.run ARGV,
-  "--node" => lambda { |node_name| @node = Airplay[node_name] },
-  "--wait" => lambda { |sec| @wait = sec.to_i },
+  "--node"        => lambda { |node_name| @node = Airplay[node_name] },
+  "--wait"        => lambda { |sec| @wait = sec.to_i },
+  "--interactive" => lambda { @interactive = true },
 
   "list" => Airplay::CLI.method(:list),
 
@@ -17,6 +18,7 @@ Clap.run ARGV,
   "view" => lambda { |file|
     options = {
       node: @node || Airplay.nodes.first,
+      interactive: @interactive || false,
       wait: @wait || 3
     }
     Airplay::CLI.view(file, options)
