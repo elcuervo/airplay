@@ -9,17 +9,19 @@ module Airplay
         end
       end
 
-      def view(file_or_dir, node = Airplay.nodes.first)
+      def view(file_or_dir, options)
+        node = options[:node]
+        wait = options[:wait]
+
         if File.directory?(file_or_dir)
           Dir.glob("#{file_or_dir}/*").each do |file|
-            puts file
-            puts view_image(node, file)
-            sleep 2
+            view_image(node, file)
+            sleep wait
           end
         else
           view_image(node, file_or_dir)
+          sleep
         end
-        sleep
       end
 
       private

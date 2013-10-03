@@ -4,9 +4,16 @@ require "clap"
 require "airplay/cli"
 
 Clap.run ARGV,
-  "-n"   => lambda { |node_name| @node_name = Airplay[node_name] },
+  "--node" => lambda { |node_name| @node = Airplay[node_name] },
+  "--wait" => lambda { |sec| @wait = sec.to_i },
 
   "list" => Airplay::CLI.method(:list),
-  "view" => lambda { |file| Airplay::CLI.view(file, @node_name || Airplay.nodes.first) }
+  "view" => lambda { |file|
+    options = {
+      node: @node || Airplay.nodes.first,
+      wait: @wait || 3
+    }
+    Airplay::CLI.view(file, options)
+  }
 
 # vim: ft=ruby
