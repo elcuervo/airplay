@@ -4,6 +4,7 @@ Gem::Specification.new do |s|
   s.summary      = "Airplay client"
   s.description  = "Send image/video to an airplay enabled device"
   s.executables  = "air"
+  s.licenses     = ["MIT", "HUGWARE"]
   s.authors      = ["elcuervo"]
   s.email        = ["yo@brunoaguirre.com"]
   s.homepage     = "http://github.com/elcuervo/airplay"
