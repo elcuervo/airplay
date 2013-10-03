@@ -8,6 +8,12 @@ Clap.run ARGV,
   "--wait" => lambda { |sec| @wait = sec.to_i },
 
   "list" => Airplay::CLI.method(:list),
+
+  "play" => lambda { |video|
+    options = { node: @node || Airplay.nodes.first }
+    Airplay::CLI.play(video, options)
+  },
+
   "view" => lambda { |file|
     options = {
       node: @node || Airplay.nodes.first,

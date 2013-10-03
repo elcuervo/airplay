@@ -9,6 +9,12 @@ module Airplay
         end
       end
 
+      def play(video, options)
+        node = options[:node]
+        player = node.play(video)
+        player.wait
+      end
+
       def view(file_or_dir, options)
         node = options[:node]
         wait = options[:wait]
