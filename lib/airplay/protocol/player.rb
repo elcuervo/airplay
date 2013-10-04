@@ -5,6 +5,7 @@ require "celluloid"
 require "cfpropertylist"
 
 require "airplay/connection"
+require "airplay/protocol/playback_info"
 
 module Airplay::Protocol
   # Public: The class that handles all the video playback
@@ -81,7 +82,8 @@ module Airplay::Protocol
     def info
       response = connection.get("/playback-info").response
       plist = CFPropertyList::List.new(data: response.body)
-      CFPropertyList.native_types(plist.value)
+      hash = CFPropertyList.native_types(plist.value)
+      PlaybackInfo.new(hash)
     end
 
     # Public: Resumes a paused video
@@ -131,17 +133,17 @@ module Airplay::Protocol
     def check_for_playback_status
       @timer = every(1) do
 
-        if info.empty?
+        if info.stopped?
           @machine.trigger(:stopped) if playing?
           persistent.close
           @timer.cancel
         end
 
-        if !info.empty?
-          if info.has_key?("rate") && info.fetch("rate", false) && !info["rate"].zero?
+        if !info.stopped?
+          if info.playing?
             @machine.trigger(:playing) if !playing?
           else
-            @machine.trigger(:stopped) if playing? && info.keys.size == 2
+            @machine.trigger(:stopped) if playing? && info.played?
             @machine.trigger(:paused)  if playing?
           end
         end
