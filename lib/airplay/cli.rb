@@ -18,12 +18,8 @@ module Airplay
           format: "%a [%B] %p%% %t"
         )
 
-        player.progress -> info {
-          total   = info["duration"]
-          current = info["position"]
-          percent = (current*100)/total
-
-          bar.progress = percent.floor
+        player.progress -> playback {
+          bar.progress = playback.percent
         }
 
         player.wait

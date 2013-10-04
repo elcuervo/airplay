@@ -12,6 +12,10 @@ module Airplay::Protocol
       info["position"]
     end
 
+    def percent
+      (position * 100 / duration).floor
+    end
+
     def likely_to_keep_up?
       info["playbackLikelyToKeepUp"]
     end
