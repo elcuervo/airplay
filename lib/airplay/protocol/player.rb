@@ -119,6 +119,7 @@ module Airplay::Protocol
     private
 
     def cleanup
+      @timer.cancel if @timer
       persistent.close
     end
 
@@ -132,22 +133,14 @@ module Airplay::Protocol
 
     def check_for_playback_status
       @timer = every(1) do
-
-        if info.stopped?
+        case true
+        when info.stopped?
           @machine.trigger(:stopped) if playing?
-          persistent.close
-          @timer.cancel
+          cleanup
+        when info.played?  then @machine.trigger(:played)  if playing?
+        when info.playing? then @machine.trigger(:playing) if !playing?
+        when info.paused?  then @machine.trigger(:paused)  if playing?
         end
-
-        if !info.stopped?
-          if info.playing?
-            @machine.trigger(:playing) if !playing?
-          else
-            @machine.trigger(:stopped) if playing? && info.played?
-            @machine.trigger(:paused)  if playing?
-          end
-        end
-
       end
     end
 
@@ -164,7 +157,8 @@ module Airplay::Protocol
       })
 
       @machine.when(:paused,  :loading => :paused,  :playing => :paused)
-      @machine.when(:stopped, :playing => :played,  :paused  => :played)
+      @machine.when(:stopped, :playing => :stopped, :paused  => :stopped)
+      @machine.when(:played,  :playing => :played,  :paused  => :played)
     end
   end
 end

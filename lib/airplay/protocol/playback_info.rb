@@ -13,6 +13,7 @@ module Airplay::Protocol
     end
 
     def percent
+      return unless position && duration
       (position * 100 / duration).floor
     end
 
@@ -34,6 +35,10 @@ module Airplay::Protocol
 
     def playing?
       info.has_key?("rate") && info.fetch("rate", false) && !info["rate"].zero?
+    end
+
+    def paused?
+      !playing?
     end
 
     def played?
