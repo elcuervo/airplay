@@ -17,9 +17,6 @@ module Airplay::Protocol
 
     def initialize(node)
       @node = node
-
-      start_the_machine
-      check_for_playback_status
     end
 
     # Public: Plays a given url or file.
@@ -30,6 +27,9 @@ module Airplay::Protocol
     #   options - Optional starting time
     #
     def play(file_or_url, options = {})
+      start_the_machine
+      check_for_playback_status
+
       media_url = case true
                   when File.exists?(file_or_url)
                   when !!(file_or_url =~ URI::regexp)
@@ -111,10 +111,14 @@ module Airplay::Protocol
     #
     def wait
       sleep 0.1 while !played? || stopped?
-      stop
+      cleanup
     end
 
     private
+
+    def cleanup
+      persistent.close
+    end
 
     def connection
       @_connection ||= Airplay::Connection.new(@node)
@@ -159,8 +163,6 @@ module Airplay::Protocol
 
       @machine.when(:paused,  :loading => :paused,  :playing => :paused)
       @machine.when(:stopped, :playing => :played,  :paused  => :played)
-
-      @machine.on(:played) { stop }
     end
   end
 end
