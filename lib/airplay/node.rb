@@ -1,28 +1,25 @@
-require "airplay/structure"
 require "airplay/playable"
 require "airplay/viewable"
 
 module Airplay
   # Public: Represents an Airplay Node
   #
-
-  Node = Structure.new(:name, :address, :password) do
-    attr_accessor :features
+  class Node
+    attr_reader :name, :address, :password
 
     include Playable
     include Viewable
 
-    def initialize(*)
-      super
+    def initialize(attributes = {})
+      @name = attributes[:name]
+      @address = attributes[:address]
+      @password = attributes[:password]
 
       Airplay.configuration.load
     end
 
     def ip
       @_ip ||= address.split(":").first
-    end
-
-    def resolution
     end
 
     def password=(passwd)
@@ -33,17 +30,20 @@ module Airplay
       !!password && !password.empty?
     end
 
-    private
-
-    def get_features
+    def features
+      @_features ||= Features.new(self)
     end
 
-    # Private: Parses features of a given feature list
-    #
-    #   info: The info fetched from the text record
-    #
-    def parse_info(info)
-      @features = Features.load(info.fetch("features", "0").hex)
+    def server_info
+      response = connection.get("/server-info").response
+      plist = CFPropertyList::List.new(data: response.body)
+      CFPropertyList.native_types(plist.value)
+    end
+
+    private
+
+    def connection
+      @_connection ||= Airplay::Connection.new(self)
     end
   end
 end

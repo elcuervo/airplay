@@ -44,7 +44,7 @@ module Airplay
       info = Socket.getaddrinfo(resolved.target, nil, Socket::AF_INET)
       ip = info[0][2]
 
-      airplay_node = Node.create(
+      airplay_node = Node.new(
         name:     node.name.gsub(/\u00a0/, ' '),
         address: "#{ip}:#{resolved.port}",
       )
