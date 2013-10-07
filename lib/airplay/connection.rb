@@ -19,7 +19,8 @@ module Airplay
     end
 
     def persistent
-      @_persistent ||= Airplay::Connection::Persistent.new("http://#{@node.address}", @options)
+      address = @options[:address] || "http://#{@node.address}"
+      @_persistent ||= Airplay::Connection::Persistent.new(address, @options)
     end
 
     def start_reverse_connection
@@ -104,7 +105,7 @@ module Airplay
         request = authentication.sign(request)
       end
 
-      @logger.info("Sending request to #{@node.name} (#{@node.address})")
+      @logger.info("Sending request to #{@node.address}")
       response = persistent.request(request)
 
       Airplay::Connection::Response.new(persistent, response)

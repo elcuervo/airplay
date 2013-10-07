@@ -32,6 +32,10 @@ module Airplay
       !!password && !password.empty?
     end
 
+    def address=(address)
+      @address = address
+    end
+
     def features
       @_features ||= Features.new(self)
     end
@@ -41,17 +45,37 @@ module Airplay
     end
 
     def server_info
-      @_server_info ||= begin
+      @_server_info ||= basic_info.merge(extra_info)
+    end
+
+    def connection
+      @_connection ||= Airplay::Connection.new(self)
+    end
+
+    def refresh_connection
+      @_connection = nil
+    end
+
+    private
+
+    def basic_info
+      @_basic_info ||= begin
         response = connection.get("/server-info").response
         plist = CFPropertyList::List.new(data: response.body)
         CFPropertyList.native_types(plist.value)
       end
     end
 
-    private
+    def extra_info
+      @_extra_info ||= begin
+        new_node = clone
+        new_node.refresh_connection
+        new_node.address = "#{ip}:7100"
 
-    def connection
-      @_connection ||= Airplay::Connection.new(self)
+        response = new_node.connection.get("/stream.xml").response
+        plist = CFPropertyList::List.new(data: response.body)
+        CFPropertyList.native_types(plist.value)
+      end
     end
   end
 end
