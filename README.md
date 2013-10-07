@@ -14,6 +14,11 @@ to add compatibility to other servers.
 ### View nodes
 
 `air list`
+```text
+* Apple TV (AppleTV2,1 running 11A502)
+  ip: 192.168.1.12
+  resolution: 1280x720
+```
 
 ### Play a video
 
@@ -22,6 +27,10 @@ to add compatibility to other servers.
 ### Show images
 
 `air view [url to image or image folder]`
+```text
+Playing http://movietrailers.apple.com/movies/universal/rush/rush-tlr3_480p.mov?width=848&height=352
+Time: 00:00:13 [=====                                              ] 7% Apple TV
+```
 
 ## Library
 
