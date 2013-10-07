@@ -18,6 +18,7 @@ module Airplay
       def play(video, options)
         node = options[:node]
         player = node.play(video)
+        puts "Playing #{video}"
         bar = ProgressBar.create(
           title: node.name,
           format: "%a [%B] %p%% %t"
