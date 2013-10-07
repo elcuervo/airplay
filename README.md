@@ -1,4 +1,5 @@
 # Airplay
+[![Code Climate](https://codeclimate.com/github/elcuervo/airplay.png)](https://codeclimate.com/github/elcuervo/airplay)
 
 ![Airplay](test/fixtures/files/logo.png)
 
