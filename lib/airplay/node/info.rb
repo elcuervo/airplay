@@ -4,6 +4,13 @@ module Airplay
   class Node
     # Public: Simple class to represent information of a Node
     #
-    Info = Structure.new(:deviceid, :features, :model, :srcvers)
+    class Info
+      attr_reader :model, :os_version
+
+      def initialize(node)
+        @model = node.server_info["model"]
+        @os_version = node.server_info["osBuildVersion"]
+      end
+    end
   end
 end
