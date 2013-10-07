@@ -23,14 +23,14 @@ to add compatibility to other servers.
 ### Play a video
 
 `air play [url to video]`
-
-### Show images
-
-`air view [url to image or image folder]`
 ```text
 Playing http://movietrailers.apple.com/movies/universal/rush/rush-tlr3_480p.mov?width=848&height=352
 Time: 00:00:13 [=====                                              ] 7% Apple TV
 ```
+
+### Show images
+
+`air view [url to image or image folder]`
 
 ## Library
 
