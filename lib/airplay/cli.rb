@@ -57,7 +57,6 @@ module Airplay
 
         i = 0
         loop do
-          puts i
           view_image(node, files[i], transition)
 
           case read_char
