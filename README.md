@@ -77,9 +77,9 @@ player.stop
 player.scrub
 
 # Access the playback time per second
-player.progress do |progress|
+player.progress -> progress {
   puts "I'm viewing #{progress["position"]} of #{progress["duration"]}"
-end
+}
 ```
 
 ## Contributors
