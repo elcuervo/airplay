@@ -6,7 +6,12 @@ module Airplay
     class << self
       def list
         Airplay.nodes.each do |node|
-          puts "* #{node.name} - #{node.ip}"
+          puts <<-EOS.gsub(/^\s{12}/,'')
+            * #{node.name} (#{node.info.model} running #{node.info.os_version})
+              ip: #{node.ip}
+              resolution: #{node.info.resolution}
+
+          EOS
         end
       end
 
