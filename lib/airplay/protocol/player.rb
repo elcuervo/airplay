@@ -16,8 +16,8 @@ module Airplay::Protocol
 
     def_delegators :@machine, :state, :on
 
-    def initialize(node)
-      @node = node
+    def initialize(device)
+      @device = device
     end
 
     # Public: Plays a given url or file.
@@ -124,11 +124,11 @@ module Airplay::Protocol
     end
 
     def connection
-      @_connection ||= Airplay::Connection.new(@node)
+      @_connection ||= Airplay::Connection.new(@device)
     end
 
     def persistent
-      @_persistent ||= Airplay::Connection.new(@node, keep_alive: true)
+      @_persistent ||= Airplay::Connection.new(@device, keep_alive: true)
     end
 
     def check_for_playback_status

@@ -1,8 +1,8 @@
 require "airplay"
 
-puts Airplay.nodes.count
-Airplay.nodes.each do |node|
-  puts node.name
+puts Airplay.devices.count
+Airplay.devices.each do |device|
+  puts device.name
 end
 
 videos = [
@@ -24,9 +24,9 @@ videos.each do |video|
 end
 
 Airplay.group["Backyard"] << Airplay["Pool TV"]
-Airplay.group["Backyard"] << Airplay.nodes.add("BBQTV", "192.168.1.12")
+Airplay.group["Backyard"] << Airplay.devices.add("BBQTV", "192.168.1.12")
 
 player = Airplay.group["Backyard"].play("video")
 player.wait
 
-Airplay.all # => Alias for a global group of all the available nodes
+Airplay.all # => Alias for a global group of all the available devices

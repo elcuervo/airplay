@@ -1,12 +1,12 @@
 require "airplay/playable"
 require "airplay/viewable"
-require "airplay/node/features"
-require "airplay/node/info"
+require "airplay/device/features"
+require "airplay/device/info"
 
 module Airplay
   # Public: Represents an Airplay Node
   #
-  class Node
+  class Device
     attr_reader :name, :address, :password
 
     include Playable
@@ -68,11 +68,11 @@ module Airplay
 
     def extra_info
       @_extra_info ||= begin
-        new_node = clone
-        new_node.refresh_connection
-        new_node.address = "#{ip}:7100"
+        new_device = clone
+        new_device.refresh_connection
+        new_device.address = "#{ip}:7100"
 
-        response = new_node.connection.get("/stream.xml").response
+        response = new_device.connection.get("/stream.xml").response
         plist = CFPropertyList::List.new(data: response.body)
         CFPropertyList.native_types(plist.value)
       end

@@ -13,19 +13,19 @@ module Airplay
       browser.browse
     end
 
-    # Public: Lists found nodes
+    # Public: Lists found devices
     #
-    def nodes
-      browse if browser.nodes.empty?
-      browser.nodes
+    def devices
+      browse if browser.devices.empty?
+      browser.devices
     end
 
     def configuration
       @_configuration ||= Configuration.new
     end
 
-    def [](node_name)
-      nodes.find_by_name(node_name)
+    def [](device_name)
+      devices.find_by_name(device_name)
     end
 
     private

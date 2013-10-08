@@ -1,21 +1,21 @@
 module Airplay
   # Public: Represents an Airplay Node
   #
-  class Node
-    # Public: The feature list of a given node
+  class Device
+    # Public: The feature list of a given device
     #
     class Features
       attr_reader :properties
 
-      def initialize(node)
-        @node = node
+      def initialize(device)
+        @device = device
         check_features
       end
 
       private
 
       def check_features
-        hex = @node.server_info["features"].to_s.hex
+        hex = @device.server_info["features"].to_s.hex
         @properties = {
           video?:                   0 < (hex & ( 1 <<  0 )),
           photo?:                   0 < (hex & ( 1 <<  1 )),

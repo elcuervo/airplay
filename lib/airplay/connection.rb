@@ -12,14 +12,14 @@ module Airplay
 
     include Celluloid
 
-    def initialize(node, options = {})
-      @node = node
+    def initialize(device, options = {})
+      @device = device
       @options = options
       @logger = Airplay::Logger.new("airplay::connection")
     end
 
     def persistent
-      address = @options[:address] || "http://#{@node.address}"
+      address = @options[:address] || "http://#{@device.address}"
       @_persistent ||= Airplay::Connection::Persistent.new(address, @options)
     end
 
@@ -35,7 +35,7 @@ module Airplay
 
     # Public: Executes a POST to a resource
     #
-    #   resource - The resource on the currently active Node
+    #   resource - The resource on the currently active Device
     #   body - The body of the action
     #   headers - Optional headers
     #
@@ -51,7 +51,7 @@ module Airplay
 
     # Public: Executes a PUT to a resource
     #
-    #   resource - The resource on the currently active Node
+    #   resource - The resource on the currently active Device
     #   body - The body of the action
     #   headers - Optional headers
     #
@@ -67,7 +67,7 @@ module Airplay
 
     # Public: Executes a GET to a resource
     #
-    #   resource - The resource on the currently active Node
+    #   resource - The resource on the currently active Device
     #   headers - Optional headers
     #
     # Returns a response object
@@ -90,7 +90,7 @@ module Airplay
       }
     end
 
-    # Private: Sends a request to the Node
+    # Private: Sends a request to the Device
     #
     #   request - The Request object
     #   headers - The headers of the request
@@ -100,12 +100,12 @@ module Airplay
     def send_request(request, headers)
       request.initialize_http_header(default_headers.merge(headers))
 
-      if @node.password?
+      if @device.password?
         authentication = Airplay::Connection::Authentication.new(persistent)
         request = authentication.sign(request)
       end
 
-      @logger.info("Sending request to #{@node.address}")
+      @logger.info("Sending request to #{@device.address}")
       response = persistent.request(request)
 
       Airplay::Connection::Response.new(persistent, response)

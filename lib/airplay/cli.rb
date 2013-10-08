@@ -5,22 +5,22 @@ module Airplay
   module CLI
     class << self
       def list
-        Airplay.nodes.each do |node|
+        Airplay.devices.each do |device|
           puts <<-EOS.gsub(/^\s{12}/,'')
-            * #{node.name} (#{node.info.model} running #{node.info.os_version})
-              ip: #{node.ip}
-              resolution: #{node.info.resolution}
+            * #{device.name} (#{device.info.model} running #{device.info.os_version})
+              ip: #{device.ip}
+              resolution: #{device.info.resolution}
 
           EOS
         end
       end
 
       def play(video, options)
-        node = options[:node]
-        player = node.play(video)
+        device = options[:device]
+        player = device.play(video)
         puts "Playing #{video}"
         bar = ProgressBar.create(
-          title: node.name,
+          title: device.name,
           format: "%a [%B] %p%% %t"
         )
 
@@ -32,7 +32,7 @@ module Airplay
       end
 
       def view(file_or_dir, options)
-        node = options[:node]
+        device = options[:device]
         wait = options[:wait]
 
         if File.directory?(file_or_dir)
@@ -44,7 +44,7 @@ module Airplay
             view_slideshow(files)
           end
         else
-          view_image(node, file_or_dir)
+          view_image(device, file_or_dir)
           sleep
         end
       end
@@ -57,7 +57,7 @@ module Airplay
 
         i = 0
         loop do
-          view_image(node, files[i], transition)
+          view_image(device, files[i], transition)
 
           case read_char
             # Right Arrow
@@ -75,7 +75,7 @@ module Airplay
 
       def view_slideshow(files)
         files.each do |file|
-          view_image(node, file)
+          view_image(device, file)
           sleep wait
         end
       end
@@ -96,8 +96,8 @@ module Airplay
         return input
       end
 
-      def view_image(node, image, transition = "SlideLeft")
-        node.view(image, transition: transition)
+      def view_image(device, image, transition = "SlideLeft")
+        device.view(image, transition: transition)
       end
     end
   end

@@ -6,8 +6,8 @@ module Airplay::Protocol
   class Viewer
     TRANSITIONS = %w(None Dissolve SlideLeft SlideRight)
 
-    def initialize(node)
-      @node = node
+    def initialize(device)
+      @device = device
       @logger = Airplay::Logger.new("airplay::protocol::image")
     end
 
@@ -33,7 +33,7 @@ module Airplay::Protocol
     private
 
     def connection
-      @_connection ||= Airplay::Connection.new(@node)
+      @_connection ||= Airplay::Connection.new(@device)
     end
 
     # Private: Gets the content of the possible media_or_io

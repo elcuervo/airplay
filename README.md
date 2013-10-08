@@ -12,7 +12,7 @@ to add compatibility to other servers.
 
 ## CLI
 
-### View nodes
+### View devices
 
 `air list`
 ```text
@@ -35,13 +35,13 @@ Time: 00:00:13 [=====                                              ] 7% Apple TV
 
 ## Library
 
-### Finding nodes
+### Finding devices
 
 ```ruby
 require "airplay"
 
-Airplay.nodes.each do |node|
-  puts node.name
+Airplay.devices.each do |device|
+  puts device.name
 end
 ```
 

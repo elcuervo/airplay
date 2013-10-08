@@ -2,7 +2,7 @@ require "dnssd"
 require "timeout"
 
 require "airplay/logger"
-require "airplay/nodes"
+require "airplay/devices"
 
 module Airplay
   # Public: Browser class to find Airplay-enabled devices in the network
@@ -27,8 +27,8 @@ module Airplay
 
     # Public: Access to the node list
     #
-    def nodes
-      @_nodes ||= Nodes.new
+    def devices
+      @_devices ||= Devices.new
     end
 
     private
@@ -44,12 +44,12 @@ module Airplay
       info = Socket.getaddrinfo(resolved.target, nil, Socket::AF_INET)
       ip = info[0][2]
 
-      airplay_node = Node.new(
+      airplay_device = Device.new(
         name:     node.name.gsub(/\u00a0/, ' '),
         address: "#{ip}:#{resolved.port}",
       )
 
-      nodes << airplay_node
+      devices << airplay_device
 
       resolved.flags.more_coming?
     end
