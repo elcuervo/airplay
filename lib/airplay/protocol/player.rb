@@ -5,6 +5,7 @@ require "celluloid"
 require "cfpropertylist"
 
 require "airplay/connection"
+require "airplay/protocol/timers"
 require "airplay/protocol/playback_info"
 
 module Airplay::Protocol
@@ -50,7 +51,7 @@ module Airplay::Protocol
         "Content-Type" => "text/parameters"
       })
 
-      @timer && @timer.reset
+      timers.reset
     end
 
     # Public: Handles the progress of the playback, the given &block get's
@@ -59,7 +60,7 @@ module Airplay::Protocol
     #   &block - Block to be executed in every playable second.
     #
     def progress(callback)
-      every(1) do
+      timers << every(1) do
         callback.call(info) if playing?
       end
     end
@@ -118,9 +119,8 @@ module Airplay::Protocol
 
     private
 
-    def cleanup
-      @timer.cancel if @timer
-      persistent.close
+    def timers
+      @_timers ||= Timers.new
     end
 
     def connection
@@ -131,12 +131,15 @@ module Airplay::Protocol
       @_persistent ||= Airplay::Connection.new(@device, keep_alive: true)
     end
 
+    def cleanup
+      timers.cancel
+      persistent.close
+    end
+
     def check_for_playback_status
-      @timer = every(1) do
+      timers << every(1) do
         case true
-        when info.stopped?
-          @machine.trigger(:stopped) if playing?
-          cleanup
+        when info.stopped? then @machine.trigger(:stopped) if playing?
         when info.played?  then @machine.trigger(:played)  if playing?
         when info.playing? then @machine.trigger(:playing) if !playing?
         when info.paused?  then @machine.trigger(:paused)  if playing?
@@ -148,6 +151,9 @@ module Airplay::Protocol
     #
     def start_the_machine
       @machine = MicroMachine.new(:stopped)
+
+      @machine.on(:stopped) { cleanup }
+      @machine.on(:played)  { cleanup }
 
       @machine.when(:loading, :stopped => :loading)
       @machine.when(:playing, {
