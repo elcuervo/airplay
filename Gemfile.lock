@@ -10,7 +10,7 @@ PATH
       log4r (~> 1.1.10)
       micromachine (~> 1.0.4)
       net-http-digest_auth (~> 1.2.1)
-      net-ptth (~> 0.0.9)
+      net-ptth (~> 0.0.10)
       ruby-progressbar (~> 1.2.0)
       uuid (~> 2.3.6)
 
@@ -42,7 +42,7 @@ GEM
     micromachine (1.0.4)
     minitest (4.4.0)
     net-http-digest_auth (1.2.1)
-    net-ptth (0.0.9)
+    net-ptth (0.0.10)
       celluloid-io (~> 0.15.0)
       http_parser.rb (~> 0.5.3)
       rack (~> 1.4.5)
