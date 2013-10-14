@@ -9,6 +9,7 @@ to add compatibility to other servers.
 ## Installation
 
 `gem install airplay --pre`
+`gem install airplay-cli --pre`
 
 ## CLI
 
