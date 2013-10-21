@@ -1,5 +1,6 @@
 require "airplay/configuration"
 require "airplay/browser"
+require "airplay/version"
 
 # Public: Airplay core module
 #
@@ -35,4 +36,3 @@ module Airplay
     end
   end
 end
-

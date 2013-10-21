@@ -1,6 +1,9 @@
+$: <<  File.expand_path("../lib", __FILE__)
+require "airplay/version"
+
 Gem::Specification.new do |s|
   s.name         = "airplay"
-  s.version      = "1.0.0.beta1"
+  s.version      = Airplay::VERSION
   s.summary      = "Airplay client"
   s.description  = "Send image/video to an airplay enabled device"
   s.licenses     = ["MIT", "HUGWARE"]
