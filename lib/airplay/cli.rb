@@ -25,7 +25,7 @@ module Airplay
         )
 
         player.progress -> playback {
-          bar.progress = playback.percent
+          bar.progress = playback.percent if playback.percent
         }
 
         player.wait
