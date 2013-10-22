@@ -22,5 +22,12 @@ module Airplay
       @players = @devices.map { |device| device.play(file_or_url, options) }
       Players.new(@players)
     end
+
+    def view(media_or_io, options = {})
+      @devices.map do |device|
+        ok = device.view(media_or_io, options)
+        [device, ok]
+      end
+    end
   end
 end
