@@ -5,11 +5,11 @@ require "celluloid"
 require "cfpropertylist"
 
 require "airplay/connection"
-require "airplay/protocol/timers"
-require "airplay/protocol/playback_info"
-require "airplay/protocol/playlist"
+require "airplay/player/timers"
+require "airplay/player/playback_info"
+require "airplay/player/playlist"
 
-module Airplay::Protocol
+module Airplay
   # Public: The class that handles all the video playback
   #
   class Player

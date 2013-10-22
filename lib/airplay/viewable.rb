@@ -1,5 +1,5 @@
 require "forwardable"
-require "airplay/protocol/viewer"
+require "airplay/viewer"
 
 module Airplay
   module Viewable
@@ -10,7 +10,7 @@ module Airplay
     private
 
     def viewer
-      @_viewer ||= Airplay::Protocol::Viewer.new(self)
+      @_viewer ||= Airplay::Viewer.new(self)
     end
   end
 end

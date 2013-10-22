@@ -1,4 +1,4 @@
-require "airplay/protocol/player"
+require "airplay/player"
 
 module Airplay
   module Playable
@@ -22,7 +22,7 @@ module Airplay
     private
 
     def player
-      @_player ||= Airplay::Protocol::Player.new(self)
+      @_player ||= Airplay::Player.new(self)
     end
   end
 end

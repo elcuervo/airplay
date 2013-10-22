@@ -8,8 +8,6 @@ module Airplay
   class Connection
     Response = Struct.new(:connection, :response)
 
-    attr_accessor :reverse, :events, :persistent
-
     include Celluloid
 
     def initialize(device, options = {})
@@ -21,11 +19,6 @@ module Airplay
     def persistent
       address = @options[:address] || "http://#{@device.address}"
       @_persistent ||= Airplay::Connection::Persistent.new(address, @options)
-    end
-
-    def start_reverse_connection
-      @reverse = Airplay::Protocol::Reverse.new(Airplay.active)
-      @reverse.async.connect
     end
 
     def close

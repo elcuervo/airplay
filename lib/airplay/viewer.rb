@@ -1,6 +1,6 @@
 require "open-uri"
 
-module Airplay::Protocol
+module Airplay
   # Public: The class to handle image broadcast to a device
   #
   class Viewer
@@ -8,7 +8,7 @@ module Airplay::Protocol
 
     def initialize(device)
       @device = device
-      @logger = Airplay::Logger.new("airplay::protocol::image")
+      @logger = Airplay::Logger.new("airplay::viewer")
     end
 
     # Public: Broadcasts the content to the device

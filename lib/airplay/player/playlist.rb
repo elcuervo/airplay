@@ -1,7 +1,7 @@
 require "forwardable"
 
 module Airplay
-  module Protocol
+  class Player
     class Playlist
       include Enumerable
       extend  Forwardable
