@@ -133,7 +133,7 @@ module Airplay
     # Public: Locks the execution until the video gets fully played
     #
     def wait
-      sleep 0.1 while !played? || stopped?
+      sleep 0.1 while !stopped? || !played? || playlist.next?
       cleanup
     end
 
@@ -159,10 +159,10 @@ module Airplay
     def check_for_playback_status
       timers << every(1) do
         case true
-        when info.stopped? then @machine.trigger(:stopped) if playing?
-        when info.played?  then @machine.trigger(:played)  if playing?
-        when info.playing? then @machine.trigger(:playing) if !playing?
-        when info.paused?  then @machine.trigger(:paused)  if playing?
+        when info.stopped? && playing?  then @machine.trigger(:stopped)
+        when info.played?  && playing?  then @machine.trigger(:played)
+        when info.playing? && !playing? then @machine.trigger(:playing)
+        when info.paused?  && playing?  then @machine.trigger(:paused)
         end
       end
     end
@@ -173,7 +173,10 @@ module Airplay
       @machine = MicroMachine.new(:stopped)
 
       @machine.on(:stopped) { cleanup }
-      @machine.on(:played)  { cleanup }
+      @machine.on(:played)  do
+        cleanup
+        self.next if playlist.next?
+      end
 
       @machine.when(:loading, :stopped => :loading)
       @machine.when(:playing, {

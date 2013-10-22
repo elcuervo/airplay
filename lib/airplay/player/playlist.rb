@@ -22,8 +22,11 @@ module Airplay
         @items << Media.new(file_or_url)
       end
 
+      def next?;     @position + 1 <= @items.size end
+      def previous?; @position - 1 >= 0 end
+
       def next
-        return nil if @position + 1 > @items.size
+        return nil if !next?
 
         item = @items[@position]
         @position += 1
@@ -31,7 +34,7 @@ module Airplay
       end
 
       def previous
-        return nil if @position - 1 < 0
+        return nil if !previous?
 
         @position -= 1
         @items[@position]
