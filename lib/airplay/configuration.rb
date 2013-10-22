@@ -1,4 +1,5 @@
-require 'log4r/config'
+require "log4r/config"
+require "airplay/logger"
 
 module Airplay
   # Public: Handles the Airplay configuration
@@ -27,6 +28,7 @@ module Airplay
 
       Log4r::Logger.root.add @output
       Log4r::Logger.root.level = level
+      Celluloid.logger = Airplay::Logger.new("airplay::celluloid")
     end
   end
 end

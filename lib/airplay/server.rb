@@ -2,6 +2,7 @@ require "rack"
 require "socket"
 require "uuid"
 
+require "airplay/logger"
 require "airplay/server/app"
 
 module Airplay
@@ -10,10 +11,13 @@ module Airplay
 
     def initialize
       @port = Airplay.configuration.port
+      @logger = Airplay::Logger.new("airplay::server")
       @server = Rack::Server.new(
         server: :webrick,
         Host: private_ip,
         Port: @port,
+        Logger: @logger,
+        AccessLog: [],
         app: App.app
       )
 
