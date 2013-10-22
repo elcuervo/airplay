@@ -7,6 +7,7 @@ require "cfpropertylist"
 require "airplay/connection"
 require "airplay/server"
 require "airplay/player/timers"
+require "airplay/player/media"
 require "airplay/player/playback_info"
 require "airplay/player/playlist"
 
@@ -36,23 +37,19 @@ module Airplay
     #   file_or_url - The url or file to be reproduced
     #   options - Optional starting time
     #
-    def play(file_or_url = "playlist", options = {})
+    def play(media_to_play = "playlist", options = {})
       start_the_machine
       check_for_playback_status
 
-      media_url = case true
-                  when file_or_url == "playlist" && playlist.any?
-                    playlist.next
-                  when File.exists?(file_or_url)
-                    Airplay.server.serve(File.expand_path(file_or_url))
-                  when !!(file_or_url =~ URI::regexp)
-                    file_or_url
-                  else
-                    raise Errno::ENOENT, file_or_url
-                  end
+      media = case true
+              when media_to_play.is_a?(Media) then media_to_play
+              when media_to_play == "playlist" && playlist.any?
+                playlist.next
+              else Media.new(media_to_play)
+              end
 
       content = {
-        "Content-Location" => media_url,
+        "Content-Location" => media,
         "Start-Position" => options.fetch(:time, 0.0)
       }
 

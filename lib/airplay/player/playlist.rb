@@ -1,4 +1,5 @@
 require "forwardable"
+require "airplay/player/media"
 
 module Airplay
   class Player
@@ -6,7 +7,7 @@ module Airplay
       include Enumerable
       extend  Forwardable
 
-      def_delegators :@items, :each, :size, :empty?, :<<
+      def_delegators :@items, :each, :size, :empty?
 
       def initialize
         @items = []
@@ -15,6 +16,10 @@ module Airplay
 
       def to_ary
         @items
+      end
+
+      def <<(file_or_url)
+        @items << Media.new(file_or_url)
       end
 
       def next
