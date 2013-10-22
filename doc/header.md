@@ -13,7 +13,7 @@ You can contribute with code, bugs or feature requests.
 
 The development of the gem takes time and there's a lot of research and hardware
 tests to make all of this. If you want to contribute please consider donating as
-much as you want in: http://gum.io/airplay
+much as you want in: https://gumroad.com/l/airplay
 
 ## Help
 
