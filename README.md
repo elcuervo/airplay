@@ -63,8 +63,8 @@ Time: 00:00:13 [=====                                              ] 7% Apple TV
 Airplay.configure do |config|
   config.log_level      # Log4r levels (Default: Log4r::ERROR)
   config.autodiscover   # Allows to search for nodes (Default: true)
-  config.host           # In which host bind the server for the assets (Default: 0.0.0.0)
-  config.port           # In which port bind the server for the assets (Default: 1337)
+  config.host           # In which host bind the server (Default: 0.0.0.0)
+  config.port           # In which port bind the server (Default: 1337)
   config.output         # Where to log (Default: Log4r::Outputter.stdout)
 end
 ```
