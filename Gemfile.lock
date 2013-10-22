@@ -9,14 +9,14 @@ PATH
       log4r (~> 1.1.10)
       micromachine (~> 1.0.4)
       net-http-digest_auth (~> 1.2.1)
-      net-ptth (= 0.0.12)
+      net-ptth (= 0.0.13)
       uuid (~> 2.3.6)
 
 GEM
   remote: http://rubygems.org/
   specs:
     CFPropertyList (2.2.3)
-    celluloid (0.15.1)
+    celluloid (0.15.2)
       timers (~> 1.1.0)
     celluloid-io (0.15.0)
       celluloid (>= 0.15.0)
@@ -39,12 +39,12 @@ GEM
     micromachine (1.0.4)
     minitest (4.4.0)
     net-http-digest_auth (1.2.1)
-    net-ptth (0.0.12)
+    net-ptth (0.0.13)
       celluloid-io (~> 0.15.0)
       http_parser.rb (~> 0.5.3)
-      rack (~> 1.4.5)
+      rack (~> 1.5.2)
     nio4r (0.5.0)
-    rack (1.4.5)
+    rack (1.5.2)
     rake (10.1.0)
     systemu (2.5.2)
     timers (1.1.0)
