@@ -10,7 +10,7 @@ module Airplay
     def initialize
       Log4r.define_levels(*Log4r::Log4rConfig::LogLevels)
 
-      @log_level = Log4r::WARN
+      @log_level = Log4r::ERROR
       @autodiscover = true
       @host = "0.0.0.0"
       @port = "1337"
