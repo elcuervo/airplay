@@ -94,10 +94,25 @@ player = apple_tv.play(trailer)
 # You can also add videos to a playlist and let the library handle them
 player.playlist << "video_url"
 player.playlist << "video_path"
+player.play
 
 # Or control it yourself
 player.next
 player.previous
+
+# Or if you prefer you can have several playlists
+player = apple_tv.player
+player.playlists["Star Wars Classic"] << "Star Wars Episode IV: A New Hope"
+player.playlists["Star Wars Classic"] << "Star Wars Episode V: The Empire Strikes Back"
+player.playlists["Star Wars Classic"] << "Star Wars Episode VI: Return of the Jedi"
+
+player.playlists["Star Wars"] << "Star Wars Episode I: The Phantom Menace"
+player.playlists["Star Wars"] << "Star Wars Episode II: Attack of the Clones"
+player.playlists["Star Wars"] << "Star Wars Episode III: Revenge of the Sith"
+
+player.use("Star Wars Classic")
+player.play
+player.wait
 ```
 
 ##### Player
