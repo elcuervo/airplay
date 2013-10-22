@@ -81,3 +81,13 @@ namespace :release, &builder.construct(:release)
 
 task :default => [:test]
 task :test => [:spec]
+
+namespace :doc do
+  task :generate do
+    structure = %w(header installation usage contributors)
+
+    File.open("README.md", "w+") do |f|
+      structure.each { |part| f << File.read("doc/#{part}.md") }
+    end
+  end
+end

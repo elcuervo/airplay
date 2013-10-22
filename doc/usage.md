@@ -1,20 +1,3 @@
-# Airplay
-
-[![Code Climate](https://codeclimate.com/github/elcuervo/airplay.png)](https://codeclimate.com/github/elcuervo/airplay)
-
-![Airplay](doc/img/logo.png)
-
-Airplay attempts to be compatible with the latest AppleTV firmware but I'd like
-to add compatibility to other servers.
-## Installation
-
-### Library
-
-`gem install airplay --pre`
-
-## CLI
-
-`gem install airplay-cli --pre`
 ## Usage
 
 ### CLI
@@ -89,7 +72,3 @@ player.progress -> progress {
   puts "I'm viewing #{progress["position"]} of #{progress["duration"]}"
 }
 ```
-## Contributors
-
-* [sodabrew](http://github.com/sodabrew)
-* [pote](http://github.com/pote)
