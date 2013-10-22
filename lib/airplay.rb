@@ -19,13 +19,20 @@ module Airplay
       @_group ||= Hash.new { |h, k| h[k] = Group.new(k) }
     end
 
+    def all
+      @_all ||= begin
+        group = Group.new(:all)
+        devices.each { |device| group << device }
+        group
+      end
+    end
+
     # Public: Lists found devices
     #
     def devices
       browse if browser.devices.empty?
       browser.devices
     end
-    alias :all :devices
 
     def configuration
       @_configuration ||= Configuration.new
