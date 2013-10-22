@@ -17,6 +17,8 @@ module Airplay::Protocol
 
     def_delegators :@machine, :state, :on
 
+    attr_reader :device
+
     def initialize(device)
       @device = device
     end
@@ -117,6 +119,11 @@ module Airplay::Protocol
       cleanup
     end
 
+    def cleanup
+      timers.cancel
+      persistent.close
+    end
+
     private
 
     def timers
@@ -129,11 +136,6 @@ module Airplay::Protocol
 
     def persistent
       @_persistent ||= Airplay::Connection.new(@device, keep_alive: true)
-    end
-
-    def cleanup
-      timers.cancel
-      persistent.close
     end
 
     def check_for_playback_status

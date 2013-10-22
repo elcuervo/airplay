@@ -1,4 +1,5 @@
 require "forwardable"
+require "airplay/group/players"
 
 module Airplay
   class Group
@@ -9,6 +10,7 @@ module Airplay
 
     def initialize(name)
       @devices = []
+      @players = []
       @name = name
     end
 
@@ -17,7 +19,8 @@ module Airplay
     end
 
     def play(file_or_url, options = {})
-      @devices.map { |device| device.play(file_or_url, options) }
+      @players = @devices.map { |device| device.play(file_or_url, options) }
+      Players.new(@players)
     end
   end
 end
