@@ -28,6 +28,10 @@ module Airplay
       find_by_block { |device| device if device.ip == ip }
     end
 
+    def add(name, address)
+      self << Device.new(name: name, address: address)
+    end
+
     # Public: Adds a device to the list
     #
     #   value - The Node
@@ -41,6 +45,5 @@ module Airplay
     def find_by_block(&block)
       @items.find(&block)
     end
-
   end
 end

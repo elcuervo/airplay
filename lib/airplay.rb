@@ -30,7 +30,7 @@ module Airplay
     # Public: Lists found devices
     #
     def devices
-      browse if browser.devices.empty?
+      browse if browser.devices.empty? && configuration.autodiscover
       browser.devices
     end
 
