@@ -19,6 +19,7 @@ much as you want in: http://gum.io/airplay
 
 * irc feenode: #airplay
 * twitter: http://twitter.com/airplayrb
+
 ## Installation
 
 ### Library
@@ -28,6 +29,7 @@ much as you want in: http://gum.io/airplay
 ## CLI
 
 `gem install airplay-cli --pre`
+
 ## Usage
 
 ### CLI
@@ -162,7 +164,9 @@ player.progress -> progress {
   puts "I'm viewing #{progress.position} of #{progress.duration}"
 }
 ```
+
 ## Contributors
 
 * [sodabrew](http://github.com/sodabrew)
 * [pote](http://github.com/pote)
+
