@@ -19,7 +19,9 @@ module Airplay
       player.playlist
     end
 
-    private
+    def playlists
+      player.playlists
+    end
 
     def player
       @_player ||= Airplay::Player.new(self)

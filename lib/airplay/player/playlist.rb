@@ -7,9 +7,12 @@ module Airplay
       include Enumerable
       extend  Forwardable
 
+      attr_reader :name
+
       def_delegators :@items, :each, :size, :empty?
 
-      def initialize
+      def initialize(name)
+        @name = name
         @items = []
         @position = 0
       end

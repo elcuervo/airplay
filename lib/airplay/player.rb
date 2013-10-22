@@ -26,8 +26,21 @@ module Airplay
       @device = device
     end
 
+    def playlists
+      @_playlists ||= Hash.new { |h,k| h[k] = Playlist.new(k) }
+    end
+
     def playlist
-      @_playlist ||= Playlist.new
+      @_playlist ||= if playlists.any?
+                       key, value = playlists.first
+                       value
+                     else
+                       Playlist.new("Default")
+                     end
+    end
+
+    def use(name)
+      @_playlist = playlists[name]
     end
 
     # Public: Plays a given url or file.
@@ -125,6 +138,7 @@ module Airplay
       connection.post("/stop")
     end
 
+    def loading?; state == :loading end
     def playing?; state == :playing end
     def paused?;  state == :paused  end
     def played?;  state == :played  end
@@ -133,7 +147,7 @@ module Airplay
     # Public: Locks the execution until the video gets fully played
     #
     def wait
-      sleep 0.1 while !stopped? || !played? || playlist.next?
+      sleep 1 while wait_for_playback?
       cleanup
     end
 
@@ -143,6 +157,11 @@ module Airplay
     end
 
     private
+
+    def wait_for_playback?
+      return true if playlist.next?
+      loading? || playing? || paused?
+    end
 
     def timers
       @_timers ||= Timers.new
@@ -170,7 +189,7 @@ module Airplay
     # Private: Get ready the state machine
     #
     def start_the_machine
-      @machine = MicroMachine.new(:stopped)
+      @machine = MicroMachine.new(:loading)
 
       @machine.on(:stopped) { cleanup }
       @machine.on(:played)  do
