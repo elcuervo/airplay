@@ -7,6 +7,7 @@ require "cfpropertylist"
 require "airplay/connection"
 require "airplay/protocol/timers"
 require "airplay/protocol/playback_info"
+require "airplay/protocol/playlist"
 
 module Airplay::Protocol
   # Public: The class that handles all the video playback
@@ -23,6 +24,10 @@ module Airplay::Protocol
       @device = device
     end
 
+    def playlist
+      @_playlist ||= Playlist.new
+    end
+
     # Public: Plays a given url or file.
     #         Creates a new persistent connection to ensure that
     #         the socket will be kept alive
@@ -30,11 +35,13 @@ module Airplay::Protocol
     #   file_or_url - The url or file to be reproduced
     #   options - Optional starting time
     #
-    def play(file_or_url, options = {})
+    def play(file_or_url = "playlist", options = {})
       start_the_machine
       check_for_playback_status
 
       media_url = case true
+                  when file_or_url == "playlist" && playlist.any?
+                    playlist.next
                   when File.exists?(file_or_url)
                   when !!(file_or_url =~ URI::regexp)
                     file_or_url
@@ -65,6 +72,18 @@ module Airplay::Protocol
       timers << every(1) do
         callback.call(info) if playing?
       end
+    end
+
+    def next
+      video = playlist.next
+      play(video) if video
+      video
+    end
+
+    def previous
+      video = playlist.previous
+      play(video) if video
+      video
     end
 
     # Public: Shows the current playback time if a video is being played.
