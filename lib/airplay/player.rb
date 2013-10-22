@@ -5,6 +5,7 @@ require "celluloid"
 require "cfpropertylist"
 
 require "airplay/connection"
+require "airplay/server"
 require "airplay/player/timers"
 require "airplay/player/playback_info"
 require "airplay/player/playlist"
@@ -43,6 +44,7 @@ module Airplay
                   when file_or_url == "playlist" && playlist.any?
                     playlist.next
                   when File.exists?(file_or_url)
+                    Airplay.server.serve(File.expand_path(file_or_url))
                   when !!(file_or_url =~ URI::regexp)
                     file_or_url
                   else

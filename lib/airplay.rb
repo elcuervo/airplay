@@ -1,6 +1,7 @@
 require "airplay/configuration"
 require "airplay/browser"
 require "airplay/group"
+require "airplay/server"
 require "airplay/version"
 
 # Public: Airplay core module
@@ -9,6 +10,10 @@ module Airplay
   class << self
     def configure(&block)
       yield(configuration) if block
+    end
+
+    def server
+      @_server ||= Server.new
     end
 
     def browse

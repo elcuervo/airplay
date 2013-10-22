@@ -4,13 +4,15 @@ module Airplay
   # Public: Handles the Airplay configuration
   #
   class Configuration
-    attr_accessor :log_level, :output, :autodiscover
+    attr_accessor :log_level, :output, :autodiscover, :host, :port
 
     def initialize
       Log4r.define_levels(*Log4r::Log4rConfig::LogLevels)
 
       @log_level = Log4r::WARN
       @autodiscover = true
+      @host = "0.0.0.0"
+      @port = "1337"
       @output = Log4r::Outputter.stdout
     end
 
