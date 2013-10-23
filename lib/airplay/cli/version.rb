@@ -1,5 +1,5 @@
 module Airplay
-  class CLI
+  module CLI
     VERSION = "0.1.0.beta4"
   end
 end

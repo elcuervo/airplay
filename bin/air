@@ -2,6 +2,7 @@
 
 require "clap"
 require "airplay/cli"
+require "airplay/cli/version"
 
 Clap.run ARGV,
   "--device"      => lambda { |device_name| @device = Airplay[device_name] },
@@ -9,6 +10,8 @@ Clap.run ARGV,
   "--interactive" => lambda { @interactive = true },
 
   "list" => Airplay::CLI.method(:list),
+
+  "version" => lambda { puts Airplay::CLI::VERSION },
 
   "play" => lambda { |video|
     options = { device: @device || Airplay.devices.first }
