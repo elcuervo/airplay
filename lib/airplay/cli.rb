@@ -1,5 +1,6 @@
 require "airplay"
 require "airplay/cli/image_viewer"
+
 require "ruby-progressbar"
 
 module Airplay
@@ -14,8 +15,6 @@ module Airplay
 
           EOS
         end
-      rescue Airplay::Browser::NoDevicesFound => e
-        puts "No devices found."
       end
 
       def play(video, options)

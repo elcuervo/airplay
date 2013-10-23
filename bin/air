@@ -4,27 +4,34 @@ require "clap"
 require "airplay/cli"
 require "airplay/cli/version"
 
-Clap.run ARGV,
-  "--device"      => lambda { |device_name| @device = Airplay[device_name] },
-  "--wait"        => lambda { |sec| @wait = sec.to_i },
-  "--interactive" => lambda { @interactive = true },
+begin
+  Clap.run ARGV,
+    "--device"      => lambda { |device_name| @device = Airplay[device_name] },
+    "--wait"        => lambda { |sec| @wait = sec.to_i },
+    "--interactive" => lambda { @interactive = true },
 
-  "list" => Airplay::CLI.method(:list),
+    "list" => Airplay::CLI.method(:list),
 
-  "version" => lambda { puts Airplay::CLI::VERSION },
+    "version" => lambda { puts Airplay::CLI::VERSION },
 
-  "play" => lambda { |video|
-    options = { device: @device || Airplay.devices.first }
-    Airplay::CLI.play(video, options)
-  },
+    "play" => lambda { |video|
+      options = { device: @device || Airplay.devices.first }
+      Airplay::CLI.play(video, options)
+    },
 
-  "view" => lambda { |file|
-    options = {
-      device: @device || Airplay.devices.first,
-      interactive: @interactive || false,
-      wait: @wait || 3
+    "view" => lambda { |file|
+      options = {
+        device: @device || Airplay.devices.first,
+        interactive: @interactive || false,
+        wait: @wait || 3
+      }
+      Airplay::CLI.view(file, options)
     }
-    Airplay::CLI.view(file, options)
-  }
+
+rescue Airplay::Browser::NoDevicesFound
+  puts "No devices found."
+rescue Interrupt
+  puts "Bye!"
+end
 
 # vim: ft=ruby
