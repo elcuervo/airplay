@@ -21,7 +21,7 @@ module Airplay
           photo?:                   0 < (hex & ( 1 <<  1 )),
           video_fair_play?:         0 < (hex & ( 1 <<  2 )),
           video_volume_control?:    0 < (hex & ( 1 <<  3 )),
-          video_http_live_streamr?: 0 < (hex & ( 1 <<  4 )),
+          video_http_live_stream?:  0 < (hex & ( 1 <<  4 )),
           slideshow?:               0 < (hex & ( 1 <<  5 )),
           screen?:                  0 < (hex & ( 1 <<  7 )),
           screen_rotate?:           0 < (hex & ( 1 <<  8 )),
