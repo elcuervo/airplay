@@ -41,9 +41,11 @@ module Airplay
           files = Dir.glob("#{file_or_dir}/*")
 
           if options[:interactive]
-            view_interactive(files)
+            puts "Press left and right to switch images"
+            view_interactive(files, options)
           else
-            view_slideshow(files)
+            puts "#{file_or_dir} will be shown for #{wait} seconds each"
+            view_slideshow(files, options)
           end
         else
           view_image(device, file_or_dir)
@@ -53,7 +55,9 @@ module Airplay
 
       private
 
-      def view_interactive(files)
+      def view_interactive(files, options)
+        device = options[:device]
+        wait = options[:wait]
         numbers = Array(0...files.count)
         transition = "None"
 
@@ -75,7 +79,10 @@ module Airplay
         end
       end
 
-      def view_slideshow(files)
+      def view_slideshow(files, options)
+        device = options[:device]
+        wait = options[:wait]
+
         files.each do |file|
           view_image(device, file)
           sleep wait
@@ -99,6 +106,7 @@ module Airplay
       end
 
       def view_image(device, image, transition = "SlideLeft")
+        puts "Showing #{image}"
         device.view(image, transition: transition)
       end
     end
