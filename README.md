@@ -63,8 +63,8 @@ Time: 00:00:13 [=====                                              ] 7% Apple TV
 Airplay.configure do |config|
   config.log_level      # Log4r levels (Default: Log4r::ERROR)
   config.autodiscover   # Allows to search for nodes (Default: true)
-  config.host           # In which host bind the server (Default: 0.0.0.0)
-  config.port           # In which port bind the server (Default: 1337)
+  config.host           # In which host to bind the server (Default: 0.0.0.0)
+  config.port           # In which port to bind the server (Default: 1337)
   config.output         # Where to log (Default: Log4r::Outputter.stdout)
 end
 ```
@@ -78,10 +78,10 @@ Airplay.devices.each do |device|
   puts device.name
 end
 
-# You can access an know device easily
+# You can access a know device easily
 device = Airplay["Apple TV"]
 
-# Or you can group known devices to have them do a given action toghether
+# Or you can group known devices to have them do a given action together
 Airplay.group["Backyard"] << Airplay["Apple TV"]
 Airplay.group["Backyard"] << Airplay["Room TV"]
 
