@@ -13,6 +13,8 @@ module Airplay
 
           EOS
         end
+      rescue Airplay::Browser::NoDevicesFound => e
+        puts "No devices found."
       end
 
       def play(video, options)

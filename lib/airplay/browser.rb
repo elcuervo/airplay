@@ -8,6 +8,8 @@ module Airplay
   # Public: Browser class to find Airplay-enabled devices in the network
   #
   class Browser
+    NoDevicesFound = Class.new(StandardError)
+
     SEARCH = "_airplay._tcp."
 
     def initialize
@@ -23,6 +25,8 @@ module Airplay
           break unless node.flags.more_coming?
         end
       end
+    rescue Timeout::Error => e
+      raise NoDevicesFound
     end
 
     # Public: Access to the node list
