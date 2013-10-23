@@ -78,7 +78,7 @@ Airplay.devices.each do |device|
   puts device.name
 end
 
-# You can access a know device easily
+# You can access a known device easily
 device = Airplay["Apple TV"]
 
 # Or you can group known devices to have them do a given action together
