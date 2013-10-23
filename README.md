@@ -83,7 +83,11 @@ require "airplay"
 Airplay.devices.each do |device|
   puts device.name
 end
+```
 
+#### Accesing and Grouping
+
+```ruby
 # You can access a known device easily
 device = Airplay["Apple TV"]
 
