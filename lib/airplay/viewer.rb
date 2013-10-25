@@ -13,6 +13,12 @@ module Airplay
 
     # Public: Broadcasts the content to the device
     #
+    # media_or_io - The url, file path or io of the image/s
+    # options     - Options that include the device
+    #               * transition: the type of transition (Default: None)
+    #
+    # Returns if the images was actually sent
+    #
     def view(media_or_io, options = {})
       content = get_content(media_or_io)
       transition = options.fetch(:transition, "None")
@@ -28,17 +34,27 @@ module Airplay
       response.response.status == 200
     end
 
+    # Public: The list of transitions
+    #
+    # Returns the list of trasitions
+    #
     def transitions; TRANSITIONS end
 
     private
 
+    # Public: The connection
+    #
+    # Returns the connection
+    #
     def connection
       @_connection ||= Airplay::Connection.new(@device)
     end
 
     # Private: Gets the content of the possible media_or_io
     #
-    #   media_or_io - The url, file, path or read compatible source
+    # media_or_io - The url, file, path or read compatible source
+    #
+    # Returns the content of the media
     #
     def get_content(media_or_io)
       case true

@@ -18,6 +18,8 @@ module Airplay
 
     # Public: Browses in the search of devices and adds them to the nodes
     #
+    # Returns nothing or raises NoDevicesFound if there are no devices
+    #
     def browse
       timeout(5) do
         DNSSD.browse!(SEARCH) do |node|
@@ -31,6 +33,8 @@ module Airplay
 
     # Public: Access to the node list
     #
+    # Returns the Devices list object
+    #
     def devices
       @_devices ||= Devices.new
     end
@@ -39,8 +43,8 @@ module Airplay
 
     # Private: Resolves a node given a node and a resolver
     #
-    #   node - The given node
-    #   resolver - The DNSSD::Server that is resolving nodes
+    # node - The given node
+    # resolver - The DNSSD::Server that is resolving nodes
     #
     # Returns if there are more nodes coming
     #
@@ -60,7 +64,9 @@ module Airplay
 
     # Private: Resolves the node information given a node
     #
-    #   node - The node from the DNSSD browsing
+    # node - The node from the DNSSD browsing
+    #
+    # Returns nothing
     #
     def resolve(node)
       resolver = DNSSD::Service.new

@@ -1,6 +1,8 @@
 require "log4r/config"
 require "airplay/logger"
 
+# Public: Airplay core module
+#
 module Airplay
   # Public: Handles the Airplay configuration
   #
@@ -18,6 +20,8 @@ module Airplay
     end
 
     # Public: Loads the configuration into the affected parts
+    #
+    # Returns nothing.
     #
     def load
       level = if @log_level.is_a?(Fixnum)

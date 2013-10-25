@@ -11,7 +11,9 @@ module Airplay
 
     # Public: Helper method to be compatible with Net::HTTP
     #
-    #   message - The message to be logged as debug
+    # message - The message to be logged as debug
+    #
+    # Returns nothing
     #
     def <<(message)
       debug message

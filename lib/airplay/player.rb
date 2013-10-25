@@ -26,10 +26,18 @@ module Airplay
       @device = device
     end
 
+    # Public: Gets all the playlists
+    #
+    # Returns the Playlists
+    #
     def playlists
       @_playlists ||= Hash.new { |h,k| h[k] = Playlist.new(k) }
     end
 
+    # Public: Gets the current playlist
+    #
+    # Returns the first Playlist if none defined or creates a new one
+    #
     def playlist
       @_playlist ||= if playlists.any?
                        key, value = playlists.first
@@ -39,6 +47,12 @@ module Airplay
                      end
     end
 
+    # Public: Sets a given playlist
+    #
+    # name - The name of the playlist to be used
+    #
+    # Returns nothing
+    #
     def use(name)
       @_playlist = playlists[name]
     end
@@ -47,8 +61,10 @@ module Airplay
     #         Creates a new persistent connection to ensure that
     #         the socket will be kept alive
     #
-    #   file_or_url - The url or file to be reproduced
-    #   options - Optional starting time
+    # file_or_url - The url or file to be reproduced
+    # options - Optional starting time
+    #
+    # Returns nothing
     #
     def play(media_to_play = "playlist", options = {})
       start_the_machine
@@ -78,7 +94,9 @@ module Airplay
     # Public: Handles the progress of the playback, the given &block get's
     #         executed every second while the video is played.
     #
-    #   &block - Block to be executed in every playable second.
+    # &block - Block to be executed in every playable second.
+    #
+    # Returns nothing
     #
     def progress(callback)
       timers << every(1) do
@@ -86,12 +104,20 @@ module Airplay
       end
     end
 
+    # Public: Plays the next video in the playlist
+    #
+    # Returns the video that was selected or nil if none
+    #
     def next
       video = playlist.next
       play(video) if video
       video
     end
 
+    # Public: Plays the previous video in the playlist
+    #
+    # Returns the video that was selected or nil if none
+    #
     def previous
       video = playlist.previous
       play(video) if video
@@ -111,7 +137,7 @@ module Airplay
 
     # Public: checks current playback information
     #
-    # Returns a hash with the playback information
+    # Returns a PlaybackInfo object with the playback information
     #
     def info
       response = connection.get("/playback-info").response
@@ -122,17 +148,23 @@ module Airplay
 
     # Public: Resumes a paused video
     #
+    # Returns nothing
+    #
     def resume
       connection.async.post("/rate?value=1")
     end
 
     # Public: Pauses a playing video
     #
+    # Returns nothing
+    #
     def pause
       connection.async.post("/rate?value=0")
     end
 
     # Public: Stops the video
+    #
+    # Returns nothing
     #
     def stop
       connection.post("/stop")
@@ -146,11 +178,17 @@ module Airplay
 
     # Public: Locks the execution until the video gets fully played
     #
+    # Returns nothing
+    #
     def wait
       sleep 1 while wait_for_playback?
       cleanup
     end
 
+    # Public: Cleans up the player
+    #
+    # Returns nothing
+    #
     def cleanup
       timers.cancel
       persistent.close
@@ -158,23 +196,44 @@ module Airplay
 
     private
 
+    # Private: Returns if we have to wait for playback
+    #
+    # Returns a boolean if we need to wait
+    #
     def wait_for_playback?
       return true if playlist.next?
       loading? || playing? || paused?
     end
 
+    # Private: The timers
+    #
+    # Returns a Timers object
+    #
     def timers
       @_timers ||= Timers.new
     end
 
+    # Private: The connection
+    #
+    # Returns the current connection to the device
+    #
     def connection
       @_connection ||= Airplay::Connection.new(@device)
     end
 
+    # Private: The persistent connection
+    #
+    # Returns the persistent connection to the device
+    #
     def persistent
       @_persistent ||= Airplay::Connection.new(@device, keep_alive: true)
     end
 
+    # Private: Starts checking for playback status ever 1 second
+    #          Adds one timer to the pool
+    #
+    # Returns nothing
+    #
     def check_for_playback_status
       timers << every(1) do
         case true
@@ -187,6 +246,8 @@ module Airplay
     end
 
     # Private: Get ready the state machine
+    #
+    # Returns nothing
     #
     def start_the_machine
       @machine = MicroMachine.new(:loading)

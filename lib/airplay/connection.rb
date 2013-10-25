@@ -16,11 +16,19 @@ module Airplay
       @logger = Airplay::Logger.new("airplay::connection")
     end
 
+    # Public: Establishes a persistent connection to the device
+    #
+    # Returns the persistent connection
+    #
     def persistent
       address = @options[:address] || "http://#{@device.address}"
       @_persistent ||= Airplay::Connection::Persistent.new(address, @options)
     end
 
+    # Public: Closes the opened connection
+    #
+    # Returns nothing
+    #
     def close
       persistent.close
       @_persistent = nil
@@ -28,9 +36,9 @@ module Airplay
 
     # Public: Executes a POST to a resource
     #
-    #   resource - The resource on the currently active Device
-    #   body - The body of the action
-    #   headers - Optional headers
+    # resource - The resource on the currently active Device
+    # body     - The body of the action
+    # headers  - Optional headers
     #
     # Returns a response object
     #
@@ -44,9 +52,9 @@ module Airplay
 
     # Public: Executes a PUT to a resource
     #
-    #   resource - The resource on the currently active Device
-    #   body - The body of the action
-    #   headers - Optional headers
+    # resource - The resource on the currently active Device
+    # body     - The body of the action
+    # headers  - Optional headers
     #
     # Returns a response object
     #
@@ -60,8 +68,8 @@ module Airplay
 
     # Public: Executes a GET to a resource
     #
-    #   resource - The resource on the currently active Device
-    #   headers - Optional headers
+    # resource - The resource on the currently active Device
+    # headers  - Optional headers
     #
     # Returns a response object
     #
@@ -76,6 +84,8 @@ module Airplay
 
     # Private: The defaults connection headers
     #
+    # Returns the default headers
+    #
     def default_headers
       {
         "User-Agent"         => "MediaControl/1.0",
@@ -85,8 +95,8 @@ module Airplay
 
     # Private: Sends a request to the Device
     #
-    #   request - The Request object
-    #   headers - The headers of the request
+    # request - The Request object
+    # headers - The headers of the request
     #
     # Returns a response object
     #

@@ -9,6 +9,10 @@ module Airplay
 
     private
 
+    # Private: The Viewer handler
+    #
+    # Returns a Viewer object
+    #
     def viewer
       @_viewer ||= Airplay::Viewer.new(self)
     end
