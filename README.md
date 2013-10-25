@@ -184,4 +184,5 @@ To generate an updated README based on the contents of `doc` please use `rake do
 
 * [sodabrew](http://github.com/sodabrew)
 * [pote](http://github.com/pote)
-
+* [janogonzalez](http://github.com/janogonzalez) - Who allowed me to release 1.0
+  from startech conf <3
