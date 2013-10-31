@@ -49,17 +49,47 @@ module Airplay
     # Returns if there are more nodes coming
     #
     def node_resolver(node, resolved)
-      info = Socket.getaddrinfo(resolved.target, nil, Socket::AF_INET)
-      ip = info[0][2]
-
-      airplay_device = Device.new(
-        name:     node.name.gsub(/\u00a0/, ' '),
-        address: "#{ip}:#{resolved.port}",
-      )
-
-      devices << airplay_device
-
+      address = get_device_address(resolved)
+      add_device(node.name, address)
       resolved.flags.more_coming?
+    end
+
+    # Private: Resolves the node complete address
+    #
+    # resolved - The DNS Resolved object
+    #
+    # Returns a string with the address (host:ip)
+    #
+    def get_device_address(resolved)
+      host = get_device_host(resolved.target)
+      "#{host}:#{resolved.port}"
+    end
+
+    # Private: Resolves the node ip or hostname
+    #
+    # resolved - The DNS Resolved object
+    #
+    # Returns a string with the ip or the hostname
+    #
+    def get_device_host(target)
+      info = Socket.getaddrinfo(target, nil, Socket::AF_INET)
+      info[0][2]
+    rescue SocketError
+      target
+    end
+
+    # Private: Creates and adds a device to the pool
+    #
+    # name    - The device name
+    # address - The device address
+    #
+    # Returns nothing
+    #
+    def add_device(name, address)
+      devices << Device.new(
+        name:     name.gsub(/\u00a0/, ' '),
+        address:  address,
+      )
     end
 
     # Private: Resolves the node information given a node
