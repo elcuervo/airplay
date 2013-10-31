@@ -88,7 +88,7 @@ module Airplay
     def add_device(name, address)
       devices << Device.new(
         name:     name.gsub(/\u00a0/, ' '),
-        address:  address,
+        address:  address
       )
     end
 
