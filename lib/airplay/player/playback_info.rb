@@ -10,7 +10,7 @@ module Airplay
       end
 
       def has_duration?
-        duration && duration != 0.0
+        !duration.to_f.zero?
       end
 
       def position
