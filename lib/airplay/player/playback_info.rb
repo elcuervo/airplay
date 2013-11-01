@@ -9,12 +9,16 @@ module Airplay
         info["duration"]
       end
 
+      def has_duration?
+        !duration.to_f.zero?
+      end
+
       def position
         info["position"]
       end
 
       def percent
-        return unless position && duration
+        return unless position && has_duration?
         (position * 100 / duration).floor
       end
 
