@@ -15,7 +15,9 @@ module Airplay
       end
 
       def resolution
-        @_resolution ||= "#{@device.server_info["width"]}x#{@device.server_info["height"]}"
+        @_resolution ||= begin
+          "#{@device.server_info["width"]}x#{@device.server_info["height"]}"
+        end
       end
     end
   end
