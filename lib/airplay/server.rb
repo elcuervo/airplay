@@ -1,6 +1,7 @@
 require "rack"
 require "socket"
 require "uuid"
+require "celluloid"
 
 require "airplay/logger"
 require "airplay/server/app"
