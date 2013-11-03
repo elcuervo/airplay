@@ -1,3 +1,4 @@
+require "airplay"
 require "airplay/playable"
 require "airplay/viewable"
 require "airplay/device/features"
@@ -7,12 +8,16 @@ module Airplay
   # Public: Represents an Airplay Node
   #
   class Device
+    MissingAttributes = Class.new(KeyError)
+
     attr_reader :name, :address, :password
 
     include Playable
     include Viewable
 
     def initialize(attributes = {})
+      validate_attributes(attributes)
+
       @name = attributes[:name]
       @address = attributes[:address]
       @password = attributes[:password]
@@ -97,6 +102,18 @@ module Airplay
     end
 
     private
+
+    # Private: Validates the mandatory attributes for a device
+    #
+    # attributes - The attributes hash to be validated
+    #
+    # Returns nothing or raises a MissingAttributes if some key is missing
+    #
+    def validate_attributes(attributes)
+      if !([:name, :address] - attributes.keys).empty?
+        raise MissingAttributes.new("A :name and an :address are mandatory")
+      end
+    end
 
     # Private: Access the basic info of the device
     #
