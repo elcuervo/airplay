@@ -9,7 +9,7 @@ PATH
       log4r (~> 1.1.10)
       micromachine (~> 1.0.4)
       net-http-digest_auth (~> 1.2.1)
-      net-ptth (= 0.0.13)
+      net-ptth (= 0.0.14)
       uuid (~> 2.3.6)
 
 GEM
@@ -44,7 +44,7 @@ GEM
       given_core (= 3.0.0)
       minitest (> 4.3)
     net-http-digest_auth (1.2.1)
-    net-ptth (0.0.13)
+    net-ptth (0.0.14)
       celluloid-io (~> 0.15.0)
       http_parser.rb (~> 0.5.3)
       rack (~> 1.5.2)
