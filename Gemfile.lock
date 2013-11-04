@@ -9,7 +9,8 @@ PATH
       log4r (~> 1.1.10)
       micromachine (~> 1.0.4)
       net-http-digest_auth (~> 1.2.1)
-      net-ptth (= 0.0.14)
+      net-ptth (= 0.0.15)
+      reel-rack (~> 0.1.0)
       uuid (~> 2.3.6)
 
 GEM
@@ -34,7 +35,9 @@ GEM
     fakeweb (1.3.0)
     given_core (3.0.0)
       sorcerer (>= 0.3.7)
-    http_parser.rb (0.5.3)
+    http (0.5.0)
+      http_parser.rb
+    http_parser.rb (0.6.0.beta.2)
     log4r (1.1.10)
     macaddr (1.6.1)
       systemu (~> 2.5.0)
@@ -44,19 +47,30 @@ GEM
       given_core (= 3.0.0)
       minitest (> 4.3)
     net-http-digest_auth (1.2.1)
-    net-ptth (0.0.14)
+    net-ptth (0.0.15)
       celluloid-io (~> 0.15.0)
-      http_parser.rb (~> 0.5.3)
+      http_parser.rb (~> 0.6.0.beta.2)
       rack (~> 1.5.2)
     nio4r (0.5.0)
     rack (1.5.2)
     rake (10.1.0)
+    reel (0.4.0)
+      celluloid (>= 0.15.1)
+      celluloid-io (>= 0.15.0)
+      http (>= 0.5.0)
+      http_parser.rb (>= 0.6.0.beta.2)
+      websocket_parser (>= 0.1.4)
+    reel-rack (0.1.0)
+      rack (>= 1.4.0)
+      reel (>= 0.4.0)
     sorcerer (1.0.2)
     systemu (2.5.2)
     timers (1.1.0)
     uuid (2.3.7)
       macaddr (~> 1.0)
     vcr (2.4.0)
+    websocket_parser (0.1.4)
+      http
 
 PLATFORMS
   ruby
