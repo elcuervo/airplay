@@ -1,26 +1,25 @@
 require "net/ptth"
-require "uuid"
+require "securerandom"
 
 module Airplay
   # Public: The class that handles all the outgoing basic HTTP connections
   #
   class Connection
-    attr_reader :session
-
     # Public: Class that wraps a persistent connection to point to the airplay
     #         server and other configuration
     #
     class Persistent
+      attr_reader :session, :mac_address
+
       def initialize(address, options = {})
         @logger = Airplay::Logger.new("airplay::connection::persistent")
         @socket = Net::PTTH.new(address, options)
         @socket.set_debug_output = @logger
 
-        @socket.socket
-      end
+        @session = SecureRandom.uuid
+        @mac_address = "0x#{SecureRandom.hex(6)}"
 
-      def session
-        @_session ||= UUID.generate
+        @socket.socket
       end
 
       def close

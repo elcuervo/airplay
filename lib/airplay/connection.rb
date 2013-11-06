@@ -89,7 +89,8 @@ module Airplay
     def default_headers
       {
         "User-Agent"         => "MediaControl/1.0",
-        "X-Apple-Session-Id" => persistent.session
+        "X-Apple-Session-ID" => persistent.session,
+        "X-Apple-Device-ID"  => persistent.mac_address
       }
     end
 
