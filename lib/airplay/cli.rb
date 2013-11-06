@@ -9,6 +9,35 @@ module Airplay
   #
   module CLI
     class << self
+      # Public: Shows CLI help
+      #
+      # Returns nothing.
+      #
+      def help
+        Airplay.configuration.load
+        puts <<-EOS.gsub!(" "*10, "")
+          Usage: air [OPTIONS] ACTION [URL OR PATH]
+
+          Command line for the apple tv.
+          Example: air play my_video.mov
+
+          Actions:
+
+          list    - Lists the available devices in the network.
+          help    - This help.
+          version - The current airplay-cli version.
+          play    - Plays a local or remote video.
+          view    - Shows an image or a folder of images, can be an url.
+
+          Options:
+
+          --device      - Name of the device where it should be played (Default: The first one)
+          --wait        - The wait time for playing an slideshow (Default: 3)
+          --interactive - Control the slideshow using left and right arrows.
+
+        EOS
+      end
+
       # Public: Lists all the devices to STDOUT
       #
       # Returns nothing.

@@ -10,6 +10,8 @@ begin
     "--wait"        => lambda { |sec| @wait = sec.to_i },
     "--interactive" => lambda { @interactive = true },
 
+    "help" => Airplay::CLI.method(:help),
+
     "list" => Airplay::CLI.method(:list),
 
     "version" => lambda { puts Airplay::CLI::VERSION },
@@ -27,6 +29,8 @@ begin
       }
       Airplay::CLI.view(file, options)
     }
+
+  Airplay::CLI.help if ARGV.empty?
 
 rescue Airplay::Browser::NoDevicesFound
   puts "No devices found."
