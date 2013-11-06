@@ -10,7 +10,7 @@ module Airplay
   class Device
     MissingAttributes = Class.new(KeyError)
 
-    attr_reader :name, :address, :password
+    attr_reader :name, :address, :type, :password
 
     include Playable
     include Viewable
@@ -18,8 +18,9 @@ module Airplay
     def initialize(attributes = {})
       validate_attributes(attributes)
 
-      @name = attributes[:name]
-      @address = attributes[:address]
+      @name     = attributes[:name]
+      @address  = attributes[:address]
+      @type     = attributes[:type]
       @password = attributes[:password]
 
       Airplay.configuration.load

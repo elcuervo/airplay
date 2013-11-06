@@ -50,8 +50,25 @@ module Airplay
     #
     def node_resolver(node, resolved)
       address = get_device_address(resolved)
-      add_device(node.name, address)
+      type = get_type(resolved.text_record)
+
+      add_device(node.name, address, type)
       resolved.flags.more_coming?
+    end
+
+    # Private: Gets the device type
+    #
+    # records - The text records hash to be investigated
+    #
+    # Returns a symbol with the type
+    #
+    def get_type(records)
+      # rhd means Remote HD the first product of the Airserver people
+      if records.has_key?("rhd")
+        :airserver
+      else
+        :apple_tv
+      end
     end
 
     # Private: Resolves the node complete address
@@ -85,10 +102,11 @@ module Airplay
     #
     # Returns nothing
     #
-    def add_device(name, address)
+    def add_device(name, address, type)
       devices << Device.new(
         name:     name.gsub(/\u00a0/, ' '),
-        address:  address
+        address:  address,
+        type:     type
       )
     end
 
