@@ -139,6 +139,8 @@ module Airplay
         new_device.address = "#{ip}:7100"
 
         response = new_device.connection.get("/stream.xml").response
+        return {} if response.status != 200
+
         plist = CFPropertyList::List.new(data: response.body)
         CFPropertyList.native_types(plist.value)
       end
