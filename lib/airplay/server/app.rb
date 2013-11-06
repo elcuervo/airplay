@@ -1,10 +1,11 @@
 require "cuba"
+require "securerandom"
 
 module Airplay
   class Server
     class App < Cuba
       settings[:assets] ||= Hash.new do |h, k|
-        h[k] = UUID.generate
+        h[k] = SecureRandom.uuid
       end
 
       define do

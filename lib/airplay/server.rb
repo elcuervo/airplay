@@ -1,6 +1,5 @@
 require "rack"
 require "socket"
-require "uuid"
 require "celluloid"
 require "reel/rack"
 
