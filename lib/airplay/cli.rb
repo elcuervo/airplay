@@ -38,6 +38,15 @@ module Airplay
         EOS
       end
 
+      # Public: Shows the current CLI version
+      #
+      # Returns nothing
+      #
+      def version
+        Airplay.configuration.load
+        puts Airplay::CLI::VERSION
+      end
+
       # Public: Lists all the devices to STDOUT
       #
       # Returns nothing.

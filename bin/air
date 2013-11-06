@@ -14,7 +14,7 @@ begin
 
     "list" => Airplay::CLI.method(:list),
 
-    "version" => lambda { puts Airplay::CLI::VERSION },
+    "version" => Airplay::CLI.method(:version),
 
     "play" => lambda { |video|
       options = { device: @device || Airplay.devices.first }
