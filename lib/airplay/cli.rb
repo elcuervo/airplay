@@ -38,15 +38,6 @@ module Airplay
         EOS
       end
 
-      # Public: Shows the current CLI version
-      #
-      # Returns nothing
-      #
-      def version
-        Airplay.configuration.load
-        puts Airplay::CLI::VERSION
-      end
-
       # Public: Lists all the devices to STDOUT
       #
       # Returns nothing.
@@ -113,6 +104,42 @@ module Airplay
           viewer.view(file_or_dir)
           sleep
         end
+      end
+
+      # Public: Shows the current CLI version
+      #
+      # Returns nothing
+      #
+      def version
+        Airplay.configuration.load
+        v = Airplay::CLI::VERSION
+        puts <<-EOS
+
+                            i@@@@@@@@@@@@@@@@@@@@@@@@@
+                          i80000000000000000000000000000
+                        i80000000000000000000000000000000G
+                      i8000000000000000000000000000000000000
+                    i80000000000000000000000000000000000000000
+            @00000    @0000000000000000000000000000000000000@   000000@
+            @0000008    @000000000000000000000000000000000@   80000000@
+            @001          @00000000000000000000000000000@          100@
+            @001            @0000000000000000000000000@            100@
+            @001              80000000000000000000008              t00@
+            @001                8000000000000000008                t00@
+            @001                  800000000000008                  t00@
+            @001                    G000000000G                    t00@
+            @001                      G00000G                      t00@
+            @001                        L0L                        t00@
+            @001                                                   t00@
+            @001                        air                        t00@
+            @001                       #{v}                       t00@
+            @001                                                   t00@
+            @001                                                   t00@
+            @001                                                   100@
+            @00000000000000000000000000000000000000000000000000000G000@
+            @000000000000000000000000000000000000000000000000000000000@
+
+        EOS
       end
 
     end
