@@ -15,6 +15,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency("dnssd",                "~> 2.0")
   s.add_dependency("CFPropertyList",       "~> 2.2.0")
+  s.add_dependency("mime-types",           "~> 2.0")
   s.add_dependency("log4r",                "~> 1.1.10")
   s.add_dependency("cuba",                 "~> 3.1.0")
   s.add_dependency("micromachine",         "~> 1.0.4")
