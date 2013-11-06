@@ -22,9 +22,9 @@ module Airplay
 
       def url
         @_url ||= case true
-                 when File.exists?(file_or_url)
+                 when local?
                    Airplay.server.serve(File.expand_path(file_or_url))
-                 when !!(file_or_url =~ URI::regexp)
+                 when remote?
                    file_or_url
                  else
                    raise Errno::ENOENT, file_or_url
@@ -37,6 +37,14 @@ module Airplay
           compatibility = MIME::Types.type_for(path).map(&:to_s) & COMPATIBLE_TYPES
           compatibility.any?
         end
+      end
+
+      def local?
+        File.exists?(file_or_url)
+      end
+
+      def remote?
+        !!(file_or_url =~ URI::regexp)
       end
 
       def to_s; url end
