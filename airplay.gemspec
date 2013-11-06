@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
   s.add_dependency("micromachine",         "~> 1.0.4")
   s.add_dependency("celluloid",            "~> 0.15.0")
   s.add_dependency("reel-rack",            "~> 0.1.0")
-  s.add_dependency("net-ptth",             "=  0.0.15")
+  s.add_dependency("net-ptth",             "=  0.0.16")
   s.add_dependency("net-http-digest_auth", "~> 1.2.1")
 
   s.add_development_dependency("minitest",        "~> 4.4.0")

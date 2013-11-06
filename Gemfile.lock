@@ -9,9 +9,8 @@ PATH
       log4r (~> 1.1.10)
       micromachine (~> 1.0.4)
       net-http-digest_auth (~> 1.2.1)
-      net-ptth (= 0.0.15)
+      net-ptth (= 0.0.16)
       reel-rack (~> 0.1.0)
-      uuid (~> 2.3.6)
 
 GEM
   remote: http://rubygems.org/
@@ -39,15 +38,13 @@ GEM
       http_parser.rb
     http_parser.rb (0.6.0.beta.2)
     log4r (1.1.10)
-    macaddr (1.6.1)
-      systemu (~> 2.5.0)
     micromachine (1.0.4)
     minitest (4.4.0)
     minitest-given (3.0.0)
       given_core (= 3.0.0)
       minitest (> 4.3)
     net-http-digest_auth (1.2.1)
-    net-ptth (0.0.15)
+    net-ptth (0.0.16)
       celluloid-io (~> 0.15.0)
       http_parser.rb (~> 0.6.0.beta.2)
       rack (~> 1.5.2)
@@ -64,10 +61,7 @@ GEM
       rack (>= 1.4.0)
       reel (>= 0.4.0)
     sorcerer (1.0.2)
-    systemu (2.5.2)
     timers (1.1.0)
-    uuid (2.3.7)
-      macaddr (~> 1.0)
     vcr (2.4.0)
     websocket_parser (0.1.4)
       http
