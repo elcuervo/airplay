@@ -8,7 +8,7 @@ describe Airplay::Configuration do
     Then { configuration.log_level == 4 }
     Then { configuration.autodiscover == true }
     Then { configuration.host == "0.0.0.0" }
-    Then { configuration.port == "1337" }
+    Then { configuration.port == nil }
     Then { configuration.output.respond_to?(:info) }
   end
 

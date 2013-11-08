@@ -15,7 +15,7 @@ module Airplay
       @log_level = Log4r::ERROR
       @autodiscover = true
       @host = "0.0.0.0"
-      @port = "1337"
+      @port = nil
       @output = Log4r::Outputter.stdout
     end
 
