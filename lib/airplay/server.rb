@@ -10,10 +10,8 @@ module Airplay
   class Server
     include Celluloid
 
-    attr_reader :port
-
     def initialize
-      @port = Airplay.configuration.port || find_free_port
+      @port = Airplay.configuration.port
       @logger = Airplay::Logger.new("airplay::server")
       @server = Rack::Server.new(
         server: :reel,
@@ -26,6 +24,11 @@ module Airplay
       )
 
       start!
+    end
+    
+    def port
+      # FIXME how do I get at this socket?
+      @port || @server.socket.local_address.ip_port
     end
 
     # Public: Adds a file to serve
@@ -73,14 +76,6 @@ module Airplay
       @_ip ||= Socket.ip_address_list.detect do |addr|
         addr.ipv4_private?
       end.ip_address
-    end
-
-    def find_free_port
-      socket = Socket.new(Socket::AF_INET, Socket::SOCK_STREAM, 0)
-      socket.listen(1)
-      port = socket.local_address.ip_port
-      socket.close
-      port
     end
   end
 end
