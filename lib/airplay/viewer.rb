@@ -58,15 +58,29 @@ module Airplay
     #
     def get_content(media_or_io)
       case true
-      when File.exists?(File.expand_path(media_or_io))
-        File.read(media_or_io)
-      when !!(media_or_io =~ URI::regexp)
-        open(media_or_io).read
-      when media_or_io.is_a?(String)
-        media_or_io
-      when media_or_io.respond_to?(:read)
-        media_or_io.read
+      when is_file?(media_or_io)   then File.read(media_or_io)
+      when is_url?(media_or_io)    then open(media_or_io).read
+      when is_string?(media_or_io) then media_or_io
+      when is_io?(media_or_io)     then media_or_io.read
       end
+    end
+
+    def is_file?(string)
+      File.exists?(File.expand_path(string))
+    rescue ArgumentError
+      false
+    end
+
+    def is_url?(string)
+      !!(string =~ URI::regexp)
+    end
+
+    def is_string?(string)
+      media_or_io.is_a?(String)
+    end
+
+    def is_io?(string)
+      media_or_io.respond_to?(:read)
     end
   end
 end

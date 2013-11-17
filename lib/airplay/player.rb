@@ -1,7 +1,7 @@
 require "uri"
 require "forwardable"
 require "micromachine"
-require "celluloid"
+require "celluloid/autostart"
 require "cfpropertylist"
 
 require "airplay/connection"

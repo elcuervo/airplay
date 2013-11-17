@@ -1,4 +1,5 @@
 require "log4r/config"
+require "celluloid/autostart"
 require "airplay/logger"
 
 # Public: Airplay core module
@@ -10,6 +11,7 @@ module Airplay
     attr_accessor :log_level, :output, :autodiscover, :host, :port
 
     def initialize
+      Celluloid.boot # Force Thread Pool initialization
       Log4r.define_levels(*Log4r::Log4rConfig::LogLevels)
 
       @log_level = Log4r::ERROR

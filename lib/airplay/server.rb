@@ -1,6 +1,6 @@
 require "rack"
 require "socket"
-require "celluloid"
+require "celluloid/autostart"
 require "reel/rack"
 
 require "airplay/logger"

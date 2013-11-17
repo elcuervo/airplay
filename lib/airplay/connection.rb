@@ -1,4 +1,4 @@
-require "celluloid"
+require "celluloid/autostart"
 require "airplay/connection/persistent"
 require "airplay/connection/authentication"
 
