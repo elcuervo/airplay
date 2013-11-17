@@ -24,11 +24,11 @@ much as you want in: https://gumroad.com/l/airplay
 
 ### Library
 
-`gem install airplay`
+`gem install airplay --pre`
 
 ## CLI
 
-`gem install airplay-cli`
+`gem install airplay-cli --pre`
 
 ## Usage
 
@@ -90,6 +90,9 @@ end
 ```ruby
 # You can access a known device easily
 device = Airplay["Apple TV"]
+
+# And add the password of the device if needed
+device.password = "my super secret password"
 
 # Or you can group known devices to have them do a given action together
 Airplay.group["Backyard"] << Airplay["Apple TV"]
@@ -184,5 +187,4 @@ To generate an updated README based on the contents of `doc` please use `rake do
 
 * [sodabrew](http://github.com/sodabrew)
 * [pote](http://github.com/pote)
-* [janogonzalez](http://github.com/janogonzalez) - Who allowed me to release 1.0
-  from startech conf <3
+

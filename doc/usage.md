@@ -59,6 +59,9 @@ end
 # You can access a known device easily
 device = Airplay["Apple TV"]
 
+# And add the password of the device if needed
+device.password = "my super secret password"
+
 # Or you can group known devices to have them do a given action together
 Airplay.group["Backyard"] << Airplay["Apple TV"]
 Airplay.group["Backyard"] << Airplay["Room TV"]
