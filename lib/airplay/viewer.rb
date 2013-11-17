@@ -66,6 +66,7 @@ module Airplay
     end
 
     def is_file?(string)
+      return false if string.is_a?(StringIO)
       File.exists?(File.expand_path(string))
     rescue ArgumentError
       false
@@ -73,14 +74,16 @@ module Airplay
 
     def is_url?(string)
       !!(string =~ URI::regexp)
+    rescue ArgumentError
+      false
     end
 
     def is_string?(string)
-      media_or_io.is_a?(String)
+      string.is_a?(String)
     end
 
     def is_io?(string)
-      media_or_io.respond_to?(:read)
+      string.respond_to?(:read)
     end
   end
 end
