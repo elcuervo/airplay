@@ -38,7 +38,7 @@ Airplay.configure do |config|
   config.log_level      # Log4r levels (Default: Log4r::ERROR)
   config.autodiscover   # Allows to search for nodes (Default: true)
   config.host           # In which host to bind the server (Default: 0.0.0.0)
-  config.port           # In which port to bind the server (Default: 1337)
+  config.port           # In which port to bind the server (Default: will find one)
   config.output         # Where to log (Default: Log4r::Outputter.stdout)
 end
 ```
