@@ -25,4 +25,9 @@ describe "Sending images to a device" do
     When(:view)   { device.view(image) }
     Then { view == true }
   end
+
+  context "sending an unsupported type" do
+    When(:view) { device.view(42) }
+    Then { view == Failure(TypeError) }
+  end
 end

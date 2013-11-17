@@ -62,26 +62,51 @@ module Airplay
       when is_url?(media_or_io)    then open(media_or_io).read
       when is_string?(media_or_io) then media_or_io
       when is_io?(media_or_io)     then media_or_io.read
+      else raise TypeError.new("Unsupported type")
       end
     end
 
+    # Private: Check if the string is in the filesystem
+    #
+    # string - The string to be checked
+    #
+    # Returns true/false
+    #
     def is_file?(string)
       return false if string.is_a?(StringIO)
       File.exists?(File.expand_path(string))
-    rescue ArgumentError
+    rescue
       false
     end
 
+    # Private: Check if the string is a URL
+    #
+    # string - The string to be checked
+    #
+    # Returns true/false
+    #
     def is_url?(string)
       !!(string =~ URI::regexp)
-    rescue ArgumentError
+    rescue
       false
     end
 
+    # Private: Check if the string is actually a string
+    #
+    # string - The string to be checked
+    #
+    # Returns true/false
+    #
     def is_string?(string)
       string.is_a?(String)
     end
 
+    # Private: Check if the string can be read
+    #
+    # string - The string to be checked
+    #
+    # Returns true/false
+    #
     def is_io?(string)
       string.respond_to?(:read)
     end
