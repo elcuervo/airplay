@@ -46,7 +46,10 @@ module Airplay
     # Returns nothing
     #
     def start!
-      Thread.start { @server.start }
+      Thread.start do
+        release_socket!
+        @server.start
+      end
     end
 
     private
@@ -75,12 +78,22 @@ module Airplay
       end.ip_address
     end
 
+    # Private: Finds a free port by asking the kernel for a free one
+    #
+    # Returns a free port number
+    #
     def find_free_port
-      socket = Socket.new(Socket::AF_INET, Socket::SOCK_STREAM, 0)
-      socket.listen(1)
-      port = socket.local_address.ip_port
-      socket.close
-      port
+      @socket = Socket.new(Socket::AF_INET, Socket::SOCK_STREAM, 0)
+      @socket.listen(1)
+      @socket.local_address.ip_port
+    end
+
+    # Private: Closes the socket used to find a free port if open
+    #
+    # Returns nothing.
+    #
+    def release_socket!
+      @socket.close if @socket
     end
   end
 end
