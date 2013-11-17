@@ -105,7 +105,7 @@ module Airplay
       request.initialize_http_header(default_headers.merge(headers))
 
       if @device.password?
-        authentication = Airplay::Connection::Authentication.new(persistent)
+        authentication = Airplay::Connection::Authentication.new(@device, persistent)
         request = authentication.sign(request)
       end
 

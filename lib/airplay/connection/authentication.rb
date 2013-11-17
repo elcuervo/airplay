@@ -2,7 +2,7 @@ require "net/http/digest_auth"
 
 module Airplay
   class Connection
-    class Authentication < Struct.new(:handler)
+    Authentication = Struct.new(:device, :handler) do
       def sign(request)
         auth_token = authenticate(request)
         request.add_field('Authorization', auth_token) if auth_token
@@ -12,11 +12,10 @@ module Airplay
       private
 
       def uri(request)
-        server = Airplay.active
-        path = "http://#{server.address}#{request.path}"
+        path = "http://#{device.address}#{request.path}"
         uri = URI.parse(path)
         uri.user = "Airplay"
-        uri.password = server.password
+        uri.password = device.password
 
         uri
       end
