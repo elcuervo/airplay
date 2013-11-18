@@ -14,6 +14,12 @@ describe "Sending images to a device" do
     Then { view == true }
   end
 
+  context "being a raw binary image" do
+    Given(:image) { File.open(sample_images[1], "rb").read }
+    When(:view)   { device.view(image) }
+    Then { view == true }
+  end
+
   context "being a IO stream" do
     Given(:image) { StringIO.new(File.read(sample_images[2])) }
     When(:view)   { device.view(image) }

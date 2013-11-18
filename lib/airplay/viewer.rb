@@ -58,12 +58,25 @@ module Airplay
     #
     def get_content(media_or_io)
       case true
+      when is_binary?(media_or_io) then media_or_io
       when is_file?(media_or_io)   then File.read(media_or_io)
       when is_url?(media_or_io)    then open(media_or_io).read
       when is_string?(media_or_io) then media_or_io
       when is_io?(media_or_io)     then media_or_io.read
       else raise TypeError.new("Unsupported type")
       end
+    end
+
+    # Private: Check if the string is binary
+    #
+    # string - The string to be checked
+    #
+    # Returns true/false
+    #
+    def is_binary?(string)
+      string.encoding.names.include?("BINARY")
+    rescue
+      false
     end
 
     # Private: Check if the string is in the filesystem
