@@ -34,6 +34,7 @@ module Airplay
           --device      - Name of the device where it should be played (Default: The first one)
           --wait        - The wait time for playing an slideshow (Default: 3)
           --interactive - Control the slideshow using left and right arrows.
+          --password    - Adds the device password
 
         EOS
       end
@@ -64,6 +65,9 @@ module Airplay
       #
       def play(video, options)
         device = options[:device]
+        password = options[:password]
+
+        device.password = password if password
         player = device.play(video)
         puts "Playing #{video}"
         bar = ProgressBar.create(
@@ -90,6 +94,9 @@ module Airplay
       #
       def view(file_or_dir, options)
         device = options[:device]
+        password = options[:password]
+
+        device.password = password if password
         viewer = ImageViewer.new(device, options)
 
         if File.directory?(file_or_dir)

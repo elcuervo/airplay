@@ -9,6 +9,7 @@ begin
     "--device"      => lambda { |device_name| @device = Airplay[device_name] },
     "--wait"        => lambda { |sec| @wait = sec.to_i },
     "--interactive" => lambda { @interactive = true },
+    "--password"    => lambda { |password| @password = password },
 
     "help" => Airplay::CLI.method(:help),
 
@@ -17,7 +18,10 @@ begin
     "version" => Airplay::CLI.method(:version),
 
     "play" => lambda { |video|
-      options = { device: @device || Airplay.devices.first }
+      options = {
+        device: @device || Airplay.devices.first,
+        password: @password || false
+      }
       Airplay::CLI.play(video, options)
     },
 
@@ -25,6 +29,7 @@ begin
       options = {
         device: @device || Airplay.devices.first,
         interactive: @interactive || false,
+        password: @password || false,
         wait: @wait || 3
       }
       Airplay::CLI.view(file, options)
