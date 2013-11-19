@@ -7,6 +7,7 @@ require "airplay/cli/version"
 begin
   Clap.run ARGV,
     "--device"      => lambda { |device_name| @device = Airplay[device_name] },
+    "--url"         => lambda { |url| @url = url },
     "--wait"        => lambda { |sec| @wait = sec.to_i },
     "--interactive" => lambda { @interactive = true },
     "--password"    => lambda { |password| @password = password },
@@ -20,16 +21,18 @@ begin
     "play" => lambda { |video|
       options = {
         device: @device || Airplay.devices.first,
-        password: @password || false
+        password: @password || false,
+        url: @url || false
       }
       Airplay::CLI.play(video, options)
     },
 
     "view" => lambda { |file|
       options = {
-        device: @device || Airplay.devices.first,
+        device: @device || @url ? false : Airplay.devices.first,
         interactive: @interactive || false,
         password: @password || false,
+        url: @url || false,
         wait: @wait || 3
       }
       Airplay::CLI.view(file, options)

@@ -35,6 +35,7 @@ module Airplay
           --wait        - The wait time for playing an slideshow (Default: 3)
           --interactive - Control the slideshow using left and right arrows.
           --password    - Adds the device password
+          --url         - Allows you to specify an Apple TV url
 
         EOS
       end
@@ -66,8 +67,11 @@ module Airplay
       def play(video, options)
         device = options[:device]
         password = options[:password]
+        url = options[:url]
 
+        Airplay.devices.add("Apple TV", url) if url
         device.password = password if password
+
         player = device.play(video)
         puts "Playing #{video}"
         bar = ProgressBar.create(
@@ -95,8 +99,14 @@ module Airplay
       def view(file_or_dir, options)
         device = options[:device]
         password = options[:password]
+        url = options[:url]
 
+        if url
+          Airplay.configure { |c| c.autodiscover = false }
+          device = Airplay.devices.add("Apple TV", url)
+        end
         device.password = password if password
+
         viewer = ImageViewer.new(device, options)
 
         if File.directory?(file_or_dir)

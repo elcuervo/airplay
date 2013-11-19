@@ -42,7 +42,9 @@ module Airplay
     # Returns nothing
     #
     def add(name, address)
-      self << Device.new(name: name, address: address)
+      device = Device.new(name: name, address: address)
+      self << device
+      device
     end
 
     # Public: Adds a device to the list
