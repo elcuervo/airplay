@@ -63,7 +63,7 @@ module Airplay
       when is_url?(media_or_io)    then open(media_or_io).read
       when is_string?(media_or_io) then media_or_io
       when is_io?(media_or_io)     then media_or_io.read
-      else raise TypeError.new("Unsupported type")
+      else raise Airplay::Error::UnsupportedType
       end
     end
 
