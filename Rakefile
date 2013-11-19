@@ -5,11 +5,6 @@ require "fileutils"
 require "airplay/version"
 require "airplay/cli/version"
 
-Rake::TestTask.new("spec") do |t|
-  t.libs << "test"
-  t.pattern = "test/**/*_test.rb"
-end
-
 class RuleBuilder
   attr_reader :task, :info
 
@@ -74,17 +69,33 @@ class RuleBuilder
   end
 end
 
+
+
 builder = RuleBuilder.new(task: method(:task))
 namespace :build,   &builder.construct(:build)
 namespace :install, &builder.construct(:install)
 namespace :release, &builder.construct(:release)
 
-task :default => [:test]
-task :test => [:spec]
+Rake::TestTask.new("test:all") do |t|
+  t.libs << "test"
+  t.pattern = "test/**/*_test.rb"
+end
+
+Rake::TestTask.new("test:unit") do |t|
+  t.libs << "test"
+  t.pattern = "test/unit/**/*_test.rb"
+end
+
+Rake::TestTask.new("test:integration") do |t|
+  t.libs << "test"
+  t.pattern = "test/integration**/*_test.rb"
+end
+
+task :default => "test:all"
 
 namespace :doc do
   task :generate do
-    structure = %w(header installation usage documentation contributors)
+    structure = %w(header toc installation usage testing documentation contributors)
 
     File.open("README.md", "w+") do |f|
       structure.each { |part| f << File.read("doc/#{part}.md") + "\n" }
