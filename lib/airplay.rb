@@ -7,6 +7,10 @@ require "airplay/version"
 # Public: Airplay core module
 #
 module Airplay
+  # Airplay will throw exceptions with these types
+  class Error < StandardError; end
+  class Error::UnsupportedType < Error; end
+
   class << self
     # Public: General configuration
     #
