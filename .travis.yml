@@ -5,7 +5,7 @@ rvm:
 before_install:
 - sudo apt-get -qq update
 - sudo apt-get -qq install rdnssd libavahi-compat-libdnssd-dev
-script: bundle exec rake spec
+script: bundle exec rake
 env:
   global:
     secure: PDEIoCg7nim32QGeJKvWcpcTEB0jOSfrH+v5ebrO4ioqznUfoaf1qypWNHrXYY4hINA+L5Tm6HXAPah2OhFkBxZzIlKgWlH1MIx5y6Q7PyBN6MTZMw1GN7sTm+zy9z79ytjdtepI4rlKVSxhAwl3Uid7mNliZx6T8eOP634Rg9s=
