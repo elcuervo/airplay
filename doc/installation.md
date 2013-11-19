@@ -2,8 +2,8 @@
 
 ### Library
 
-`gem install airplay --pre`
+`gem install airplay`
 
 ## CLI
 
-`gem install airplay-cli --pre`
+`gem install airplay-cli`
