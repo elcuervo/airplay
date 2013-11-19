@@ -4,6 +4,8 @@ module Airplay
   # Public: The class to handle image broadcast to a device
   #
   class Viewer
+    UnsuportedType = Class.new(TypeError)
+
     TRANSITIONS = %w(None Dissolve SlideLeft SlideRight)
 
     def initialize(device)
@@ -63,7 +65,7 @@ module Airplay
       when is_url?(media_or_io)    then open(media_or_io).read
       when is_string?(media_or_io) then media_or_io
       when is_io?(media_or_io)     then media_or_io.read
-      else raise TypeError.new("Unsupported type")
+      else raise UnsuportedType.new("That media type is unsupported")
       end
     end
 

@@ -34,6 +34,6 @@ describe "Sending images to a device" do
 
   context "sending an unsupported type" do
     When(:view) { device.view(42) }
-    Then { view == Failure(TypeError) }
+    Then { view == Failure(Airplay::Viewer::UnsuportedType) }
   end
 end
