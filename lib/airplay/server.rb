@@ -75,6 +75,10 @@ module Airplay
       end.ip_address
     end
 
+    # Private: Finds a free port by asking the kernel for a free one
+    #
+    # Returns a free port number
+    #
     def find_free_port
       socket = Socket.new(Socket::AF_INET, Socket::SOCK_STREAM, 0)
       socket.listen(1)
