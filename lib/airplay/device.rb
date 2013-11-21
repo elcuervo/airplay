@@ -117,10 +117,12 @@ module Airplay
 
     # Public: The unique id of the device (mac address)
     #
-    # Returns the mac address based on basic_info
+    # Returns the mac address based on basic_info or server_info
     #
     def id
-      @_id ||= basic_info["macAddress"]
+      @_id ||= begin
+        basic_info.fetch("macAddress", server_info["macAddress"])
+      end
     end
 
     private
