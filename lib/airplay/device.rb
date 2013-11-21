@@ -34,6 +34,19 @@ module Airplay
       @_ip ||= address.split(":").first
     end
 
+    # Public: Sets server information based on text records
+    #
+    # Returns text records hash.
+    #
+    def text_records=(record)
+      @text_records = {
+        "model"      => record["model"],
+        "features"   => record["features"],
+        "macAddress" => record["deviceid"],
+        "srcvers"    => record["srcvers"]
+      }
+    end
+
     # Public: Sets the password for the device
     #
     # passwd - The password string
@@ -102,19 +115,15 @@ module Airplay
       @_connection = nil
     end
 
-    private
-
-    # Private: Validates the mandatory attributes for a device
+    # Public: The unique id of the device (mac address)
     #
-    # attributes - The attributes hash to be validated
+    # Returns the mac address based on basic_info
     #
-    # Returns nothing or raises a MissingAttributes if some key is missing
-    #
-    def validate_attributes(attributes)
-      if !([:name, :address] - attributes.keys).empty?
-        raise MissingAttributes.new("A :name and an :address are mandatory")
-      end
+    def id
+      @_id ||= basic_info["macAddress"]
     end
+
+    private
 
     # Private: Access the basic info of the device
     #
@@ -122,6 +131,8 @@ module Airplay
     #
     def basic_info
       @_basic_info ||= begin
+        return @text_records if @text_records
+
         response = connection.get("/server-info").response
         plist = CFPropertyList::List.new(data: response.body)
         CFPropertyList.native_types(plist.value)
@@ -143,6 +154,18 @@ module Airplay
 
         plist = CFPropertyList::List.new(data: response.body)
         CFPropertyList.native_types(plist.value)
+      end
+    end
+
+    # Private: Validates the mandatory attributes for a device
+    #
+    # attributes - The attributes hash to be validated
+    #
+    # Returns nothing or raises a MissingAttributes if some key is missing
+    #
+    def validate_attributes(attributes)
+      if !([:name, :address] - attributes.keys).empty?
+        raise MissingAttributes.new("A :name and an :address are mandatory")
       end
     end
   end

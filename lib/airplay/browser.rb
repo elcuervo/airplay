@@ -52,7 +52,11 @@ module Airplay
       address = get_device_address(resolved)
       type = get_type(resolved.text_record)
 
-      add_device(node.name, address, type)
+      device = create_device(node.name, address, type)
+      device.text_records = resolved.text_record
+
+      devices << device
+
       resolved.flags.more_coming?
     end
 
@@ -95,15 +99,15 @@ module Airplay
       target
     end
 
-    # Private: Creates and adds a device to the pool
+    # Private: Creates a device
     #
     # name    - The device name
     # address - The device address
     #
     # Returns nothing
     #
-    def add_device(name, address, type)
-      devices << Device.new(
+    def create_device(name, address, type)
+      Device.new(
         name:     name.gsub(/\u00a0/, ' '),
         address:  address,
         type:     type

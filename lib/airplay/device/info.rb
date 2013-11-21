@@ -10,7 +10,7 @@ module Airplay
       def initialize(device)
         @device = device
         @model = device.server_info["model"]
-        @os_version = device.server_info["osBuildVersion"]
+        @os_version = device.server_info["srcvers"]
         @mac_address = device.server_info["macAddress"]
       end
 
