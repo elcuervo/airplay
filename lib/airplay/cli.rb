@@ -49,6 +49,7 @@ module Airplay
           puts <<-EOS.gsub(/^\s{12}/,'')
             * #{device.name} (#{device.info.model} running #{device.info.os_version})
               ip: #{device.ip}
+              mac: #{device.id}
               type: #{device.type}
               resolution: #{device.info.resolution}
 
