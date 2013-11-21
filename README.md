@@ -96,7 +96,7 @@ Airplay.devices.each do |device|
 end
 ```
 
-#### Accesing and Grouping
+#### Accessing and Grouping
 
 ```ruby
 # You can access a known device easily
