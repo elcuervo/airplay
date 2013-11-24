@@ -130,7 +130,7 @@ module Airplay
     #
     def scrub
       return unless playing?
-      response = connection.get("/scrub")
+      response = connection.get("/scrub").response
       parts = response.body.split("\n")
       Hash[parts.collect { |v| v.split(": ") }]
     end
