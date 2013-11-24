@@ -170,6 +170,14 @@ module Airplay
       connection.post("/stop")
     end
 
+    # Public: Seeks to the specified position (seconds) in the video
+    #
+    # Returns nothing
+    #
+    def seek(position)
+      connection.async.post("/scrub?position=#{position}")
+    end
+
     def loading?; state == :loading end
     def playing?; state == :playing end
     def paused?;  state == :paused  end
