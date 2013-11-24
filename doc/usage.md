@@ -139,6 +139,8 @@ player.pause
 player.resume
 player.stop
 player.scrub
+player.info
+player.seek
 
 # Access the playback time per second
 player.progress -> progress {
