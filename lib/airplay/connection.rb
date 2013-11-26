@@ -7,6 +7,8 @@ module Airplay
   #
   class Connection
     Response = Struct.new(:connection, :response)
+    PasswordRequired = Class.new(StandardError)
+    WrongPassword = Class.new(StandardError)
 
     include Celluloid
 
@@ -112,7 +114,13 @@ module Airplay
       @logger.info("Sending request to #{@device.address}")
       response = persistent.request(request)
 
-      Airplay::Connection::Response.new(persistent, response)
+      response = Airplay::Connection::Response.new(persistent, response)
+      if response.response.status == 401
+        raise PasswordRequired if !@device.password?
+        raise WrongPassword   if @device.password?
+      end
+
+      response
     end
   end
 end
