@@ -11,4 +11,4 @@ configured in Travis CI. For that reason you won't be able to run those tests if
 you don't have an Apple TV.
 
 Run unit tests with: `rake test:unit` and integration ones with: `rake test:integration`
-You can run all of them togheter with: `rake test:all`
+You can run all of them together with: `rake test:all`

@@ -216,3 +216,5 @@ To generate an updated README based on the contents of `doc` please use `rake do
 * [sodabrew](http://github.com/sodabrew)
 * [pote](http://github.com/pote)
 
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/elcuervo/airplay/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
