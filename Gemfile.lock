@@ -20,7 +20,7 @@ PATH
 GEM
   remote: http://rubygems.org/
   specs:
-    CFPropertyList (2.2.3)
+    CFPropertyList (2.2.6)
     celluloid (0.15.2)
       timers (~> 1.1.0)
     celluloid-io (0.15.0)
@@ -42,7 +42,7 @@ GEM
       sorcerer (>= 0.3.7)
     http (0.5.0)
       http_parser.rb
-    http_parser.rb (0.6.0.beta.2)
+    http_parser.rb (0.6.0)
     log4r (1.1.10)
     micromachine (1.0.4)
     mime-types (2.0)
@@ -55,7 +55,7 @@ GEM
       celluloid-io (>= 0.15.0)
       http_parser.rb (>= 0.6.0.beta.2)
       rack (>= 1.4.5)
-    nio4r (0.5.0)
+    nio4r (1.0.0)
     rack (1.5.2)
     rake (10.1.0)
     reel (0.4.0)
@@ -71,7 +71,7 @@ GEM
     sorcerer (1.0.2)
     timers (1.1.0)
     vcr (2.4.0)
-    websocket_parser (0.1.4)
+    websocket_parser (0.1.5)
       http
 
 PLATFORMS
