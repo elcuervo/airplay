@@ -23,6 +23,8 @@ module Airplay
       @type     = attributes[:type]
       @password = attributes[:password]
 
+      @it_has_password = false
+
       Airplay.configuration.load
     end
 
@@ -62,6 +64,7 @@ module Airplay
     # Returns boolean for the presence of a password
     #
     def password?
+      return @it_has_password if @it_has_password
       !!password && !password.empty?
     end
 
@@ -127,6 +130,10 @@ module Airplay
 
     private
 
+    def it_has_password!
+      @it_has_password = true
+    end
+
     # Private: Access the basic info of the device
     #
     # Returns a hash with the basic information
@@ -146,17 +153,25 @@ module Airplay
     # Returns a hash with extra information
     #
     def extra_info
-      @_extra_info ||= begin
-        new_device = clone
-        new_device.refresh_connection
-        new_device.address = "#{ip}:7100"
+      @_extra_info ||=
+        begin
+          new_device = clone
+          new_device.refresh_connection
+          new_device.address = "#{ip}:7100"
 
-        response = new_device.connection.get("/stream.xml").response
-        return {} if response.status != 200
+          result = new_device.connection.get("/stream.xml")
+          raise result if !result.is_a?(Airplay::Connection::Response)
 
-        plist = CFPropertyList::List.new(data: response.body)
-        CFPropertyList.native_types(plist.value)
-      end
+          response = result.response
+          return {} if response.status != 200
+
+          plist = CFPropertyList::List.new(data: response.body)
+          CFPropertyList.native_types(plist.value)
+        rescue Airplay::Connection::PasswordRequired
+          it_has_password!
+
+          return {}
+        end
     end
 
     # Private: Validates the mandatory attributes for a device

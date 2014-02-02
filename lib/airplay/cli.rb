@@ -1,6 +1,7 @@
 require "ruby-progressbar"
 require "airplay"
 require "airplay/cli/image_viewer"
+require "airplay/cli/doctor"
 
 # Public: Airplay core module
 #
@@ -28,6 +29,7 @@ module Airplay
           version - The current airplay-cli version.
           play    - Plays a local or remote video.
           view    - Shows an image or a folder of images, can be an url.
+          doctor  - Shows some debug information to trace bugs.
 
           Options:
 
@@ -50,6 +52,7 @@ module Airplay
             * #{device.name} (#{device.info.model} running #{device.info.os_version})
               ip: #{device.ip}
               mac: #{device.id}
+              password?: #{device.password? ? "yes" : "no"}
               type: #{device.type}
               resolution: #{device.info.resolution}
 
@@ -85,6 +88,20 @@ module Airplay
         }
 
         player.wait
+      end
+
+      def doctor
+        puts <<-EOS.gsub!(" "*10, "")
+
+          This will run some basic tests on your network trying to find errors
+          and debug information to help fix them.
+
+        EOS
+
+        who = Airplay::CLI::Doctor.new
+
+        puts "Running dns-sd tests:"
+        who.information
       end
 
       # Public: Show an image given a device
