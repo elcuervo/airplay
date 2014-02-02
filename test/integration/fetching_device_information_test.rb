@@ -17,6 +17,6 @@ describe "Getting information from a device" do
 
   context "getting server information" do
     When(:full_info) { device.server_info }
-    Then { full_info.keys.size == 17 }
+    Then { full_info.keys.size >= 15 }
   end
 end
