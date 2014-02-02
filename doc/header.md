@@ -1,6 +1,7 @@
 # Airplay
 
 [![Code Climate](https://codeclimate.com/github/elcuervo/airplay.png)](https://codeclimate.com/github/elcuervo/airplay)
+[![Build Status](https://travis-ci.org/elcuervo/airplay.png?branch=master)](https://travis-ci.org/elcuervo/airplay)
 
 ![Airplay](doc/img/logo.png)
 
