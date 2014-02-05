@@ -45,11 +45,7 @@ module Airplay
     # Returns a response object
     #
     def post(resource, body = "", headers = {})
-      @logger.info("POST #{resource} with #{body.bytesize} bytes")
-      request = Net::HTTP::Post.new(resource)
-      request.body = body
-
-      send_request(request, headers)
+      prepare_request(:post, resource, body, headers)
     end
 
     # Public: Executes a PUT to a resource
@@ -61,11 +57,7 @@ module Airplay
     # Returns a response object
     #
     def put(resource, body = "", headers = {})
-      @logger.info("PUT #{resource} with #{body.bytesize} bytes")
-      request = Net::HTTP::Put.new(resource)
-      request.body = body
-
-      send_request(request, headers)
+      prepare_request(:put, resource, body, headers)
     end
 
     # Public: Executes a GET to a resource
@@ -76,13 +68,33 @@ module Airplay
     # Returns a response object
     #
     def get(resource, headers = {})
-      @logger.info("GET #{resource}")
-      request = Net::HTTP::Get.new(resource)
-
-      send_request(request, headers)
+      prepare_request(:get, resource, nil, headers)
     end
 
     private
+
+    # Private: Prepares HTTP requests for :get, :post and :put
+    #
+    # verb     - The http method/verb to use for the request
+    # resource - The resource on the currently active Device
+    # body     - The body of the action
+    # headers  - The headers of the request
+    #
+    # Returns a response object
+    #
+    def prepare_request(verb, resource, body, headers)
+      msg = "#{verb.upcase} #{resource}"
+
+      request = Net::HTTP.const_get(verb.capitalize).new(resource)
+
+      unless verb.eql?(:get)
+        request.body = body
+        msg.concat(" with #{body.bytesize} bytes")
+      end
+
+      @logger.info(msg)
+      send_request(request, headers)
+    end
 
     # Private: The defaults connection headers
     #
@@ -114,10 +126,19 @@ module Airplay
       @logger.info("Sending request to #{@device.address}")
       response = persistent.request(request)
 
-      response = Airplay::Connection::Response.new(persistent, response)
+      verify_response(Airplay::Connection::Response.new(persistent, response))
+    end
+
+    # Private: Verifies response
+    #
+    # response - The Response object
+    #
+    # Returns a response object or exception
+    #
+    def verify_response(response)
       if response.response.status == 401
         raise PasswordRequired if !@device.password?
-        raise WrongPassword   if @device.password?
+        raise WrongPassword if @device.password?
       end
 
       response
