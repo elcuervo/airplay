@@ -137,8 +137,8 @@ module Airplay
     #
     def verify_response(response)
       if response.response.status == 401
-        raise PasswordRequired if !@device.password?
-        raise WrongPassword if @device.password?
+        return PasswordRequired.new if !@device.password?
+        return WrongPassword.new    if @device.password?
       end
 
       response

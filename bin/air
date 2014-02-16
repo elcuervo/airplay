@@ -16,6 +16,8 @@ begin
 
     "list" => Airplay::CLI.method(:list),
 
+    "doctor" => Airplay::CLI.method(:doctor),
+
     "version" => Airplay::CLI.method(:version),
 
     "play" => lambda { |video|
