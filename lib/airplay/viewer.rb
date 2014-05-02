@@ -89,7 +89,7 @@ module Airplay
     #
     def is_file?(string)
       return false if string.is_a?(StringIO)
-      File.exists?(File.expand_path(string))
+      !File.directory?(string) && File.exists?(File.expand_path(string))
     rescue
       false
     end
