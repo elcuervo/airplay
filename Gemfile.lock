@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    airplay (1.0.3)
+    airplay (1.0.4)
       CFPropertyList (~> 2.2)
       celluloid (>= 0.17.0)
       cuba (~> 3.1.0)
@@ -13,7 +13,7 @@ PATH
       net-ptth (= 0.0.17)
       reel-rack (~> 0.1.0)
     airplay-cli (1.0.2)
-      airplay (= 1.0.3)
+      airplay (>= 1.0.3)
       clap (~> 1.0.0)
       ruby-progressbar (~> 1.2.0)
 
