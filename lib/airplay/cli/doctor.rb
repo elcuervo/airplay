@@ -45,8 +45,7 @@ module Airplay
 
       def try_resolving(node)
         timeout(5) do
-          resolver = DNSSD::Service.new
-          resolver.resolve(node) do |resolved|
+          DNSSD.resolve(node) do |resolved|
             devices << DebugDevice.new(node, resolved)
 
             break unless resolved.flags.more_coming?
