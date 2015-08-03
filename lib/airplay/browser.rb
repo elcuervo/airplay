@@ -22,9 +22,16 @@ module Airplay
     #
     def browse
       timeout(5) do
+        nodes = []
         DNSSD.browse!(SEARCH) do |node|
-          resolve(node)
-          break unless node.flags.more_coming?
+          nodes << node
+          next if node.flags.more_coming?
+
+          nodes.each do |node|
+            resolve(node)
+          end
+
+          break
         end
       end
     rescue Timeout::Error => e
@@ -121,8 +128,7 @@ module Airplay
     # Returns nothing
     #
     def resolve(node)
-      resolver = DNSSD::Service.new
-      resolver.resolve(node) do |resolved|
+      DNSSD.resolve(node) do |resolved|
         break unless node_resolver(node, resolved)
       end
     end
