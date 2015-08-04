@@ -95,7 +95,7 @@ task :default => "test:all"
 
 namespace :doc do
   task :generate do
-    structure = %w(header toc installation usage testing documentation contributors bitdeli)
+    structure = %w(header toc installation usage testing documentation contributors)
 
     File.open("README.md", "w+") do |f|
       structure.each { |part| f << File.read("doc/#{part}.md") + "\n" }
