@@ -13,8 +13,8 @@ PATH
       net-ptth (= 0.0.17)
       reel (~> 0.5.0)
       reel-rack (~> 0.2.2)
-    airplay-cli (1.0.2)
-      airplay (>= 1.0.3)
+    airplay-cli (1.0.3)
+      airplay (>= 1.0.5)
       clap (~> 1.0.0)
       ruby-progressbar (~> 1.2.0)
 
