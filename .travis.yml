@@ -1,6 +1,5 @@
 language: ruby
 rvm:
-- 1.9.3
 - 2.0.0
 - 2.1.0
 before_install:
@@ -9,4 +8,5 @@ before_install:
 script: bundle exec rake
 env:
   global:
-    secure: PDEIoCg7nim32QGeJKvWcpcTEB0jOSfrH+v5ebrO4ioqznUfoaf1qypWNHrXYY4hINA+L5Tm6HXAPah2OhFkBxZzIlKgWlH1MIx5y6Q7PyBN6MTZMw1GN7sTm+zy9z79ytjdtepI4rlKVSxhAwl3Uid7mNliZx6T8eOP634Rg9s=
+  - secure: PDEIoCg7nim32QGeJKvWcpcTEB0jOSfrH+v5ebrO4ioqznUfoaf1qypWNHrXYY4hINA+L5Tm6HXAPah2OhFkBxZzIlKgWlH1MIx5y6Q7PyBN6MTZMw1GN7sTm+zy9z79ytjdtepI4rlKVSxhAwl3Uid7mNliZx6T8eOP634Rg9s=
+  - secure: EXq4zIfoWXu7u6gc/DksqAw82zAhIQQvotN33nGA7fh/zuJrHv5/a/7lYd6MghbiSsQp0+Kx/uJifzikjoTp3us1fWUxP9u+DRsuulTwpxG3tIg1JyHz6eY+5XTEdc8G0AFIH0Wh88OLw45DkR+m3PN24pwRNk8X6C2VdotNVvE=

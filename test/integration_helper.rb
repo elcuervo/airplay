@@ -2,7 +2,7 @@ require "test_helper"
 require "airplay"
 require "celluloid/autostart"
 
-device = ENV.fetch("TEST_TV_URL", "blocktv.airplay.io:7000")
+device = ENV.fetch("TEST_TV_URL", "some-apple-tv:7000")
 Airplay.configure { |c| c.autodiscover = false }
 Airplay.devices.add("Block TV", device)
 

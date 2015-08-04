@@ -5,7 +5,7 @@ describe "Getting information from a device" do
 
   context "getting the id" do
     When(:id) { device.id }
-    Then { id == "58:55:CA:1F:3E:81" }
+    Then { id == "58:55:CA:1F:3E:80" }
   end
 
   context "getting some minimun info" do
