@@ -31,7 +31,7 @@ begin
 
     "view" => lambda { |file|
       options = {
-        device: @device || @url ? false : Airplay.devices.first,
+        device: @url ? false : @device || Airplay.devices.first,
         interactive: @interactive || false,
         password: @password || false,
         url: @url || false,
