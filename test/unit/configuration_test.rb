@@ -1,28 +1,26 @@
 require "test_helper"
 require "airplay/configuration"
 
-describe Airplay::Configuration do
-  Given(:configuration) { Airplay::Configuration.new }
+setup do
+  @configuration = Airplay::Configuration.new
+end
 
-  context "default configuration" do
-    Then { configuration.log_level == 4 }
-    Then { configuration.autodiscover == true }
-    Then { configuration.host == "0.0.0.0" }
-    Then { configuration.port == nil }
-    Then { configuration.output.respond_to?(:info) }
-  end
+test "default configuration" do
+  assert @configuration.log_level == 4
+  assert @configuration.autodiscover == true
+  assert @configuration.host == "0.0.0.0"
+  assert @configuration.port == nil
+  assert @configuration.output.respond_to?(:info)
+end
 
-  context "changing configuration" do
-    When do
-      configuration.log_level = 1
-      configuration.autodiscover = false
-      configuration.host = "200.47.220.245"
-      configuration.port = "80"
-    end
+test "changing configuration" do
+  @configuration.log_level = 1
+  @configuration.autodiscover = false
+  @configuration.host = "200.47.220.245"
+  @configuration.port = "80"
 
-    Then { configuration.log_level == 1 }
-    And  { configuration.autodiscover == false }
-    And  { configuration.host == "200.47.220.245" }
-    And  { configuration.port == "80" }
-  end
+  assert @configuration.log_level == 1
+  assert @configuration.autodiscover == false
+  assert @configuration.host == "200.47.220.245"
+  assert @configuration.port == "80"
 end

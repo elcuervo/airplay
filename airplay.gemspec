@@ -25,6 +25,7 @@ Gem::Specification.new do |s|
   s.add_dependency("net-ptth",             "=  0.0.17")
   s.add_dependency("net-http-digest_auth", "~> 1.2.1")
 
+  s.add_development_dependency("cutest",          "~> 1.2.3")
   s.add_development_dependency("minitest",        "~> 4.4.0")
   s.add_development_dependency("minitest-given",  "~> 3.0.0")
   s.add_development_dependency("fakeweb",         "~> 1.3.0")
