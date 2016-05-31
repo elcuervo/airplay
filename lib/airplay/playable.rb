@@ -10,7 +10,7 @@ module Airplay
     # Returns a Player object to control the playback
     #
     def play(file_or_url = "playlist", options = {})
-      player.async.play(file_or_url, options)
+      player.play(file_or_url, options)
       player
     end
 

@@ -12,6 +12,7 @@ module Airplay
       @port = Airplay.configuration.port || find_free_port
       @logger = Airplay::Logger.new("airplay::server")
       @server = Rack::Server.new(
+        server: :puma,
         Host: private_ip,
         Port: @port,
         Logger: @logger,
@@ -32,6 +33,7 @@ module Airplay
     def serve(file)
       sleep 0.1 until running?
       asset_id = App.settings[:assets][file]
+      @logger.info("asset_id: #{asset_id}")
 
       "http://#{private_ip}:#{@port}/assets/#{asset_id}"
     end

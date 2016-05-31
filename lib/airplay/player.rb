@@ -82,7 +82,7 @@ module Airplay
 
       data = content.map { |k, v| "#{k}: #{v}" }.join("\r\n")
 
-      response = persistent.async.post("/play", data + "\r\n", {
+      response = persistent.post("/play", data + "\r\n", {
         "Content-Type" => "text/parameters"
       })
 
@@ -97,8 +97,11 @@ module Airplay
     # Returns nothing
     #
     def progress(callback)
-      timers << every(1) do
-        callback.call(info) if playing?
+      timers << Thread.current do
+        while true do
+          callback.call(info) if playing?
+          sleep 1
+        end
       end
     end
 
@@ -149,7 +152,7 @@ module Airplay
     # Returns nothing
     #
     def resume
-      connection.async.post("/rate?value=1")
+      connection.post("/rate?value=1")
     end
 
     # Public: Pauses a playing video
@@ -157,7 +160,7 @@ module Airplay
     # Returns nothing
     #
     def pause
-      connection.async.post("/rate?value=0")
+      connection.post("/rate?value=0")
     end
 
     # Public: Stops the video
@@ -173,7 +176,7 @@ module Airplay
     # Returns nothing
     #
     def seek(position)
-      connection.async.post("/scrub?position=#{position}")
+      connection.post("/scrub?position=#{position}")
     end
 
     def loading?; state == :loading end
@@ -241,12 +244,16 @@ module Airplay
     # Returns nothing
     #
     def check_for_playback_status
-      timers << every(1) do
-        case true
-        when info.stopped? && playing?  then @machine.trigger(:stopped)
-        when info.played?  && playing?  then @machine.trigger(:played)
-        when info.playing? && !playing? then @machine.trigger(:playing)
-        when info.paused?  && playing?  then @machine.trigger(:paused)
+      timers << Thread.current do
+        while true do
+          case true
+          when info.stopped? && playing?  then @machine.trigger(:stopped)
+          when info.played?  && playing?  then @machine.trigger(:played)
+          when info.playing? && !playing? then @machine.trigger(:playing)
+          when info.paused?  && playing?  then @machine.trigger(:paused)
+          end
+
+          sleep 1
         end
       end
     end

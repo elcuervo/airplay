@@ -9,6 +9,13 @@ module Airplay
       end
 
       define do
+        on root do
+          body = []
+          body << "Airplay Asset server v#{Airplay::VERSION}"
+
+          res.write body.join("<br>")
+        end
+
         on "assets/:uuid" do |uuid|
           run Rack::File.new(settings[:assets].key(uuid))
         end

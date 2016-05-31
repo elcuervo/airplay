@@ -30,7 +30,7 @@ module Airplay
       #   &block  - An optional block to be executed within the block
       #
       def request(request)
-        @http.request(request)
+        @http.request(request) {}
       end
     end
   end

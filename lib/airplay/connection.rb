@@ -42,7 +42,7 @@ module Airplay
     # Returns a response object
     #
     def post(resource, body = "", headers = {})
-      prepare_request(:post, resource, body, headers)
+        prepare_request(:post, resource, body, headers)
     end
 
     # Public: Executes a PUT to a resource
