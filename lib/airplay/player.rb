@@ -1,7 +1,6 @@
 require "uri"
 require "forwardable"
 require "micromachine"
-require "celluloid/autostart"
 require "cfpropertylist"
 
 require "airplay/connection"
@@ -16,7 +15,6 @@ module Airplay
   #
   class Player
     extend Forwardable
-    include Celluloid
 
     def_delegators :@machine, :state, :on
 

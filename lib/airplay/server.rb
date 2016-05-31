@@ -1,22 +1,17 @@
 require "rack"
 require "socket"
-require "celluloid/autostart"
-require "reel/rack"
 
 require "airplay/logger"
 require "airplay/server/app"
 
 module Airplay
   class Server
-    include Celluloid
-
     attr_reader :port
 
     def initialize
       @port = Airplay.configuration.port || find_free_port
       @logger = Airplay::Logger.new("airplay::server")
       @server = Rack::Server.new(
-        server: :reel,
         Host: private_ip,
         Port: @port,
         Logger: @logger,
