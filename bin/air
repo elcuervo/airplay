@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 require "clap"
+
 require "airplay/cli"
 require "airplay/cli/version"
 

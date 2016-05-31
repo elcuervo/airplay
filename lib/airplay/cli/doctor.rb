@@ -41,6 +41,8 @@ module Airplay
             break unless node.flags.more_coming?
           end
         end
+
+        sleep 3
       end
 
       def try_resolving(node)
@@ -52,8 +54,6 @@ module Airplay
           end
         end
       end
-
-
     end
   end
 end
