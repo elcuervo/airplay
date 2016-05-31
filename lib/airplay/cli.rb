@@ -16,6 +16,7 @@ module Airplay
       #
       def help
         Airplay.configuration.load
+
         puts <<-EOS.gsub!(" "*10, "")
           Usage: air [OPTIONS] ACTION [URL OR PATH]
 

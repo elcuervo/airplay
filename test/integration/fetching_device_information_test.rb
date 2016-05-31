@@ -1,6 +1,6 @@
 require "integration_helper"
 
-scope "Getting information from a @device" do
+scope "Getting information from a device" do
   setup do
     @device = test_device
   end
