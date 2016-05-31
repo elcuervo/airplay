@@ -1,4 +1,3 @@
-require "celluloid/autostart"
 require "airplay/connection/persistent"
 require "airplay/connection/authentication"
 
@@ -9,8 +8,6 @@ module Airplay
     Response = Struct.new(:connection, :response)
     PasswordRequired = Class.new(StandardError)
     WrongPassword = Class.new(StandardError)
-
-    include Celluloid
 
     def initialize(device, options = {})
       @device = device
@@ -23,7 +20,7 @@ module Airplay
     # Returns the persistent connection
     #
     def persistent
-      address = @options[:address] || "http://#{@device.address}"
+      address = @options[:address] || @device.address
       @_persistent ||= Airplay::Connection::Persistent.new(address, @options)
     end
 
@@ -136,7 +133,7 @@ module Airplay
     # Returns a response object or exception
     #
     def verify_response(response)
-      if response.response.status == 401
+      if response.response.code == "401"
         return PasswordRequired.new if !@device.password?
         return WrongPassword.new    if @device.password?
       end

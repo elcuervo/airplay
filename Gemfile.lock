@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    airplay (1.0.5)
+    airplay (1.1.0)
       CFPropertyList (~> 2.2)
       celluloid (>= 0.17.0)
       cuba (~> 3.1.0)
@@ -73,7 +73,7 @@ GEM
     cutest (1.2.3)
       clap
     dnssd (3.0.1)
-    domain_name (0.5.24)
+    domain_name (0.5.20160310)
       unf (>= 0.0.5, < 1.0.0)
     dotenv (2.0.2)
     fakeweb (1.3.0)

@@ -1,39 +1,37 @@
 require "integration_helper"
 
-describe "Sending images to a device" do
-  Given(:device) { test_device }
-
-  context "being a file path" do
-    When(:view) { device.view(sample_images[0]) }
-    Then { view == true }
+scope "Sending images to a @device" do
+  setup do
+    @device = test_device
   end
 
-  context "being a raw image" do
-    Given(:image) { File.read(sample_images[1]) }
-    When(:view)   { device.view(image) }
-    Then { view == true }
+  test "being a file path" do
+    assert @device.view(sample_images[0])
   end
 
-  context "being a raw binary image" do
-    Given(:image) { File.open(sample_images[1], "rb").read }
-    When(:view)   { device.view(image) }
-    Then { view == true }
+  test "being a raw image" do
+    image = File.read(sample_images[1])
+    assert @device.view(image)
   end
 
-  context "being a IO stream" do
-    Given(:image) { StringIO.new(File.read(sample_images[2])) }
-    When(:view)   { device.view(image) }
-    Then { view == true }
+  test "being a raw binary image" do
+    image = File.open(sample_images[1], "rb").read
+    assert @device.view(image)
   end
 
-  context "being a URL" do
-    Given(:image) { "https://github.com/elcuervo/airplay/raw/master/doc/img/logo.png" }
-    When(:view)   { device.view(image) }
-    Then { view == true }
+  test "being a IO stream" do
+    image = StringIO.new(File.read(sample_images[2]))
+    assert @device.view(image)
   end
 
-  context "sending an unsupported type" do
-    When(:view) { device.view(42) }
-    Then { view == Failure(Airplay::Viewer::UnsupportedType) }
+  test "being a URL" do
+    image = "https://github.com/elcuervo/airplay/raw/master/doc/img/logo.png"
+    assert @device.view(image)
+  end
+
+  test "sending an unsupported type" do
+    assert_raise Airplay::Viewer::UnsupportedType do
+      @device.view(42)
+    end
   end
 end

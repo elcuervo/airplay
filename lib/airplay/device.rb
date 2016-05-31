@@ -163,7 +163,7 @@ module Airplay
           raise result if !result.is_a?(Airplay::Connection::Response)
 
           response = result.response
-          return {} if response.status != 200
+          return {} if response.code != "200"
 
           plist = CFPropertyList::List.new(data: response.body)
           CFPropertyList.native_types(plist.value)

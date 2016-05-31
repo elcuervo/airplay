@@ -1,4 +1,4 @@
-require "net/ptth"
+require "net/http"
 require "securerandom"
 
 module Airplay
@@ -13,21 +13,15 @@ module Airplay
 
       def initialize(address, options = {})
         @logger = Airplay::Logger.new("airplay::connection::persistent")
-        @socket = Net::PTTH.new(address, options)
-        @socket.set_debug_output = @logger
+        ip, port = address.split(":")
+        @http = Net::HTTP.new(ip, port)
 
         @session = SecureRandom.uuid
         @mac_address = "0x#{SecureRandom.hex(6)}"
-
-        @socket.socket
       end
 
       def close
-        socket.close
-      end
-
-      def socket
-        @socket.socket
+        @http.close
       end
 
       # Public: send a request to the active server
@@ -36,7 +30,7 @@ module Airplay
       #   &block  - An optional block to be executed within the block
       #
       def request(request)
-        @socket.request(request)
+        @http.request(request)
       end
     end
   end

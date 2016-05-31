@@ -33,7 +33,7 @@ module Airplay
         "X-Apple-Transition" => transition
       })
 
-      response.response.status == 200
+      response.response.code == "200"
     end
 
     # Public: The list of transitions

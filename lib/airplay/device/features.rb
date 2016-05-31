@@ -9,6 +9,7 @@ module Airplay
 
       def initialize(device)
         @device = device
+
         check_features
       end
 
@@ -34,10 +35,7 @@ module Airplay
         @properties.each do |key, value|
           self.class.send(:define_method, key) { value }
         end
-
       end
-
     end
-
   end
 end

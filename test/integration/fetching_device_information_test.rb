@@ -1,22 +1,23 @@
 require "integration_helper"
 
-describe "Getting information from a device" do
-  Given(:device) { test_device }
-
-  context "getting the id" do
-    When(:id) { device.id }
-    Then { id == "58:55:CA:1F:3E:80" }
+scope "Getting information from a @device" do
+  setup do
+    @device = test_device
   end
 
-  context "getting some minimun info" do
-    When(:min_info) { device.info }
-    Then { min_info.model == "AppleTV2,1" }
-    And  { min_info.respond_to?(:os_version) }
-    And  { min_info.respond_to?(:mac_address) }
+  test "getting the id" do
+    assert @device.id == "6C:40:08:AE:BB:F5"
   end
 
-  context "getting server information" do
-    When(:full_info) { device.server_info }
-    Then { full_info.keys.size >= 15 }
+  test "getting some minimun info" do
+    min_info = @device.info
+
+    assert min_info.model == "AppleTV5,3"
+    assert min_info.respond_to?(:os_version)
+    assert min_info.respond_to?(:mac_address)
+  end
+
+  test "getting server information" do
+    assert @device.server_info.keys.size >= 14
   end
 end
