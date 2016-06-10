@@ -12,7 +12,6 @@ module Airplay
       @port = Airplay.configuration.port || find_free_port
       @logger = Airplay::Logger.new("airplay::server")
       @server = Rack::Server.new(
-        server: :puma,
         Host: private_ip,
         Port: @port,
         Logger: @logger,

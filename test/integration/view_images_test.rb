@@ -1,6 +1,6 @@
 require "integration_helper"
 
-scope "Sending images to a @device" do
+scope "Sending images to a device" do
   setup do
     @device = test_device
   end

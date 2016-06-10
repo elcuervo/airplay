@@ -38,11 +38,11 @@ module Airplay
     #
     def playlist
       @_playlist ||= if playlists.any?
-                       key, value = playlists.first
-                       value
-                     else
-                       Playlist.new("Default")
-                     end
+        key, value = playlists.first
+        value
+      else
+        Playlist.new("Default")
+      end
     end
 
     # Public: Sets a given playlist
@@ -66,7 +66,7 @@ module Airplay
     #
     def play(media_to_play = "playlist", options = {})
       start_the_machine
-      check_for_playback_status
+      Thread.new { check_for_playback_status }
 
       media = case true
               when media_to_play.is_a?(Media) then media_to_play
@@ -97,9 +97,9 @@ module Airplay
     # Returns nothing
     #
     def progress(callback)
-      timers << Thread.current do
-        while true do
-          callback.call(info) if playing?
+      timers << Thread.new(callback) do |callback|
+        while !played? do
+          callback.call(info)
           sleep 1
         end
       end
@@ -144,6 +144,7 @@ module Airplay
       response = connection.get("/playback-info").response
       plist = CFPropertyList::List.new(data: response.body)
       hash = CFPropertyList.native_types(plist.value)
+
       PlaybackInfo.new(hash)
     end
 
@@ -179,11 +180,11 @@ module Airplay
       connection.post("/scrub?position=#{position}")
     end
 
-    def loading?; state == :loading end
-    def playing?; state == :playing end
-    def paused?;  state == :paused  end
-    def played?;  state == :played  end
-    def stopped?; state == :stopped end
+    def loading?; state == :loading    end
+    def playing?; state == :playing    end
+    def paused?;  state == :paused     end
+    def played?;  state == :played     end
+    def stopped?; state == :stopped    end
 
     # Public: Locks the execution until the video gets fully played
     #
@@ -244,17 +245,19 @@ module Airplay
     # Returns nothing
     #
     def check_for_playback_status
-      timers << Thread.current do
-        while true do
-          case true
-          when info.stopped? && playing?  then @machine.trigger(:stopped)
-          when info.played?  && playing?  then @machine.trigger(:played)
-          when info.playing? && !playing? then @machine.trigger(:playing)
-          when info.paused?  && playing?  then @machine.trigger(:paused)
-          end
+      loop do
+        sleep 1
 
-          sleep 1
+        status = info
+
+        case true
+        when status.stopped? && playing?  then @machine.trigger(:stopped)
+        when status.played?  && playing?  then @machine.trigger(:played)
+        when status.playing? && !playing? then @machine.trigger(:playing)
+        when status.paused?  && playing?  then @machine.trigger(:paused)
         end
+
+        break if played?
       end
     end
 

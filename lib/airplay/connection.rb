@@ -1,3 +1,5 @@
+require "net/http"
+
 require "airplay/connection/persistent"
 require "airplay/connection/authentication"
 
@@ -20,8 +22,31 @@ module Airplay
     # Returns the persistent connection
     #
     def persistent
-      address = @options[:address] || @device.address
       @_persistent ||= Airplay::Connection::Persistent.new(address, @options)
+    end
+
+    def persistent?
+      @options.fetch(:keep_alive, false)
+    end
+
+    def handler
+      if persistent?
+        persistent
+      else
+        standard
+      end
+    end
+
+    def address
+      @options[:address] || @device.address
+    end
+
+    def standard
+      @_http ||= begin
+        uri = URI.parse("http://#{address}")
+
+        Net::HTTP.new(uri.host, uri.port)
+      end
     end
 
     # Public: Closes the opened connection
@@ -29,7 +54,7 @@ module Airplay
     # Returns nothing
     #
     def close
-      persistent.close
+      handler.close
       @_persistent = nil
     end
 
@@ -116,14 +141,17 @@ module Airplay
       request.initialize_http_header(default_headers.merge(headers))
 
       if @device.password?
-        authentication = Airplay::Connection::Authentication.new(@device, persistent)
+        authentication = Airplay::Connection::Authentication.new(@device, standard)
         request = authentication.sign(request)
       end
 
       @logger.info("Sending request to #{@device.address}")
-      response = persistent.request(request)
+      response = handler.request(request)
 
-      verify_response(Airplay::Connection::Response.new(persistent, response))
+      connection_response = Airplay::Connection::Response.new(handler, response)
+      verify_response(connection_response) if !persistent?
+
+      connection_response
     end
 
     # Private: Verifies response
