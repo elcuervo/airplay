@@ -142,7 +142,7 @@ module Airplay
       @_basic_info ||= begin
         return @text_records if @text_records
 
-        response = connection.get("/server-info").response
+        response = connection.get("/server-info")
         plist = CFPropertyList::List.new(data: response.body)
         CFPropertyList.native_types(plist.value)
       end
@@ -162,7 +162,7 @@ module Airplay
           result = new_device.connection.get("/stream.xml")
           raise result if !result.is_a?(Airplay::Connection::Response)
 
-          response = result.response
+          response = result
           return {} if response.code != "200"
 
           plist = CFPropertyList::List.new(data: response.body)

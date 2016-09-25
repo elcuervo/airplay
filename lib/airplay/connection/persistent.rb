@@ -1,6 +1,9 @@
 require "socket"
 require "thread"
 require "securerandom"
+require "http/parser"
+
+require "airplay/connection/parser"
 
 module Airplay
   # Public: The class that handles all the outgoing basic HTTP connections
@@ -41,10 +44,9 @@ module Airplay
         @stop_loop = false
 
         @thread = Thread.new { event_loop }
-      end
 
-      def queue
-        @_queue ||= Queue.new
+        @write = Queue.new
+        @read = Queue.new
       end
 
       def close
@@ -57,8 +59,19 @@ module Airplay
       #   request - The Net::HTTP request to be executed
       #   &block  - An optional block to be executed within the block
       #
-      def request(request)
-        queue << request
+      def request(request, sync: false)
+        @write << request
+
+        read if sync
+      end
+
+      def read
+        timeout(10) do
+          while @read.empty?
+            sleep 0.1
+          end
+          @read.pop
+        end
       end
 
       def alive?
@@ -66,19 +79,39 @@ module Airplay
       end
 
       def socket
-        @_socket ||= TCPSocket.new(@ip, @port)
+        @_socket ||= TCPSocket.open(@ip, @port)
+      end
+
+      def parser
+        @_parser ||= Http::Parser.new
+#        @_parser ||= Airplay::Connection::Parser.new
       end
 
       def working?
-        !queue.empty?
+        !@write.empty?
+      end
+
+      def can_read?
+        !@read.empty?
       end
 
       def event_loop
+        parser.on_message_begin = proc { @buffer = '' }
+        parser.on_body = proc { |chunk| @buffer << chunk }
+
+        parser.on_message_complete = proc do |env|
+          @read << Response.new(parser, @buffer)
+          puts "Pushed to read queue"
+          #close
+        end
+
         loop do
           break if @stop_loop
 
-          packet = Packet.to_s(queue.pop)
-          socket << packet
+          socket << Packet.to_s(@write.pop)
+          while chunk = socket.gets
+            parser << chunk
+          end
         end
       end
     end

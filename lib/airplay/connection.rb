@@ -1,13 +1,13 @@
 require "net/http"
 
 require "airplay/connection/persistent"
+require "airplay/connection/response"
 require "airplay/connection/authentication"
 
 module Airplay
   # Public: The class that handles all the outgoing basic HTTP connections
   #
   class Connection
-    Response = Struct.new(:connection, :response)
     PasswordRequired = Class.new(StandardError)
     WrongPassword = Class.new(StandardError)
 
@@ -30,6 +30,7 @@ module Airplay
     end
 
     def handler
+      return persistent
       if persistent?
         persistent
       else
@@ -67,7 +68,7 @@ module Airplay
     # Returns a response object
     #
     def post(resource, body = "", headers = {})
-        prepare_request(:post, resource, body, headers)
+      prepare_request(:post, resource, body, headers)
     end
 
     # Public: Executes a PUT to a resource
@@ -146,12 +147,11 @@ module Airplay
       end
 
       @logger.info("Sending request to #{@device.address}")
-      response = handler.request(request)
+      response = handler.request(request, sync: true)
 
-      connection_response = Airplay::Connection::Response.new(handler, response)
-      verify_response(connection_response) if !persistent?
-
-      connection_response
+      #connection_response = Airplay::Connection::Response.new(handler, response)
+      #connection_response = Airplay::Connection::Response.new(response)
+      #verify_response(connection_response) if !persistent?
     end
 
     # Private: Verifies response

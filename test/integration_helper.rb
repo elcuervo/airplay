@@ -1,8 +1,13 @@
 require "test_helper"
 require "airplay"
 
-SERVER_URL = ENV.fetch("TEST_TV_URL", "some-apple-tv:7000")
-Airplay.configure { |c| c.autodiscover = false }
+SERVER_URL = ENV.fetch("TEST_TV_URL", "localhost:7000")
+
+Airplay.configure do |c|
+  c.autodiscover = false
+  c.log_level = 1
+end
+
 Airplay.devices.add("Block TV", SERVER_URL)
 
 def test_device
