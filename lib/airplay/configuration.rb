@@ -24,7 +24,7 @@ module Airplay
       level = @log_level.is_a?(Symbol) ? @log_level : :info
 
       Logging.logger.root.appenders = @output
-      Logging.logger.root.level = level
+      Logging.logger.root.level = ENV["DEBUG"] ? :debug : level
     end
   end
 end

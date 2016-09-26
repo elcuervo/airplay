@@ -75,6 +75,8 @@ module Airplay
     #
     def get_type(records)
       # rhd means Remote HD the first product of the Airserver people
+
+      log.debug("Found TXT records: #{records}")
       if records.has_key?("rhd")
         :airserver
       else

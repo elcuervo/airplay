@@ -1,5 +1,6 @@
 require "rack"
 require "socket"
+require "puma"
 
 require "airplay/loggable"
 require "airplay/server/app"
@@ -15,9 +16,9 @@ module Airplay
       @server = Rack::Server.new(
         Host: private_ip,
         Port: @port,
-        Logger: log,
         AccessLog: [],
-        quiet: true,
+        Silent: true,
+        server: :puma,
         app: App.app
       )
 
@@ -32,10 +33,13 @@ module Airplay
     #
     def serve(file)
       sleep 0.1 until running?
-      asset_id = App.settings[:assets][file]
-      log.info("asset_id: #{asset_id}")
 
-      "http://#{private_ip}:#{@port}/assets/#{asset_id}"
+      filename = File.basename(file)
+      asset_id = App.settings[:assets][file]
+
+      log.debug("asset_id: #{asset_id}, file: #{filename}")
+
+      "http://#{private_ip}:#{@port}/assets/#{asset_id}/#{filename}"
     end
 
     # Public: Starts the server in a new thread

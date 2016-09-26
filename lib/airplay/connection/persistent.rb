@@ -100,9 +100,11 @@ module Airplay
         parser.on_body = proc { |chunk| @buffer << chunk }
 
         parser.on_message_complete = proc do |env|
-          @read << Response.new(parser, @buffer)
+          response = Response.new(parser, @buffer)
+          @read << response
 
           log.debug("Pushed to read queue")
+          log.debug("Device >> #{response}")
           parser.reset!
         end
 
@@ -112,6 +114,7 @@ module Airplay
           log.debug("Waiting for new request")
 
           packet = Packet.to_s(@write.pop)
+          log.debug("Device << #{packet}")
           socket << packet
 
           log.debug("Waiting for new response")
