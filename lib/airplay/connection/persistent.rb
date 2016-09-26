@@ -44,7 +44,6 @@ module Airplay
         @stop_loop = false
 
         @thread = Thread.new { event_loop }
-
         @write = Queue.new
         @read = Queue.new
       end
@@ -59,10 +58,11 @@ module Airplay
       #   request - The Net::HTTP request to be executed
       #   &block  - An optional block to be executed within the block
       #
-      def request(request, sync: false)
-        @write << request
+      def request(req)
+        puts "#{Time.now} Pushed to write queue: #{@write.size}"
+        @write << req
 
-        read if sync
+        read
       end
 
       def read
@@ -102,13 +102,21 @@ module Airplay
         parser.on_message_complete = proc do |env|
           @read << Response.new(parser, @buffer)
           puts "Pushed to read queue"
+          puts @buffer
+          parser.reset!
           #close
         end
 
         loop do
           break if @stop_loop
 
-          socket << Packet.to_s(@write.pop)
+          puts("#{"%10.6f" % Time.now.to_f} Waiting for new request")
+          packet = Packet.to_s(@write.pop)
+          puts(packet)
+          socket << packet
+
+          puts("#{"%10.6f" % Time.now.to_f} Waiting for new response")
+          puts(alive?)
           while chunk = socket.gets
             parser << chunk
           end

@@ -30,12 +30,11 @@ module Airplay
     end
 
     def handler
-      return persistent
-      if persistent?
-        persistent
-      else
-        standard
-      end
+     if persistent?
+       persistent
+     else
+       standard
+     end
     end
 
     def address
@@ -115,7 +114,7 @@ module Airplay
         msg.concat(" with #{body.bytesize} bytes")
       end
 
-      @logger.info(msg)
+      puts(msg)
       send_request(request, headers)
     end
 
@@ -146,8 +145,8 @@ module Airplay
         request = authentication.sign(request)
       end
 
-      @logger.info("Sending request to #{@device.address}")
-      response = handler.request(request, sync: true)
+      puts("Sending request to #{@device.address}")
+      response = handler.request(request)
 
       #connection_response = Airplay::Connection::Response.new(handler, response)
       #connection_response = Airplay::Connection::Response.new(response)

@@ -3,15 +3,13 @@ require "integration_helper"
 scope "Sending video to a device" do
   setup do
     @device = test_device
-    @url = "http://download.openbricks.org/sample/H264/big_buck_bunny_1080p_H264_AAC_25fps_7200K_short.MP4"
+    @url = "http://www.sample-videos.com/video/mp4/480/big_buck_bunny_480p_1mb.mp4"
   end
 
   test "plays a video url" do
     player = @device.play(@url)
-    player.progress -> info { player.state }
-    timeout(10) do
-      sleep 1 while !player.played?
-    end
+    player.progress -> info {player.state }
+    sleep 1 while !player.played?
 
     assert player.played?
   end

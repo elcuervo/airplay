@@ -72,7 +72,8 @@ module Airplay
               when media_to_play.is_a?(Media) then media_to_play
               when media_to_play == "playlist" && playlist.any?
                 playlist.next
-              else Media.new(media_to_play)
+              else
+                Media.new(media_to_play)
               end
 
       content = {
@@ -82,7 +83,7 @@ module Airplay
 
       data = content.map { |k, v| "#{k}: #{v}" }.join("\r\n")
 
-      response = persistent.post("/play", data + "\r\n", {
+      response = persistent.post("/play", data + "\r\n"*2, {
         "Content-Type" => "text/parameters"
       })
 
@@ -141,7 +142,7 @@ module Airplay
     # Returns a PlaybackInfo object with the playback information
     #
     def info
-      response = connection.get("/playback-info").response
+      response = connection.get("/playback-info")
       plist = CFPropertyList::List.new(data: response.body)
       hash = CFPropertyList.native_types(plist.value)
 

@@ -160,7 +160,7 @@ module Airplay
           new_device.address = "#{ip}:7100"
 
           result = new_device.connection.get("/stream.xml")
-          raise result if !result.is_a?(Airplay::Connection::Response)
+          #raise result if !result.is_a?(Airplay::Connection::Response)
 
           response = result
           return {} if response.code != "200"
