@@ -12,9 +12,9 @@ PATH
       net-http-digest_auth (~> 1.2)
       puma (~> 3.6)
     airplay-cli (1.2.0)
-      airplay (>= 1.2.0)
-      clap (~> 1.0.0)
-      ruby-progressbar (~> 1.8.1)
+      airplay (~> 1.2)
+      clap (~> 1.0)
+      ruby-progressbar (~> 1.8)
 
 GEM
   remote: http://rubygems.org/

@@ -1,4 +1,5 @@
 require "ruby-progressbar"
+
 require "airplay"
 require "airplay/cli/image_viewer"
 require "airplay/cli/doctor"
