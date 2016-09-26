@@ -181,11 +181,11 @@ module Airplay
       connection.post("/scrub?position=#{position}")
     end
 
-    def loading?; state == :loading    end
-    def playing?; state == :playing    end
-    def paused?;  state == :paused     end
-    def played?;  state == :played     end
-    def stopped?; state == :stopped    end
+    def loading?; state == :loading end
+    def playing?; state == :playing end
+    def paused?;  state == :paused  end
+    def played?;  state == :played  end
+    def stopped?; state == :stopped end
 
     # Public: Locks the execution until the video gets fully played
     #

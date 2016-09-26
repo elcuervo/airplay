@@ -161,10 +161,7 @@ module Airplay
           new_device.refresh_connection
           new_device.address = "#{ip}:7100"
 
-          result = new_device.connection.get("/stream.xml")
-          #raise result if !result.is_a?(Airplay::Connection::Response)
-
-          response = result
+          response = new_device.connection.get("/stream.xml")
           return {} if response.code != "200"
 
           plist = CFPropertyList::List.new(data: response.body)
