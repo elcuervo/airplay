@@ -1,10 +1,14 @@
 require "test_helper"
 require "airplay"
-require "celluloid/autostart"
 
-device = ENV.fetch("TEST_TV_URL", "some-apple-tv:7000")
-Airplay.configure { |c| c.autodiscover = false }
-Airplay.devices.add("Block TV", device)
+SERVER_URL = ENV.fetch("TEST_TV_URL", "localhost:7000")
+
+Airplay.configure do |c|
+  c.autodiscover = false
+  c.log_level = 1
+end
+
+Airplay.devices.add("Block TV", SERVER_URL)
 
 def test_device
   @_device ||= begin
@@ -19,5 +23,5 @@ def sample_images
 end
 
 def sample_video
-  @_video ||= "http://movietrailers.apple.com/movies/universal/rush/rush-tlr3_480p.mov"
+  @_video ||= "http://www.sample-videos.com/video/mp4/480/big_buck_bunny_480p_1mb.mp4"
 end

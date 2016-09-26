@@ -59,7 +59,11 @@ module Airplay
     # Returns an Array with all the devices
     #
     def devices
-      browse if browser.devices.empty? && configuration.autodiscover
+      if browser.devices.empty? && configuration.autodiscover
+        browse
+        sleep 3
+      end
+
       browser.devices
     end
 

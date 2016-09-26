@@ -35,16 +35,18 @@ module Airplay
       private
 
       def find_devices!
-        timeout(5) do
+        Timeout.timeout(5) do
           DNSSD.browse!(Airplay::Browser::SEARCH) do |node|
             try_resolving(node)
             break unless node.flags.more_coming?
           end
         end
+
+        sleep 3
       end
 
       def try_resolving(node)
-        timeout(5) do
+        Timeout.timeout(5) do
           DNSSD.resolve(node) do |resolved|
             devices << DebugDevice.new(node, resolved)
 
@@ -52,8 +54,6 @@ module Airplay
           end
         end
       end
-
-
     end
   end
 end

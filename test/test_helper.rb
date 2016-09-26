@@ -1,5 +1,1 @@
-require "bundler/setup"
-require "minitest/spec"
-require "minitest/pride"
-require "minitest/autorun"
-require "minitest/given"
+require "cutest"

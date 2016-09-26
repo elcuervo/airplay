@@ -1,4 +1,5 @@
 require "ruby-progressbar"
+
 require "airplay"
 require "airplay/cli/image_viewer"
 require "airplay/cli/doctor"
@@ -16,6 +17,7 @@ module Airplay
       #
       def help
         Airplay.configuration.load
+
         puts <<-EOS.gsub!(" "*10, "")
           Usage: air [OPTIONS] ACTION [URL OR PATH]
 

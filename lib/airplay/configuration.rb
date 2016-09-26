@@ -1,6 +1,4 @@
-require "log4r/config"
-require "celluloid/autostart"
-require "airplay/logger"
+require "logging"
 
 # Public: Airplay core module
 #
@@ -11,14 +9,11 @@ module Airplay
     attr_accessor :log_level, :output, :autodiscover, :host, :port
 
     def initialize
-      Celluloid.boot # Force Thread Pool initialization
-      Log4r.define_levels(*Log4r::Log4rConfig::LogLevels)
-
-      @log_level = Log4r::ERROR
+      @log_level = :info
       @autodiscover = true
       @host = "0.0.0.0"
       @port = nil
-      @output = Log4r::Outputter.stdout
+      @output = Logging.appenders.stdout
     end
 
     # Public: Loads the configuration into the affected parts
@@ -26,15 +21,10 @@ module Airplay
     # Returns nothing.
     #
     def load
-      level = if @log_level.is_a?(Fixnum)
-                @log_level
-              else
-                Log4r.const_get(@log_level.upcase)
-              end
+      level = @log_level.is_a?(Symbol) ? @log_level : :info
 
-      Log4r::Logger.root.add @output
-      Log4r::Logger.root.level = level
-      Celluloid.logger = Airplay::Logger.new("airplay::celluloid")
+      Logging.logger.root.appenders = @output
+      Logging.logger.root.level = ENV["DEBUG"] ? :debug : level
     end
   end
 end

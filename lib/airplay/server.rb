@@ -1,27 +1,24 @@
 require "rack"
 require "socket"
-require "celluloid/autostart"
-require "reel/rack"
+require "puma"
 
-require "airplay/logger"
+require "airplay/loggable"
 require "airplay/server/app"
 
 module Airplay
   class Server
-    include Celluloid
-
     attr_reader :port
+
+    include Loggable
 
     def initialize
       @port = Airplay.configuration.port || find_free_port
-      @logger = Airplay::Logger.new("airplay::server")
       @server = Rack::Server.new(
-        server: :reel,
         Host: private_ip,
         Port: @port,
-        Logger: @logger,
         AccessLog: [],
-        quiet: true,
+        Silent: true,
+        server: :puma,
         app: App.app
       )
 
@@ -36,9 +33,13 @@ module Airplay
     #
     def serve(file)
       sleep 0.1 until running?
+
+      filename = File.basename(file)
       asset_id = App.settings[:assets][file]
 
-      "http://#{private_ip}:#{@port}/assets/#{asset_id}"
+      log.debug("asset_id: #{asset_id}, file: #{filename}")
+
+      "http://#{private_ip}:#{@port}/assets/#{asset_id}/#{filename}"
     end
 
     # Public: Starts the server in a new thread

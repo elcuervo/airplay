@@ -15,12 +15,12 @@ module Airplay
       end
 
       def reset
-        @timers.each { |t| t.reset }
+        @timers.each { |t| t.wakeup }
         @timers = []
       end
 
       def cancel
-        @timers.each { |t| t.cancel }
+        @timers.each { |t| t.kill }
       end
     end
   end

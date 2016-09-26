@@ -1,7 +1,6 @@
 require "uri"
 require "forwardable"
 require "micromachine"
-require "celluloid/autostart"
 require "cfpropertylist"
 
 require "airplay/connection"
@@ -16,7 +15,6 @@ module Airplay
   #
   class Player
     extend Forwardable
-    include Celluloid
 
     def_delegators :@machine, :state, :on
 
@@ -40,11 +38,11 @@ module Airplay
     #
     def playlist
       @_playlist ||= if playlists.any?
-                       key, value = playlists.first
-                       value
-                     else
-                       Playlist.new("Default")
-                     end
+        key, value = playlists.first
+        value
+      else
+        Playlist.new("Default")
+      end
     end
 
     # Public: Sets a given playlist
@@ -68,13 +66,14 @@ module Airplay
     #
     def play(media_to_play = "playlist", options = {})
       start_the_machine
-      check_for_playback_status
+      Thread.new { check_for_playback_status }
 
       media = case true
               when media_to_play.is_a?(Media) then media_to_play
               when media_to_play == "playlist" && playlist.any?
                 playlist.next
-              else Media.new(media_to_play)
+              else
+                Media.new(media_to_play)
               end
 
       content = {
@@ -84,7 +83,7 @@ module Airplay
 
       data = content.map { |k, v| "#{k}: #{v}" }.join("\r\n")
 
-      response = persistent.async.post("/play", data + "\r\n", {
+      response = persistent.post("/play", data + "\r\n"*2, {
         "Content-Type" => "text/parameters"
       })
 
@@ -99,8 +98,11 @@ module Airplay
     # Returns nothing
     #
     def progress(callback)
-      timers << every(1) do
-        callback.call(info) if playing?
+      timers << Thread.new(callback) do |callback|
+        while !played? do
+          callback.call(info)
+          sleep 1
+        end
       end
     end
 
@@ -140,9 +142,10 @@ module Airplay
     # Returns a PlaybackInfo object with the playback information
     #
     def info
-      response = connection.get("/playback-info").response
+      response = connection.get("/playback-info")
       plist = CFPropertyList::List.new(data: response.body)
       hash = CFPropertyList.native_types(plist.value)
+
       PlaybackInfo.new(hash)
     end
 
@@ -151,7 +154,7 @@ module Airplay
     # Returns nothing
     #
     def resume
-      connection.async.post("/rate?value=1")
+      connection.post("/rate?value=1")
     end
 
     # Public: Pauses a playing video
@@ -159,7 +162,7 @@ module Airplay
     # Returns nothing
     #
     def pause
-      connection.async.post("/rate?value=0")
+      connection.post("/rate?value=0")
     end
 
     # Public: Stops the video
@@ -175,7 +178,7 @@ module Airplay
     # Returns nothing
     #
     def seek(position)
-      connection.async.post("/scrub?position=#{position}")
+      connection.post("/scrub?position=#{position}")
     end
 
     def loading?; state == :loading end
@@ -243,13 +246,19 @@ module Airplay
     # Returns nothing
     #
     def check_for_playback_status
-      timers << every(1) do
+      loop do
+        sleep 1
+
+        status = info
+
         case true
-        when info.stopped? && playing?  then @machine.trigger(:stopped)
-        when info.played?  && playing?  then @machine.trigger(:played)
-        when info.playing? && !playing? then @machine.trigger(:playing)
-        when info.paused?  && playing?  then @machine.trigger(:paused)
+        when status.stopped? && playing?  then @machine.trigger(:stopped)
+        when status.played?  && playing?  then @machine.trigger(:played)
+        when status.playing? && !playing? then @machine.trigger(:playing)
+        when status.paused?  && playing?  then @machine.trigger(:paused)
         end
+
+        break if played?
       end
     end
 

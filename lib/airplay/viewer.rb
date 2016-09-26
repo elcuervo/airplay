@@ -1,5 +1,7 @@
 require "open-uri"
 
+require "airplay/loggable"
+
 module Airplay
   # Public: The class to handle image broadcast to a device
   #
@@ -8,9 +10,10 @@ module Airplay
 
     TRANSITIONS = %w(None Dissolve SlideLeft SlideRight)
 
+    include Loggable
+
     def initialize(device)
       @device = device
-      @logger = Airplay::Logger.new("airplay::viewer")
     end
 
     # Public: Broadcasts the content to the device
@@ -25,15 +28,15 @@ module Airplay
       content = get_content(media_or_io)
       transition = options.fetch(:transition, "None")
 
-      @logger.info "Fetched content (#{content.bytesize} bytes)"
-      @logger.debug "PUT /photo with transition: #{transition}"
+      log.debug "Fetched content (#{content.bytesize} bytes)"
+      log.debug "PUT /photo with transition: #{transition}"
 
       response = connection.put("/photo", content, {
         "Content-Length" => content.bytesize.to_s,
         "X-Apple-Transition" => transition
       })
 
-      response.response.status == 200
+      response.response.code == "200"
     end
 
     # Public: The list of transitions

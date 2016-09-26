@@ -16,6 +16,8 @@ module Airplay
 
       def resolution
         @_resolution ||= begin
+          return "unknown" if @device.server_info["width"].nil?
+
           "#{@device.server_info["width"]}x#{@device.server_info["height"]}"
         end
       end

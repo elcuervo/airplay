@@ -1,7 +1,7 @@
 require "dnssd"
 require "timeout"
 
-require "airplay/logger"
+require "airplay/loggable"
 require "airplay/devices"
 
 module Airplay
@@ -10,19 +10,19 @@ module Airplay
   class Browser
     NoDevicesFound = Class.new(StandardError)
 
-    SEARCH = "_airplay._tcp."
+    include Loggable
 
-    def initialize
-      @logger = Airplay::Logger.new("airplay::browser")
-    end
+    SEARCH = "_airplay._tcp."
 
     # Public: Browses in the search of devices and adds them to the nodes
     #
     # Returns nothing or raises NoDevicesFound if there are no devices
     #
     def browse
-      timeout(5) do
+      Timeout.timeout(5) do
         nodes = []
+        log.debug("Browsing Bonjour for #{SEARCH}")
+
         DNSSD.browse!(SEARCH) do |node|
           nodes << node
           next if node.flags.more_coming?
@@ -75,6 +75,8 @@ module Airplay
     #
     def get_type(records)
       # rhd means Remote HD the first product of the Airserver people
+
+      log.debug("Found TXT records: #{records}")
       if records.has_key?("rhd")
         :airserver
       else
@@ -114,6 +116,8 @@ module Airplay
     # Returns nothing
     #
     def create_device(name, address, type)
+      log.debug("Found device #{name} (#{type}) in #{address}")
+
       Device.new(
         name:     name.gsub(/\u00a0/, ' '),
         address:  address,

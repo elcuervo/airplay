@@ -47,8 +47,8 @@ module Airplay
       end
 
       def played?
-        # This is weird. I know. Bear with me.
-        info.keys.size == 2
+        # This is weird. I know. Bear with me. ʕ•͡ᴥ•ʔ
+        info.keys.size <= 2
       end
     end
   end

@@ -1,4 +1,5 @@
 require "airplay"
+require "airplay/loggable"
 require "airplay/playable"
 require "airplay/viewable"
 require "airplay/device/features"
@@ -12,6 +13,7 @@ module Airplay
 
     attr_reader :name, :address, :type, :password
 
+    include Loggable
     include Playable
     include Viewable
 
@@ -142,7 +144,7 @@ module Airplay
       @_basic_info ||= begin
         return @text_records if @text_records
 
-        response = connection.get("/server-info").response
+        response = connection.get("/server-info")
         plist = CFPropertyList::List.new(data: response.body)
         CFPropertyList.native_types(plist.value)
       end
@@ -159,11 +161,8 @@ module Airplay
           new_device.refresh_connection
           new_device.address = "#{ip}:7100"
 
-          result = new_device.connection.get("/stream.xml")
-          raise result if !result.is_a?(Airplay::Connection::Response)
-
-          response = result.response
-          return {} if response.status != 200
+          response = new_device.connection.get("/stream.xml")
+          return {} if response.code != "200"
 
           plist = CFPropertyList::List.new(data: response.body)
           CFPropertyList.native_types(plist.value)

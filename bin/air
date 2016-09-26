@@ -1,46 +1,55 @@
 #!/usr/bin/env ruby
 
 require "clap"
+
 require "airplay/cli"
 require "airplay/cli/version"
 
 begin
-  Clap.run ARGV,
-    "--device"      => lambda { |device_name| @device = Airplay[device_name] },
-    "--url"         => lambda { |url| @url = url },
-    "--wait"        => lambda { |sec| @wait = sec.to_i },
-    "--interactive" => lambda { @interactive = true },
-    "--password"    => lambda { |password| @password = password },
+  device, url, wait, interactive, password = false
 
-    "help" => Airplay::CLI.method(:help),
+  arguments = Clap.run ARGV,
+    "--device"      => -> device_name { device = Airplay[device_name] },
+    "--url"         => -> url { url = url },
+    "--wait"        => -> sec { wait = sec.to_i },
+    "--password"    => -> pass { password = pass},
+    "--interactive" => -> { interactive = true }
 
-    "list" => Airplay::CLI.method(:list),
+ Clap.run arguments,
+   "help"    => Airplay::CLI.method(:help),
+   "list"    => Airplay::CLI.method(:list),
+   "doctor"  => Airplay::CLI.method(:doctor),
+   "version" => Airplay::CLI.method(:version),
 
-    "doctor" => Airplay::CLI.method(:doctor),
+   "play" => lambda { |video|
+     options = {
+       device: device || Airplay.devices.first,
+       password: password || false,
+       url: url || false
+     }
 
-    "version" => Airplay::CLI.method(:version),
+     Airplay::CLI.play(video, options)
+   },
 
-    "play" => lambda { |video|
-      options = {
-        device: @device || Airplay.devices.first,
-        password: @password || false,
-        url: @url || false
-      }
-      Airplay::CLI.play(video, options)
-    },
+   "view" => lambda { |file|
+     device = if !url
+       device || Airplay.devices.first
+     else
+       false
+     end
 
-    "view" => lambda { |file|
-      options = {
-        device: @device || @url ? false : Airplay.devices.first,
-        interactive: @interactive || false,
-        password: @password || false,
-        url: @url || false,
-        wait: @wait || 3
-      }
-      Airplay::CLI.view(file, options)
-    }
+     options = {
+       device: device,
+       interactive: interactive || false,
+       password: password || false,
+       url: url || false,
+       wait: wait || 3
+     }
 
-  Airplay::CLI.help if ARGV.empty?
+     Airplay::CLI.view(file, options)
+   }
+
+   Airplay::CLI.help if ARGV.empty?
 
 rescue Airplay::Browser::NoDevicesFound
   puts "No devices found."

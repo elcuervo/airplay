@@ -47,7 +47,7 @@ module Airplay
         !!(file_or_url =~ URI::regexp)
       end
 
-      def to_s; url end
+      alias to_s url
     end
   end
 end
