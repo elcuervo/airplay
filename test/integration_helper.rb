@@ -23,5 +23,5 @@ def sample_images
 end
 
 def sample_video
-  @_video ||= "http://movietrailers.apple.com/movies/universal/rush/rush-tlr3_480p.mov"
+  @_video ||= "http://www.sample-videos.com/video/mp4/480/big_buck_bunny_480p_1mb.mp4"
 end

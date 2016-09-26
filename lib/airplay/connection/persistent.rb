@@ -68,9 +68,7 @@ module Airplay
 
       def read
         Timeout.timeout(10) do
-          while @read.empty?
-            sleep 0.1
-          end
+          sleep 0.1 unless can_read?
           @read.pop
         end
       end
@@ -85,10 +83,6 @@ module Airplay
 
       def parser
         @_parser ||= Http::Parser.new
-      end
-
-      def working?
-        !@write.empty?
       end
 
       def can_read?
