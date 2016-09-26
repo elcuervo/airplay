@@ -41,7 +41,7 @@ begin
       Airplay::CLI.view(file, options)
     }
 
-  Airplay::CLI.help if ARGV.empty?
+    Airplay::CLI.help if ARGV.empty?
 
 rescue Airplay::Browser::NoDevicesFound
   puts "No devices found."

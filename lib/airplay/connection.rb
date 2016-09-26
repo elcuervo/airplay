@@ -32,11 +32,11 @@ module Airplay
     end
 
     def handler
-     if persistent?
-       persistent
-     else
-       standard
-     end
+      if persistent?
+        persistent
+      else
+        standard
+      end
     end
 
     def address
