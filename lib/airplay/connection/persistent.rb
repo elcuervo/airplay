@@ -3,7 +3,7 @@ require "thread"
 require "securerandom"
 require "http/parser"
 
-require "airplay/connection/parser"
+require "airplay/loggable"
 
 module Airplay
   # Public: The class that handles all the outgoing basic HTTP connections
@@ -35,8 +35,9 @@ module Airplay
 
       attr_reader :session, :mac_address
 
+      include Loggable
+
       def initialize(address, options = {})
-        @logger = Airplay::Logger.new("airplay::connection::persistent")
         @ip, @port = address.split(":")
 
         @session = SecureRandom.uuid
@@ -59,14 +60,14 @@ module Airplay
       #   &block  - An optional block to be executed within the block
       #
       def request(req)
-        puts "#{Time.now} Pushed to write queue: #{@write.size}"
+        log.debug("Pushed to write queue: #{@write.size}")
         @write << req
 
         read
       end
 
       def read
-        timeout(10) do
+        Timeout.timeout(10) do
           while @read.empty?
             sleep 0.1
           end
@@ -84,7 +85,6 @@ module Airplay
 
       def parser
         @_parser ||= Http::Parser.new
-#        @_parser ||= Airplay::Connection::Parser.new
       end
 
       def working?
@@ -101,22 +101,21 @@ module Airplay
 
         parser.on_message_complete = proc do |env|
           @read << Response.new(parser, @buffer)
-          puts "Pushed to read queue"
-          puts @buffer
+
+          log.debug("Pushed to read queue")
           parser.reset!
-          #close
         end
 
         loop do
           break if @stop_loop
 
-          puts("#{"%10.6f" % Time.now.to_f} Waiting for new request")
+          log.debug("Waiting for new request")
+
           packet = Packet.to_s(@write.pop)
-          puts(packet)
           socket << packet
 
-          puts("#{"%10.6f" % Time.now.to_f} Waiting for new response")
-          puts(alive?)
+          log.debug("Waiting for new response")
+
           while chunk = socket.gets
             parser << chunk
           end

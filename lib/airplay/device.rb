@@ -1,4 +1,5 @@
 require "airplay"
+require "airplay/loggable"
 require "airplay/playable"
 require "airplay/viewable"
 require "airplay/device/features"
@@ -12,6 +13,7 @@ module Airplay
 
     attr_reader :name, :address, :type, :password
 
+    include Loggable
     include Playable
     include Viewable
 

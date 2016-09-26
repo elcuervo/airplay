@@ -1,5 +1,6 @@
 require "net/http"
 
+require "airplay/loggable"
 require "airplay/connection/persistent"
 require "airplay/connection/response"
 require "airplay/connection/authentication"
@@ -11,10 +12,11 @@ module Airplay
     PasswordRequired = Class.new(StandardError)
     WrongPassword = Class.new(StandardError)
 
+    include Loggable
+
     def initialize(device, options = {})
       @device = device
       @options = options
-      @logger = Airplay::Logger.new("airplay::connection")
     end
 
     # Public: Establishes a persistent connection to the device
@@ -114,7 +116,6 @@ module Airplay
         msg.concat(" with #{body.bytesize} bytes")
       end
 
-      puts(msg)
       send_request(request, headers)
     end
 
@@ -145,12 +146,12 @@ module Airplay
         request = authentication.sign(request)
       end
 
-      puts("Sending request to #{@device.address}")
+      log.debug("Sending request to #{@device.address}")
       response = handler.request(request)
 
-      #connection_response = Airplay::Connection::Response.new(handler, response)
-      #connection_response = Airplay::Connection::Response.new(response)
-      #verify_response(connection_response) if !persistent?
+      verify_response(response) if !persistent?
+
+      response
     end
 
     # Private: Verifies response
@@ -160,7 +161,7 @@ module Airplay
     # Returns a response object or exception
     #
     def verify_response(response)
-      if response.response.code == "401"
+      if response.code == "401"
         return PasswordRequired.new if !@device.password?
         return WrongPassword.new    if @device.password?
       end
