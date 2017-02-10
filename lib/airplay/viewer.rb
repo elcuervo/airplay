@@ -15,15 +15,17 @@ module Airplay
 
     # Public: Broadcasts the content to the device
     #
-    # media_or_io - The url, file path or io of the image/s
+    # media_or_io - The url, file path or io of the image/s (autodetect)
     # options     - Options that include the device
     #               * transition: the type of transition (Default: None)
+    #               * raw: the first argument is raw image data (Default: false/autodetect)
     #
     # Returns if the images was actually sent
     #
     def view(media_or_io, options = {})
-      content = get_content(media_or_io)
       transition = options.fetch(:transition, "None")
+      raw = options.fetch(:raw, false)
+      content = raw ? media_or_io : get_content(media_or_io)
 
       @logger.info "Fetched content (#{content.bytesize} bytes)"
       @logger.debug "PUT /photo with transition: #{transition}"
