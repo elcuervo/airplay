@@ -13,6 +13,8 @@ Gem::Specification.new do |s|
   s.files        = `git ls-files`.split("\n")
   s.test_files   = `git ls-files test`.split("\n")
 
+  s.required_ruby_version = ">= 2.7.0"
+
   s.add_dependency("dnssd",                "~> 3.0")
   s.add_dependency("CFPropertyList",       "~> 2.2")
   s.add_dependency("mime-types",           ">= 1.16")
