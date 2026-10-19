@@ -6,13 +6,36 @@
 
 The test harness SHALL provide an mDNS responder double that advertises configurable service
 instances — instance name, service type, SRV target, port, TTL and address family — over the
-multicast destinations on an interface usable in tests, without avahi or any system service, and
-records every packet it receives with its source and decoded contents.
+multicast destinations on an interface usable in tests, without external services, and records
+every query it receives with its source and decoded contents.
+
+```ruby
+Airplay.sync do
+  responder = Airplay::FakeDevice::MDNSResponder.new(
+    port: 55_353, interfaces: ["lo0"]
+  ).start
+
+  responder.advertise(
+    name: "Living Room",
+    type: "_airplay._tcp.local.",
+    target: "living-room.local.",
+    port: 7000,
+    txt: { "deviceid" => "AA:BB:CC:DD:EE:FF", "features" => "0x5A7FDFD5,0x3C155FDE" }
+  )
+
+  result = Airplay::Discovery::Browser.new(
+    port: 55_353, interfaces: ["lo0"]
+  ).browse(window: 0.5)
+
+  result.records.first.port # => 7000
+  responder.stop
+end
+```
 
 #### Scenario: Discoverable without system services
 
 - **WHEN** a test starts the responder double with one configured instance and browses
-- **THEN** the instance is discovered with no avahi daemon installed and no external network used
+- **THEN** the instance is discovered with no system daemon installed and no external network used
 
 #### Scenario: Received traffic is inspectable
 
@@ -24,6 +47,24 @@ records every packet it receives with its source and decoded contents.
 The responder double SHALL support per-test discovery faults: withholding or delaying an instance's
 SRV answer, answering with a TXT record that conflicts with an earlier answer for the same instance,
 answering only on IPv6, and dropping a configured fraction of answers.
+
+```ruby
+responder.advertise(
+  name: "Silent",
+  type: "_airplay._tcp.local.",
+  target: "silent.local.",
+  port: 7000,
+  fault: :withhold_srv
+)
+
+responder.advertise(
+  name: "Lossy",
+  type: "_airplay._tcp.local.",
+  target: "lossy.local.",
+  port: 7000,
+  drop: 0.5
+)
+```
 
 #### Scenario: Withheld SRV answer
 

@@ -61,6 +61,4 @@ downstream is guesswork.
   stream decisions in `airplay2-video-playqueue` and `raop-audio-stream` depend on.
 - Harness slice: an in-process mDNS responder double that advertises arbitrary devices and
   capability masks, plus fault knobs (late SRV, conflicting TXT, IPv6-only, packet loss),
-  all runnable without avahi or a real network.
-- `nix develop` provides `avahi` in the integration shell for cross-checking our results
-  against a reference resolver; it is never a runtime dependency.
+  all runnable without a system daemon or a real network.

@@ -15,6 +15,13 @@ The model SHALL decode the TXT `features` value into one 64-bit mask, reading `0
 absent. A missing or malformed value SHALL be reported as unknown, with every bit-derived predicate
 false, and SHALL NOT raise.
 
+```ruby
+capabilities = Airplay::Discovery::Capabilities.new("features" => "0x40000a00,0x80300")
+capabilities.mask # => 0x0008030040000a00
+
+Airplay::Discovery::Capabilities.new("features" => "zz").mask # => nil
+```
+
 #### Scenario: Two-word mask
 
 - **WHEN** a receiver advertises `features=0x40000a00,0x80300`
@@ -37,6 +44,12 @@ documented conditions as predicates: a password is required when `pw` is true or
 set, a PIN is required when the PIN bit is set, and legacy pairing is advertised when the
 legacy-pairing bit is set.
 
+```ruby
+capabilities.password_required? # => true
+capabilities.pin_required?      # => false
+capabilities.legacy_pairing?    # => false
+```
+
 #### Scenario: Password advertised as a flag
 
 - **WHEN** a receiver advertises `pw=true` with no flag bit set
@@ -58,6 +71,12 @@ The model SHALL retain `srcvers`, `protovers` and `osvers` as values comparable 
 so a version gate never depends on string ordering. A value it cannot parse SHALL be kept verbatim,
 reported as unknown for comparisons, and SHALL NOT fail the record.
 
+```ruby
+capabilities.srcvers             # => #<Version "354.54.6" segments=[354, 54, 6]>
+capabilities.srcvers >= "354.54.6" # => true
+capabilities.srcvers >= "355"      # => false
+```
+
 #### Scenario: Segment-wise comparison
 
 - **WHEN** a receiver advertises `srcvers=354.54.6`
@@ -75,6 +94,12 @@ The model SHALL expose the hardware address from `deviceid`, the pairing identit
 back to `psi`, and the advertised public key from `pk` verbatim, keeping a receiver's identity
 separate from the address discovery resolved for it.
 
+```ruby
+capabilities.device_id   # => "AA:BB:CC:DD:EE:FF"
+capabilities.identity    # => "AAAAAAAA-BBBB-CCCC-DDDD-EEEEEEEEEEEE" (pi, or psi when pi is absent)
+capabilities.public_key  # => "..." (pk, base64 verbatim)
+```
+
 #### Scenario: Both identities advertised
 
 - **WHEN** a receiver advertises both `pi` and `psi` with different values
@@ -90,6 +115,12 @@ separate from the address discovery resolved for it.
 The model SHALL expose the group identifier (`gid`), the parent group identifier (`pgid`), the
 tight-sync identifier (`tsid`), the group public name (`gpn`) and the leader flags (`igl`, `gcgl`,
 `pgcgl`) — the flags as booleans — so multi-room grouping can be decided from a record.
+
+```ruby
+capabilities.group_id       # => "00000000-1111-2222-3333-444444444444"
+capabilities.group_leader?  # => true
+capabilities.groupable?     # => true
+```
 
 #### Scenario: Group leader
 
@@ -107,6 +138,13 @@ A group identifier value that does not consist of a single identifier — such a
 ecosystem emits for paired stereo devices — SHALL be reduced to its leading identifier, and a value
 that cannot be reduced SHALL be treated as absent, without failing or discarding the rest of the
 record.
+
+```ruby
+Airplay::Discovery::Capabilities.new(
+  "gid" => "00000000-1111-2222-3333-444444444444+1+55555555-6666-7777-8888-999999999999"
+).group_id
+# => "00000000-1111-2222-3333-444444444444"
+```
 
 #### Scenario: Compound group identifier
 
@@ -126,6 +164,13 @@ The model SHALL expose the access-control values (`acl`, `act`) and the receiver
 features (`rsf`) verbatim, and SHALL provide a predicate for the documented restricted access-control
 value, without discarding values it does not recognise.
 
+```ruby
+capabilities.acl               # => "1"
+capabilities.act               # => "2"
+capabilities.rsf               # => "0"
+capabilities.restricted_access? # => true
+```
+
 #### Scenario: Access restricted
 
 - **WHEN** a receiver advertises `acl=1`
@@ -142,6 +187,12 @@ The model SHALL retain every TXT key and value it received verbatim — includin
 interpret and the RAOP-specific hints (`cn`, `et`, `sr`, `ss`, `ch`, `pw`, `md`, `am`, `tp`, `da`) —
 so callers can read data the model does not name.
 
+```ruby
+capabilities.txt["cn"] # => "0,1"
+capabilities.txt["et"] # => "0,3,5"
+capabilities.txt["some-future-key"] # => "value"
+```
+
 #### Scenario: Uninterpreted keys
 
 - **WHEN** a record carries `cn=0,1`, `et=0,3,5` and a key the model does not know
@@ -151,6 +202,15 @@ so callers can read data the model does not name.
 
 The model SHALL expose named predicates for the media capabilities the feature mask carries: video
 v1, video v2, photo, slideshow, screen and audio.
+
+```ruby
+capabilities.video?      # => true
+capabilities.video_v2?   # => true
+capabilities.photo?      # => true
+capabilities.slideshow?  # => true
+capabilities.screen?     # => true
+capabilities.audio?      # => true
+```
 
 #### Scenario: Reference receiver mask
 
@@ -168,6 +228,11 @@ The buffered-audio predicate SHALL require the buffered-audio feature bit and a 
 the version where the ecosystem documents buffered audio, and the PTP predicate SHALL require the PTP
 feature bit and a `srcvers` at or above the documented version. A gate that cannot be evaluated SHALL
 report its capability as unavailable.
+
+```ruby
+capabilities.buffered_audio? # bit 40 && srcvers >= 354.54.6
+capabilities.ptp?            # bit 41 && srcvers >= 366
+```
 
 #### Scenario: Buffered audio gate satisfied
 
@@ -195,6 +260,13 @@ The model SHALL expose named predicates for unified media control, pairing and a
 transient pairing and AirPlay 2 routing, where the AirPlay 2 predicate is true when either the
 unified-media-control or the pairing-and-encryption feature bit the ecosystem checks is set.
 
+```ruby
+capabilities.unified_media_control? # bit 38
+capabilities.pairing?               # bit 46
+capabilities.transient_pairing?     # bit 43 or bit 48
+capabilities.airplay2?              # bit 38 or bit 48
+```
+
 #### Scenario: AirPlay 2 capable receiver
 
 - **WHEN** a receiver advertises the unified-media-control bit and the pairing-and-encryption bit
@@ -211,6 +283,15 @@ unified-media-control or the pairing-and-encryption feature bit the ecosystem ch
 A capability set SHALL be updatable from a later, more authoritative source: the values that source
 defines SHALL replace the values derived from TXT instead of being merged or averaged, TXT-only values
 SHALL remain readable, and the model SHALL report which source each normalised field came from.
+
+```ruby
+txt = Airplay::Discovery::Capabilities.new("features" => "0x1,0x0")
+live = txt.refresh("features" => "0x40000a00,0x80300", "srcvers" => "354.54.6")
+
+live.mask                 # => 0x0008030040000a00 (authoritative)
+live.source(:mask)        # => :authoritative
+live.txt["features"]      # => "0x1,0x0" (diagnostics untouched)
+```
 
 #### Scenario: Authoritative source wins
 

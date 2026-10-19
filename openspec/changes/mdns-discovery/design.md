@@ -17,10 +17,10 @@ See `proposal.md` — Why. The constraints that shape this design:
   stream decisions in `raop-audio-stream` and `airplay2-video-playqueue` need exactly that data.
 - The runtime is one `Async` reactor per process with a non-blocking rule (`runtime-async-reset`):
   name resolution and every other potentially blocking call must not stall the reactor, and sessions
-  own their sockets and tasks. `async-dns` is already in the runtime dependency set.
-- Everything must be verifiable without physical hardware, without avahi and without external
-  network: the in-process virtual receiver of `test-harness` is the oracle, and it is discovered
-  through the harness multicast responder.
+  own their sockets and tasks.
+- Everything must be verifiable without physical hardware and without external network: the
+  in-process virtual receiver of `test-harness` is the oracle, and it is discovered through the
+  harness multicast responder.
 - This project is a sender. It consumes discovery and never publishes itself; the responder the
   proposal mentions exists only in the harness.
 
@@ -38,8 +38,7 @@ See `proposal.md` — Why. The constraints that shape this design:
 **Non-Goals:**
 
 - **mDNS advertisement, service registration and responder behaviour at runtime.** The library never
-  publishes, announces or answers a record; the responder lives in the test harness only. The
-  proposal's `avahi` is an integration-shell cross-check, never a runtime dependency.
+  publishes, announces or answers a record; the responder lives in the test harness only.
 - DNSSD/avahi interop at runtime (`dnssd`, `avahi-browse`, D-Bus, `libdns_sd` compatibility).
 - Sleep-proxy, wide-area Bonjour (`_airplay._tcp.<unicast domain>`), AWDL/`_airplay-p2p._tcp`, and
   mDNS probing/conflict resolution for records we own — we own none.
@@ -73,14 +72,14 @@ decode without special cases and stay available for diagnostics.
 **One datagram socket per selected interface and address family, owned by the reactor.** Each socket
 joins the multicast group on its interface (IPv4 membership by interface address, IPv6 membership by
 interface index), binds port 5353 with address/port reuse so another responder on the host does not
-block us, and is served by a receive task that lives in the session task tree; `async-io` wraps
-`recvfrom`/`sendmsg` as non-blocking operations, so the loop never stalls the reactor. Queries are
-sent from each socket so answers come back scoped to that interface, and each answer is recorded with
-the socket it arrived on. Alternatives considered: a dedicated resolver thread with a queue (the
-cross-thread handoff this runtime exists to remove, and it makes cancellation and timeouts harder);
-a single socket with `IP_MULTICAST_IF` switched per send (multicast-scoped and link-local answers
-take the interface from the receiving socket, so the answer/interface correlation is lost);
-`IO.select` inside a fiber (same as the reactor does, with worse error handling).
+block us, and is served by a receive task that lives in the session task tree; Ruby's fiber scheduler
+makes `wait_readable` and `recvfrom_nonblock` non-blocking operations, so the loop never stalls the
+reactor. Queries are sent from each socket so answers come back scoped to that interface, and each
+answer is recorded with the socket it arrived on. Alternatives considered: a dedicated resolver thread
+with a queue (the cross-thread handoff this runtime exists to remove, and it makes cancellation and
+timeouts harder); a single socket with `IP_MULTICAST_IF` switched per send (multicast-scoped and
+link-local answers take the interface from the receiving socket, so the answer/interface correlation
+is lost); `IO.select` inside a fiber (same as the reactor does, with worse error handling).
 
 **Cache keyed by service instance, holding each record's own TTL.** An answer's TTL is copied into the
 cache entry; a lookup inside the lifetime is served without a query; an expired entry is re-resolved;
@@ -158,7 +157,7 @@ and it cannot express late SRV, conflicting TXT or IPv6-only answers).
 
 - [Multicast group join fails on virtualized or IGMP-less interfaces] → bind per interface and treat
   "no usable interface" as the transport error of the taxonomy, with loopback as the test default;
-  the integration shell exercises a real interface.
+  the opt-in live check exercises a real interface.
 - [A second responder on the host already holds 5353] → bind with address and port reuse and never
   bind a privileged ephemeral port for the responder's own answers; a bind failure surfaces as the
   typed transport error rather than an empty result.
@@ -182,6 +181,6 @@ and it cannot express late SRV, conflicting TXT or IPv6-only answers).
 
 - The default browse window (currently two seconds) versus Wi-Fi power-save delays: the spec fixes
   only that the window is caller-bounded and reports why it ended, so the default is tuned from the
-  opt-in integration cross-check rather than decided here.
+  opt-in live check rather than decided here.
 - Whether the CLI's `air doctor` shows one device's full raw TXT map behind a flag: a presentation
   choice that does not change the spec, the approach or the task order.
