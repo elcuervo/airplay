@@ -56,7 +56,7 @@ class HarnessTest < Airplay::TestCase
   end
 
   def test_a_rejected_credential_is_auth_failed
-    with_receiver(faults: { 1 => { kind: :auth } }) do |receiver|
+    with_receiver(faults: { 1 => { kind: :auth }, 2 => { kind: :auth } }) do |receiver|
       device = receiver.device(password: "hunter2")
 
       error = assert_raises(Airplay::AuthFailedError) do

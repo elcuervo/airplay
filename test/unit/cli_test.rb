@@ -10,6 +10,23 @@ class CLITest < Airplay::TestCase
     assert_match(/air \d+\.\d+\.\d+/, output)
   end
 
+  def test_help_documents_the_legacy_route_and_verbs
+    output, = capture_io { assert Airplay::CLI.run(["help"]) }
+
+    assert_includes output, "--legacy"
+    assert_includes output, "play"
+    assert_includes output, "view"
+    assert_includes output, "--url"
+    assert_includes output, "--transition"
+  end
+
+  def test_arrow_keys_map_to_transitions
+    assert_equal "SlideLeft", Airplay::CLI.transition_for("\e[C")
+    assert_equal "SlideRight", Airplay::CLI.transition_for("\e[D")
+    assert_equal "None", Airplay::CLI.transition_for(" ")
+    assert_nil Airplay::CLI.transition_for("x")
+  end
+
   def test_unknown_action_fails
     _, error = capture_io do
       refute Airplay::CLI.run(["nope"])

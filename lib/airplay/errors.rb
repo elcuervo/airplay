@@ -7,11 +7,12 @@ module Airplay
       end
     end
 
-    attr_reader :code, :device
+    attr_reader :code, :device, :status
 
-    def initialize(message = nil, code: self.class.code, device: nil)
+    def initialize(message = nil, code: self.class.code, device: nil, status: nil)
       @code = code
       @device = device
+      @status = status
       super(message || code.to_s)
     end
 

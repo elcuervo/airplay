@@ -7,7 +7,7 @@ module Airplay
     DEFAULT_TIMEOUT = 5.0
 
     attr_accessor :autodiscover, :advertised_address, :output,
-                  :discovery_port, :discovery_interfaces
+                  :discovery_port, :discovery_interfaces, :media_port, :digest_username
     attr_reader :log_level, :timeout, :discovery_window
 
     def initialize
@@ -19,6 +19,8 @@ module Airplay
       @discovery_port = 5353
       @discovery_interfaces = nil
       @discovery_window = 2.0
+      @media_port = 0
+      @digest_username = nil
     end
 
     def log_level=(value)

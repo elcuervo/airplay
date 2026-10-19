@@ -5,6 +5,7 @@ require "stringio"
 
 require "airplay"
 require "airplay/fake_device"
+require "support/range_client"
 
 module Airplay
   # Public: Shared test setup; every test starts from default configuration.

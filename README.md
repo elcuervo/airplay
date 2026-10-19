@@ -32,7 +32,7 @@ much as you want in: [Paypal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclic
 
 Ruby 4.0 or newer is required.
 
-Discovery is pure Ruby: no `dnssd` gem and no `libavahi-compat-libdnssd` are required.
+Discovery is pure Ruby and needs no system daemon or native extension.
 
 ### Library
 
@@ -66,7 +66,9 @@ Airplay.configure do |config|
   config.log_level         # :debug, :info, :warn, :error or :fatal (Default: :info)
   config.autodiscover      # Allows discovery to run for one-shot commands (Default: true)
   config.advertised_address # Address handed to receivers (Default: nil, chosen per interface)
+  config.media_port        # Media server port; 0 picks an OS-assigned port (Default: 0)
   config.timeout           # Per-request timeout in seconds (Default: 5.0)
+  config.digest_username   # Overrides the realm-derived digest username (Default: nil)
   config.output            # Structured event sink (Default: $stdout)
 end
 ```
@@ -99,6 +101,44 @@ Airplay.open(device) do |session|
   session.get("/server-info")
 end
 ```
+
+#### Legacy AirPlay 1
+
+A session speaks the legacy control plane directly: one keep-alive HTTP/1.1
+connection, `User-Agent: MediaControl/1.0`, a stable `X-Apple-Session-ID` and an
+`X-Apple-Device-ID` per session. Every command maps onto that client:
+
+```ruby
+Airplay::Session.open(device, password: "hunter2") do |session|
+  session.server_info                 # GET /server-info
+  session.photo(picture, transition: "Dissolve") # PUT /photo
+  session.play("http://host/movie.mp4", position: 0.5) # POST /play
+  session.rate(0)                     # POST /rate?value=0
+  session.scrub(20.097)               # POST /scrub?position=20.097
+  session.stop                        # POST /stop
+  session.playback_info               # GET /playback-info snapshot
+  session.scrub                       # GET /scrub (duration and position)
+end
+```
+
+Transitions are `None`, `Dissolve`, `SlideLeft` and `SlideRight`. A failing
+command raises a typed error carrying the HTTP status; a `401` on a session
+without a password raises `auth_required`, and a rejected signed replay raises
+`auth_failed`.
+
+Use `--url` to skip discovery and target a receiver directly:
+
+```sh
+air play http://host/movie.mp4 --url http://192.168.1.12:7000
+air view photo.png --url http://192.168.1.12:7000 --transition SlideLeft
+air view ./photos --url http://192.168.1.12:7000 --wait 5
+```
+
+A local file played through `air play` is published by the session's media
+server, which serves byte ranges (`206`, `Content-Range`, `HEAD`) for the life
+of the session and returns a stable, opaque URL. AirPlay 2 devices use the
+modern route; pass `--legacy` (or `legacy: true` to the session) to force the
+legacy plane.
 
 #### AirPlay 2
 
@@ -289,11 +329,19 @@ Tests are split into three lanes:
 - `rake test:protocol` — the in-process virtual receiver and mDNS responder
   double (`airplay-fake-device`) driving sessions and discovery over loopback:
   request recording, timeouts, cancellation, reactor safety, cache expiry,
-  goodbyes and fault injection. No Apple TV, system daemon or external network
-  required.
+  goodbyes and fault injection. The receiver also runs a legacy mode (scripted
+  `server-info`, `photo`, `play`, transport, `playback-info` and `setProperty`
+  responses), a digest-challenge mode with configurable realm, nonce, `qop` and
+  credentials, photo-integrity assertions over the received body, and the
+  connection knobs (close after response, delayed bodies). No Apple TV, system
+  daemon or external network required.
+- The media server's byte-range contract is driven through a raw range client
+  (`test/support/range_client.rb`), with 200/206/416/HEAD fixtures.
 - `rake test:hardware` — opt-in validation against a real receiver. Set
   `AIRPLAY_HARDWARE_HOST` (and optionally `AIRPLAY_HARDWARE_PORT`) to run it;
-  without them every test skips and the lane succeeds.
+  without them every test skips and the lane succeeds. The same lane exercises
+  the legacy control plane and photo display against a legacy device; it records
+  the model, firmware and outcome.
 
 `rake` runs unit and protocol. `rake test:all` runs all three.
 

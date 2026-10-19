@@ -2,7 +2,7 @@
 
 Ruby 4.0 or newer is required.
 
-Discovery is pure Ruby: no `dnssd` gem and no `libavahi-compat-libdnssd` are required.
+Discovery is pure Ruby and needs no system daemon or native extension.
 
 ### Library
 

@@ -1,5 +1,6 @@
 require "async"
 require "async/http"
+require "digest"
 require "json"
 require "openssl"
 require "securerandom"
@@ -12,7 +13,7 @@ module Airplay
   module FakeDevice
     # Public: In-process AirPlay receiver double used by the protocol lane.
     class Receiver
-      Exchange = Struct.new(:method, :path, :headers, :body, :plist, :connection, keyword_init: true)
+      Exchange = Struct.new(:method, :path, :headers, :body, :plist, :connection, :serial, keyword_init: true)
       Record = Struct.new(:name, :model, :features, :password, keyword_init: true)
       Request = Struct.new(:method, :path, :headers, :body, :connection, keyword_init: true)
 
@@ -24,8 +25,10 @@ module Airplay
       }.freeze
 
       attr_reader :record, :exchanges, :faults, :port, :pairing_messages, :clock, :events,
-                  :control_keys, :event_keys, :pairings, :framed_requests, :parameters
-      attr_accessor :connections, :feedback_interval
+                  :control_keys, :event_keys, :pairings, :framed_requests, :parameters,
+                  :photo_digest, :photo_transition, :photo_bytes, :digest_attempts,
+                  :digest_missing, :digest_wrong
+      attr_accessor :connections, :open_sockets, :feedback_interval
 
       PAIRING_PATHS = %w[/pair-setup /pair-verify].freeze
       PAIRING_REQUESTS = { transient: 2, pin: 3 }.freeze
@@ -50,12 +53,30 @@ module Airplay
         wrong_pin control_401 corrupt_tag replayed_counter truncated_frame oversized_length wedge
       ].freeze
       PAIRING_OPTIONS = (PAIRING_DEFAULTS.keys + [:faults] + PAIRING_FAULTS).freeze
+      LEGACY_DEFAULTS = {
+        script: {},
+        digest: nil,
+        close_after_response: false,
+        connection_close: false,
+        delay_body: 0,
+        truncate: false,
+        reject_authentication: false
+      }.freeze
 
-      def initialize(record: {}, faults: {}, pairing: nil)
+      def initialize(record: {}, faults: {}, pairing: nil, legacy: nil)
         @record = Record.new(**DEFAULT_RECORD.merge(record))
         @faults = faults.dup
         @exchanges = []
         @connections = 0
+        @open_sockets = 0
+        @serials = {}
+        @legacy = legacy && LEGACY_DEFAULTS.merge(legacy)
+        @digest_attempts = 0
+        @digest_missing = 0
+        @digest_wrong = 0
+        @photo_digest = nil
+        @photo_transition = nil
+        @photo_bytes = nil
         @pairing = pairing && PAIRING_DEFAULTS.merge(pairing)
         @clock = @pairing && (@pairing[:clock] || FakeClock.new)
         @feedback_interval = @pairing && @pairing[:feedback_interval]
@@ -114,8 +135,11 @@ module Airplay
           end,
           body: body,
           plist: decode_plist(body),
-          connection: request.respond_to?(:connection) ? request.connection : nil
+          connection: request.respond_to?(:connection) ? request.connection : nil,
+          serial: connection_serial(request)
         )
+
+        return handle_legacy(request, body) if @legacy
 
         fault = @faults[index] || {}
         if @pairing && @pairing[:demand]
@@ -177,6 +201,84 @@ module Airplay
       end
 
       private
+
+      def connection_serial(request)
+        connection = request.respond_to?(:connection) ? request.connection : nil
+        @serials[connection] ||= @serials.size + 1
+      end
+
+      def handle_legacy(request, body)
+        if @legacy[:digest] && (!legacy_authorized?(request) || @legacy[:reject_authentication])
+          if request.headers["authorization"].nil?
+            @digest_missing += 1
+          else
+            @digest_wrong += 1
+          end
+          @digest_attempts += 1
+          return respond(401, "", { "www-authenticate" => legacy_challenge })
+        end
+
+        if request.method == "PUT" && request.path == "/photo"
+          @photo_bytes = body.to_s.b
+          @photo_digest = Digest::SHA256.hexdigest(@photo_bytes)
+          @photo_transition = Array(request.headers["x-apple-transition"]).first
+        end
+
+        sleep(@legacy[:delay_body].to_f) if @legacy[:delay_body].to_f.positive?
+
+        script = @legacy[:script][[request.method, request.path]] ||
+                 @legacy[:script][request.path] || {}
+        script = script.call(request) if script.respond_to?(:call)
+        if script[:truncate] || script["truncate"]
+          stream = request.hijack!
+          stream.write("HTTP/1.1 200 OK\r\ncontent-length: 50\r\n\r\nx", flush: true)
+          stream.close
+          return nil
+        end
+        headers = { "content-type" => "application/octet-stream" }
+        headers.merge!(script[:headers] || script["headers"] || {})
+        headers["connection"] = "close" if @legacy[:connection_close]
+        response = respond(script[:status] || script["status"] || 200,
+                           script[:body] || script["body"] || "", headers)
+        return response unless @legacy[:close_after_response]
+
+        stream = request.hijack!
+        stream.write(serialize(response), flush: true)
+        stream.close
+        nil
+      end
+
+      def legacy_challenge
+        config = @legacy[:digest]
+        value = %(Digest realm="#{config[:realm]}", nonce="#{config[:nonce]}")
+        value += %(, qop="auth") if config[:qop]
+        value
+      end
+
+      def legacy_authorized?(request)
+        header = request.headers["authorization"].to_s
+        return false unless header.start_with?("Digest ")
+
+        params = header.scan(/(\w+)=(?:"([^"]*)"|([^\s,]+))/).to_h do |key, quoted, plain|
+          [key, quoted || plain]
+        end
+        config = @legacy[:digest]
+        expected_user = config[:username] || (config[:realm] == "raop" ? "iTunes" : "Airplay")
+        return false unless params["username"] == expected_user
+        return false unless params["realm"] == config[:realm] && params["nonce"] == config[:nonce]
+
+        ha1 = Digest::MD5.hexdigest("#{params["username"]}:#{params["realm"]}:#{config[:password]}")
+        ha2 = Digest::MD5.hexdigest("#{request.method}:#{params["uri"]}")
+        expected = if params["qop"]
+                     Digest::MD5.hexdigest(
+                       "#{ha1}:#{config[:nonce]}:#{params["nc"]}:#{params["cnonce"]}:auth:#{ha2}"
+                     )
+                   else
+                     Digest::MD5.hexdigest("#{ha1}:#{config[:nonce]}:#{ha2}")
+                   end
+
+        expected == params["response"]
+      end
 
       def handle_pairing(request, body)
         items = Airplay::Pairing::TLV8.decode(body.to_s)
@@ -357,7 +459,7 @@ module Airplay
         body = response.read.to_s.b
         headers = response.headers.to_h.transform_values { |value| Array(value).join(", ") }
         headers["content-length"] = body.bytesize.to_s
-        lines = ["HTTP/1.1 #{response.status}"] +
+        lines = ["HTTP/1.1 #{response.status} #{Protocol::HTTP::Status.description(response.status)}"] +
                 headers.map { |name, value| "#{name}: #{value}" }
 
         lines.join("\r\n") + "\r\n\r\n" + body
@@ -558,6 +660,7 @@ module Airplay
 
         def accept(peer, address, task: Async::Task.current)
           @receiver.connections += 1
+          @receiver.open_sockets += 1
 
           case @receiver.connection_fault
           when :drop
@@ -571,6 +674,8 @@ module Airplay
           else
             super
           end
+        ensure
+          @receiver.open_sockets -= 1
         end
       end
     end
