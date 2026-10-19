@@ -6,8 +6,9 @@ module Airplay
     LEVELS = %i[debug info warn error fatal].freeze
     DEFAULT_TIMEOUT = 5.0
 
-    attr_accessor :autodiscover, :advertised_address, :output
-    attr_reader :log_level, :timeout
+    attr_accessor :autodiscover, :advertised_address, :output,
+                  :discovery_port, :discovery_interfaces
+    attr_reader :log_level, :timeout, :discovery_window
 
     def initialize
       @log_level = :info
@@ -15,6 +16,9 @@ module Airplay
       @advertised_address = nil
       @timeout = DEFAULT_TIMEOUT
       @output = $stdout
+      @discovery_port = 5353
+      @discovery_interfaces = nil
+      @discovery_window = 2.0
     end
 
     def log_level=(value)
@@ -29,6 +33,12 @@ module Airplay
       value = Float(value)
       raise ConfigurationError, "timeout must be positive" unless value.positive?
       @timeout = value
+    end
+
+    def discovery_window=(value)
+      value = Float(value)
+      raise ConfigurationError, "discovery window must be positive" unless value.positive?
+      @discovery_window = value
     end
   end
 end

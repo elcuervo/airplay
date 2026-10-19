@@ -10,6 +10,7 @@ require "airplay/status"
 require "airplay/resolver"
 require "airplay/device"
 require "airplay/session"
+require "airplay/discovery"
 
 # Public: AirPlay sender for Ruby 4.
 module Airplay
@@ -30,6 +31,7 @@ module Airplay
       @configuration = Configuration.new
       @clock = nil
       @resolver = nil
+      @devices = nil
       Status.reset!
       configuration
     end
@@ -57,6 +59,19 @@ module Airplay
     # Public: Synchronous facade for one-shot work on a session.
     def open(device, **options, &block)
       sync { |task| Session.open(device, task: task, **options, &block) }
+    end
+
+    # Public: Current discovery records; browses when the cache is cold.
+    def devices
+      @devices ||= Discovery::Devices.new
+    end
+
+    def browse(**options)
+      devices.browse(**options)
+    end
+
+    def [](name)
+      devices[name]
     end
   end
 end
