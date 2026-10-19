@@ -74,3 +74,29 @@ Input that is truncated, declares more objects than it contains, uses an unsuppo
 
 - **WHEN** a document uses an object marker the codec does not implement
 - **THEN** a specific decoding error naming the marker is raised
+
+### Requirement: Reviewable plist examples
+
+The change SHALL keep a reviewable Ruby sample for the plist value model, so a reviewer can
+see how requests are built and decoded.
+
+```ruby
+value = {
+  "session" => "UUID",
+  "volume" => -15.0,
+  "streams" => [{ "type" => 96 }],
+  "when" => Time.utc(2026, 10, 19),
+  "data" => Airplay::Plist::Data.new("\x00\x01".b)
+}
+
+bytes = Airplay::Plist.dump(value) # bplist00
+Airplay::Plist.load(bytes)         # => the same value model
+
+Airplay::Plist.load(truncated)     # raises Airplay::Plist::DecodeError
+```
+
+#### Scenario: Values survive a round trip
+
+- **WHEN** a request body is built with the value model and encoded
+- **THEN** decoding it yields the same values, with dates as absolute instants and data as bytes
+

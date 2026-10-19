@@ -223,3 +223,39 @@ FairPlay `fp-setup`, MFi `auth-setup` and HAP accessory mode SHALL NOT be implem
 
 - **WHEN** a receiver demands MFi authentication
 - **THEN** the error names MFi, distinguishing it from the FairPlay case
+
+### Requirement: Reviewable pairing examples
+
+The change SHALL keep a reviewable Ruby sample for each implemented pairing primitive, so a
+reviewer can see the intended usage without reading the implementation.
+
+Transient pairing is the implemented first slice: TLV8, SRP-6a with code `3939`,
+HKDF, AEAD framing and binary plists. PIN/pair-verify credential persistence is deferred.
+
+```ruby
+# TLV8
+hello = Airplay::Pairing::TLV8::Item.new(0x03, public_key)
+bytes = Airplay::Pairing::TLV8.encode([hello])
+Airplay::Pairing::TLV8.decode(bytes) # => [#<Item type=3 value="...">]
+
+# SRP-6a: A -> receiver, then B + salt -> key and proof
+srp = Airplay::Pairing::SRP.new(pin: 3939)
+srp.process(receiver_public, receiver_salt)
+srp.public                # own A, sent in M3
+srp.key                   # 64-byte SRP session key
+srp.proof                 # M1, sent in M3
+srp.valid_server_proof?(receiver_proof) # M2 check
+
+# Channel keys and framing
+write_key, read_key = Airplay::Pairing::HKDF.control_keys(srp.key)
+writer = Airplay::Pairing::Frame.new(write_key)
+reader = Airplay::Pairing::Frame.new(read_key)
+frame = writer.encrypt(plist_bytes) # 0x00 0x14 + ciphertext + tag
+reader.decrypt(frame)               # raises Airplay::AuthFailedError on a bad tag
+```
+
+#### Scenario: Example transient exchange
+
+- **WHEN** the sender posts M1 with method `PairSetup`, state `1` and flags `0x10`
+- **THEN** the receiver answers with salt and public key, the sender posts M3 with its public key and proof, and the receiver's M4 proof is verified before deriving the control keys from `srp.key`
+
