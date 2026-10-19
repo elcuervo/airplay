@@ -5,9 +5,12 @@
 ```text
 air help
 air version
+air list     # discovered devices
+air doctor   # per-device type, host, port, addresses and capabilities
 ```
 
-Protocol verbs (`list`, `play`, `view`, `doctor`) are added by the protocol
+`air list` and `air doctor` browse the local network; `--interface` and `--window`
+narrow the browse. Protocol verbs (`play`, `view`) are added by the protocol
 changes that implement them.
 
 ### Library

@@ -21,7 +21,7 @@ task default: %w[test:unit test:protocol]
 namespace :doc do
   task :generate do
     structure = %w[
-      header toc installation usage development testing documentation contributors
+      header toc installation usage discovery development testing documentation contributors
     ]
 
     File.open("README.md", "w") do |file|
