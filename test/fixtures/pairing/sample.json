@@ -1,0 +1,18 @@
+{
+  "ascii": "hello",
+  "unicode": "héllo 世界",
+  "integer": 42,
+  "negative": -7,
+  "real": 1.5,
+  "true": true,
+  "false": false,
+  "date": "2020-01-02T03:04:05Z",
+  "data": "00ff01",
+  "array": [
+    1,
+    "two"
+  ],
+  "dict": {
+    "a": 3
+  }
+}

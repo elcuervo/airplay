@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>array</key>
+	<array>
+		<integer>1</integer>
+		<string>two</string>
+	</array>
+	<key>ascii</key>
+	<string>hello</string>
+	<key>data</key>
+	<data>
+	AP8B
+	</data>
+	<key>date</key>
+	<date>2020-01-02T03:04:05Z</date>
+	<key>dict</key>
+	<dict>
+		<key>a</key>
+		<integer>3</integer>
+	</dict>
+	<key>false</key>
+	<false/>
+	<key>integer</key>
+	<integer>42</integer>
+	<key>negative</key>
+	<integer>-7</integer>
+	<key>real</key>
+	<real>1.5</real>
+	<key>true</key>
+	<true/>
+	<key>unicode</key>
+	<string>héllo 世界</string>
+</dict>
+</plist>

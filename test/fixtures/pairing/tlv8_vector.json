@@ -1,0 +1,23 @@
+{
+  "provenance": "Hand-authored TLV8 bytes from the HAP type/length/value layout; no implementation under test generated them.",
+  "items": [
+    {
+      "type": 0,
+      "value": "00"
+    },
+    {
+      "type": 6,
+      "value": "01"
+    },
+    {
+      "type": 99,
+      "value": "756e6b6e6f776e"
+    }
+  ],
+  "encoded": "0001000601016307756e6b6e6f776e",
+  "fragmented_lengths": [
+    255,
+    255,
+    90
+  ]
+}

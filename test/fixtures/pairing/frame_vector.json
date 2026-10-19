@@ -1,0 +1,8 @@
+{
+  "provenance": "Python cryptography ChaCha20-Poly1305, AAD is the little-endian length prefix, nonce counter 0",
+  "key": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+  "counter": 0,
+  "plaintext": "68656c6c6f206672616d65",
+  "aad": "0b00",
+  "frame": "0b0070dd2e5dc2c6c0a3720c39ee405125d53ada54cc6b8a1e96ec75b3"
+}

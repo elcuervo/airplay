@@ -1,0 +1,10 @@
+{
+  "provenance": "Python cryptography HKDF-SHA512, length 32",
+  "secret": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+  "derived": {
+    "control_write": "c3ca130c7033dbe5e7ff7f91d117ead869bac476994c7a48ca170c111136ed96",
+    "control_read": "c09403ef8aa6c5045cbd8cf9bf3e665b2caed623af2be0e87c8f80f519914d3d",
+    "events_write": "24ee7bb1f775cc08cc23e25bee48afa439250299bc76549e80c0b54d9cc60b61",
+    "events_read": "77c905af437e45acea18c03d6d5b7791fa9b9da65f3d4d63de8ce7ab3ea3fa5a"
+  }
+}
