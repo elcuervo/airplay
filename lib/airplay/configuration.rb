@@ -1,40 +1,34 @@
-require "log4r/config"
-require "celluloid/autostart"
-require "airplay/logger"
+require "airplay/errors"
 
-# Public: Airplay core module
-#
 module Airplay
-  # Public: Handles the Airplay configuration
-  #
+  # Public: Process-scoped configuration.
   class Configuration
-    attr_accessor :log_level, :output, :autodiscover, :host, :port
+    LEVELS = %i[debug info warn error fatal].freeze
+    DEFAULT_TIMEOUT = 5.0
+
+    attr_accessor :autodiscover, :advertised_address, :output
+    attr_reader :log_level, :timeout
 
     def initialize
-      Celluloid.boot # Force Thread Pool initialization
-      Log4r.define_levels(*Log4r::Log4rConfig::LogLevels)
-
-      @log_level = Log4r::ERROR
+      @log_level = :info
       @autodiscover = true
-      @host = "0.0.0.0"
-      @port = nil
-      @output = Log4r::Outputter.stdout
+      @advertised_address = nil
+      @timeout = DEFAULT_TIMEOUT
+      @output = $stdout
     end
 
-    # Public: Loads the configuration into the affected parts
-    #
-    # Returns nothing.
-    #
-    def load
-      level = if @log_level.is_a?(Fixnum)
-                @log_level
-              else
-                Log4r.const_get(@log_level.upcase)
-              end
+    def log_level=(value)
+      value = value.to_sym
+      unless LEVELS.include?(value)
+        raise ConfigurationError, "unknown log level #{value.inspect}"
+      end
+      @log_level = value
+    end
 
-      Log4r::Logger.root.add @output
-      Log4r::Logger.root.level = level
-      Celluloid.logger = Airplay::Logger.new("airplay::celluloid")
+    def timeout=(value)
+      value = Float(value)
+      raise ConfigurationError, "timeout must be positive" unless value.positive?
+      @timeout = value
     end
   end
 end

@@ -1,94 +1,62 @@
-require "airplay/configuration"
-require "airplay/browser"
-require "airplay/group"
-require "airplay/server"
-require "airplay/version"
+require "async"
+require "async/http"
+require "console"
 
-# Public: Airplay core module
-#
+require "airplay/version"
+require "airplay/errors"
+require "airplay/configuration"
+require "airplay/clock"
+require "airplay/status"
+require "airplay/resolver"
+require "airplay/device"
+require "airplay/session"
+
+# Public: AirPlay sender for Ruby 4.
 module Airplay
   class << self
-    # Public: General configuration
-    #
-    # &block - The block that will modify the configuration
-    #
-    # Returns the configuration file.
-    #
-    def configure(&block)
-      yield(configuration) if block
-    end
-
-    # Public: Access the server object
-    #
-    # Returns the Server object
-    #
-    def server
-      @_server ||= Server.new
-    end
-
-    # Public: Browses for devices in the current network
-    #
-    # Returns nothing.
-    #
-    def browse
-      browser.browse
-    end
-
-    # Public: Access or create a group based on a key
-    #
-    # Returns the Hash object.
-    #
-    def group
-      @_group ||= Hash.new { |h, k| h[k] = Group.new(k) }
-    end
-
-    # Public: Helper method to access all the devices
-    #
-    # Returns a Group with all the devices.
-    #
-    def all
-      @_all ||= begin
-        group = Group.new(:all)
-        devices.each { |device| group << device }
-        group
-      end
-    end
-
-    # Public: Lists found devices if autodiscover is enabled
-    #
-    # Returns an Array with all the devices
-    #
-    def devices
-      browse if browser.devices.empty? && configuration.autodiscover
-      browser.devices
-    end
-
-    # Public: Access the configuration object
-    #
-    # Returns the Configuration object
-    #
     def configuration
-      @_configuration ||= Configuration.new
+      @configuration ||= Configuration.new
     end
 
-    # Public: Access a device by name
-    #
-    # device_name - The name to search on the devices
-    #
-    # Returns the found device
-    #
-    def [](device_name)
-      devices.find_by_name(device_name)
+    # Public: Applies a configuration block and rebuilds the status logger.
+    def configure
+      yield configuration if block_given?
+      Status.configure(configuration)
+      configuration
     end
 
-    private
+    # Public: Restores defaults; used between tests.
+    def reset_configuration!
+      @configuration = Configuration.new
+      @clock = nil
+      @resolver = nil
+      Status.reset!
+      configuration
+    end
 
-    # Private: Access the browser object
-    #
-    # Returns the momoized Browser object
-    #
-    def browser
-      @_browser ||= Browser.new
+    def clock
+      @clock ||= Clock.new
+    end
+
+    attr_writer :clock
+
+    def resolver
+      @resolver ||= Resolver.new
+    end
+
+    attr_writer :resolver
+
+    # Public: Runs the block inside the process reactor and returns its value.
+    # Nested calls join the running reactor instead of starting another one.
+    def sync(&block)
+      raise ArgumentError, "block required" unless block
+
+      Sync { |task| block.call(task) }
+    end
+
+    # Public: Synchronous facade for one-shot work on a session.
+    def open(device, **options, &block)
+      sync { |task| Session.open(device, task: task, **options, &block) }
     end
   end
 end
