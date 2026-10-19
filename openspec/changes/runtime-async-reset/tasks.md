@@ -2,26 +2,28 @@
 
 ## 1. Toolchain and development environment
 
-- [ ] 1.1 Add `flake.nix` declaring the default dev shell (primary Ruby lane, bundler, OpenSSL
-      bindings, `pkg-config`, `jq`, git), the compatibility Ruby lane, and the integration shell with
-      `ffmpeg`, `avahi`, `shairport-sync`, `owntone`, `uxplay`; commit `flake.lock`; verify
-      `nix develop -c ruby -v`, `nix develop -c bundle -v` and `nix develop .#integration -c ffmpeg -version` all succeed
+- [ ] 1.1 Add `flake.nix` declaring the default dev shell on the canonical macOS arm64 host
+      (Ruby 4.0.7, bundler, OpenSSL bindings, `pkg-config`, `jq`, git) and the integration shell
+      with `ffmpeg`, `avahi` and `uxplay` there, plus `shairport-sync` and `owntone` on Linux;
+      commit `flake.lock`; verify `nix develop -c ruby -v`, `nix develop -c bundle -v` and
+      `nix develop .#integration -c ffmpeg -version` all succeed
 - [ ] 1.2 Configure isolated gem state inside the shell (`GEM_HOME` and `BUNDLE_PATH` under the
-      project or the flake's own store) and verify `nix develop -c bundle install` succeeds while the
-      host's broken global `openssl` and `json` gems remain installed
+      project or the flake's own store) and verify `nix develop -c bundle install` succeeds while
+      the host's system Ruby remains untouched
 - [ ] 1.3 Add the lane definitions to `Rakefile` (`test:unit`, `test:protocol`, `test:hardware`,
-      `test:all`, with `default` = unit + protocol) and verify `nix develop -c rake` passes and
-      `rake test:hardware` reports skips rather than failures with no hardware configured
-- [ ] 1.4 Replace `.travis.yml` with a CI workflow that runs the lanes through the flake on both
-      Ruby lanes, and verify the workflow runs green on the change branch before anything else lands
+      `test:all`, with `default` = unit + protocol) and verify `nix develop -c bundle exec rake`
+      passes and `bundle exec rake test:hardware` reports skips rather than failures with no
+      hardware configured
+- [ ] 1.4 Replace `.travis.yml` with a CI workflow that runs the lanes through the flake on Linux,
+      and verify the same commands run green locally through `nix develop` before anything else lands
 - [ ] 1.5 Document the environment, lanes and contributor setup in `doc/`, regenerate `README.md` via
       `rake doc:generate`, and verify the documented commands run as written
 
 ## 2. Dependency surgery and clean cutover
 
 - [ ] 2.1 Rewrite both gemspecs and `Gemfile` (`required_ruby_version`, runtime set `async`,
-      `async-http`, `console`, `plist`, `mime-types`; development set minitest 5 and a
-      mock HTTP library) and verify `bundle install` and `bundle exec ruby -Ilib -e 'require "airplay"'` succeed
+      `async-http`, `console`, `plist`, `mime-types`; development set minitest 5) and verify
+      `bundle install` and `bundle exec ruby -Ilib -e 'require "airplay"'` succeed
 - [ ] 2.2 Remove celluloid, reel, reel-rack, cuba, net-ptth, log4r, micromachine, fakeweb, vcr and
       minitest-given from the code and manifests, and verify no `require` or constant from those gems
       remains anywhere under `lib/`, `bin/` or `test/`
@@ -65,8 +67,9 @@
       configured record with no avahi installed; the multicast responder that advertises it is
       delivered by the `mdns-discovery` change, which consumes this lifecycle
 - [ ] 5.3 Implement per-test fault configuration (delay, drop, truncate, reset, error status,
-      authentication challenge, corrupted tag) and verify one test per fault observes the sender's
-      documented failure path
+      authentication challenge, corrupted payload bytes) and verify one test per fault observes the
+      sender's documented failure path; the corrupted-authentication-tag knob is added with the
+      pairing mode, which first parses tags
 - [ ] 5.4 Add the injectable clock and verify a timing assertion completes without wall-clock sleeps
 - [ ] 5.5 Add the opt-in hardware lane with environment-gated configuration, recording device model
       and version, and verify it skips cleanly with nothing configured
@@ -76,8 +79,9 @@
 
 ## 6. Integration check
 
-- [ ] 6.1 Run the full default lane in both Ruby lanes and verify green, then run the library load
-      check and the CLI entry point against a non-existent device to verify the documented error path
+- [ ] 6.1 Run the full default lane on the pinned Ruby lane and verify green, then run the library
+      load check and the CLI entry point (`air help`, `air version`); the unreachable-device path
+      is covered by the transport-error scenario
 - [ ] 6.2 Verify the five sibling changes can each read the facade and harness contracts they depend
       on: their proposals reference `Airplay::Session`, the error taxonomy, the lanes and the virtual
       receiver by the names established here

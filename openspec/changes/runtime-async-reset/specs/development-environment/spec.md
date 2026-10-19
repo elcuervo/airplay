@@ -3,7 +3,8 @@
 ## Purpose
 
 A flake-pinned toolchain with isolated gem state makes every dependency of this plan reproducible,
-on a host whose global Ruby gems are already broken in two independent ways.
+on the canonical macOS arm64 development host and in Linux CI, without disturbing the host's own
+Ruby installation.
 
 ## ADDED Requirements
 
@@ -23,15 +24,15 @@ on the host's global package set.
 - **WHEN** `nix flake check` runs
 - **THEN** it succeeds for the declared outputs
 
-### Requirement: Two Ruby lanes
+### Requirement: Latest stable Ruby lane
 
-The flake SHALL provide a primary lane on the current stable Ruby line and a compatibility lane on
-the previous stable line, so the supported range is exercised rather than assumed.
+The default dev shell and CI SHALL provide Ruby 4.0.7, the latest stable release, and the gems
+SHALL declare `required_ruby_version >= 4.0`.
 
-#### Scenario: Both lanes resolve dependencies
+#### Scenario: Dependencies resolve on the pinned lane
 
-- **WHEN** the test lanes run in the primary lane and in the compatibility lane
-- **THEN** dependency resolution succeeds in each and the same lane names are available in both
+- **WHEN** the test lanes run in the default shell
+- **THEN** dependency resolution succeeds and `ruby -v` reports 4.0.x
 
 ### Requirement: Isolated gem resolution
 
@@ -62,13 +63,14 @@ AirPlay hardware, avahi or ffmpeg.
 ### Requirement: Optional integration packages
 
 The flake SHALL make the optional integration and simulator tools — `ffmpeg`, `avahi`,
-`shairport-sync`, `owntone` and `uxplay` — available in a dedicated shell or output, without any of
-them becoming a hard runtime dependency of the library.
+`shairport-sync`, `owntone` and `uxplay` — available in a dedicated shell or output on every
+platform where nixpkgs supports them, without any of them becoming a hard runtime dependency of
+the library. `shairport-sync` and `owntone` are Linux-only and are covered by the Linux CI lane.
 
-#### Scenario: Integration shell provides the simulators
+#### Scenario: Integration shell provides the simulators its platform supports
 
 - **WHEN** the integration shell is entered
-- **THEN** `ffmpeg`, `avahi-browse`, `shairport-sync`, `owntone` and `uxplay` are executable, and the default shell still exposes none of them as library requirements
+- **THEN** the simulators nixpkgs provides for that platform are executable, and the default shell still exposes none of them as library requirements
 
 ### Requirement: Continuous integration parity
 
@@ -82,7 +84,7 @@ Ruby environment, and the obsolete Travis configuration SHALL be removed.
 
 ### Requirement: Documented environment
 
-The development environment, lane commands and Ruby lanes SHALL be documented in the repository's
+The development environment, lane commands and pinned Ruby version SHALL be documented in the repository's
 documentation sources, and the generated README SHALL continue to be produced from them.
 
 #### Scenario: Documentation matches the environment

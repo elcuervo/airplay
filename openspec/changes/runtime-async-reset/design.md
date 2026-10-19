@@ -7,14 +7,12 @@ See `proposal.md` — Why. The constraints that shape this design:
 - The existing code cannot load on a supported Ruby (`Fixnum`, `File.exists?`, `Object#taint` are
   gone) and every gem behind its runtime is unmaintained, so there is no incremental migration
   path: the concurrency, HTTP, logging and FSM layers are replaced in one cutover.
-- The host is Ubuntu 26.04 with Determinate Nix 3.21.5 (nix 2.34.8). Its *global* gem set is broken
-  twice over: a user `openssl-4.0.2` gem whose extension needs a missing `libssl.so.3`, and a
-  `json-2.21.1` extension linked against `libruby-3.4.8` under a 3.4.9 interpreter. Anything that
-  resolves gems from that directory is unusable for this project.
-- No avahi, no ffmpeg on the host. nixpkgs (the flakehub `nixpkgs-weekly` input) carries
-  `ruby_4_0`, `ruby_3_4`, `shairport-sync`, `owntone`, `uxplay`, `avahi`, `ffmpeg` and `libplist`;
-  its default `ruby` attribute currently resolves to 3.4.9, so "latest Ruby" must be pinned
-  explicitly rather than inherited.
+- The canonical development and hardware-validation host is macOS on Apple silicon (darwin 25.6,
+  arm64). It runs Ruby 3.4.9, Bundler 2.7.2 and Nix 2.29.1 natively, and it is fully
+  AirPlay-compatible, so it is the receiver every route is validated against.
+- nixpkgs carries `ruby_4_0` 4.0.7, `ffmpeg`, `avahi` and `uxplay` for `aarch64-darwin`;
+  `shairport-sync` and `owntone` are Linux-only, so the integration shell provides them on
+  `x86_64-linux` only and CI covers that lane. Linux remains the CI system, not the primary host.
 - The five sibling changes all build on this one, so the interfaces fixed here — session lifecycle,
   error taxonomy, harness modes — are the project's first real contracts.
 
@@ -68,14 +66,15 @@ on one path.
 `state_machines`/AASM. Rationale: the use is a four-state playback machine; a table is smaller,
 inspectable and directly testable, and the dependency is dead anyway.
 
-**The nix flake is the toolchain authority.** Alternatives: `.ruby-version` plus bundler (already
-proved insufficient — the global gem directory is poisoned), Docker Compose (duplicates the
-toolchain and cannot express the simulator set as cleanly), `asdf`/`mise` (still share or shadow the
-global gem home unless reconfigured). Rationale: the flake locks Ruby *and* the optional integration
-packages (`ffmpeg`, `avahi`, `shairport-sync`, `owntone`, `uxplay`) that the harness needs, and it
-gives CI the same environment a developer runs. Trade-off: Nix becomes a development prerequisite;
-the supported fallback is any Ruby with an isolated `BUNDLE_PATH`, documented but not the reference
-environment.
+**The nix flake is the toolchain authority.** Alternatives: `.ruby-version` plus bundler (the
+repository still pins the dead 2.7.6 and neither locks the Ruby build nor the integration
+packages), Docker Compose (duplicates the toolchain and cannot express the simulator set as
+cleanly), `asdf`/`mise` (still share or shadow the global gem home unless reconfigured).
+Rationale: the flake locks Ruby 4.0.7 *and* the optional integration packages (`ffmpeg`, `avahi`,
+`uxplay` on macOS; `shairport-sync` and `owntone` additionally on Linux) that the harness needs,
+and it gives CI the same environment a developer runs. Trade-off: Nix becomes a development
+prerequisite; the supported fallback is Ruby 4.0 with an isolated `BUNDLE_PATH`, documented but
+not the reference environment.
 
 **Harness ships as a separate, dev-only package.** Alternative: keep the fakes under `test/`.
 Rationale: both gems' test suites need the virtual receiver, and the runtime gems must not ship it.
@@ -95,8 +94,9 @@ so there is no reachable consumer to keep compatible; shims would only obscure t
   own errors; covered by a test asserting peers survive a session that raises.
 - [Flake evaluation needs network on first use] → commit `flake.lock`, cache in CI, and document the
   offline/non-Nix fallback.
-- [Ruby 4.0 versus 3.4 differences] → two flake lanes, both exercised in CI; the gem's declared
-  minimum is the lower of the two.
+- [A single latest-Ruby lane leaves older interpreters unsupported] → accepted: the gem declares
+  `required_ruby_version >= 4.0`, and the previous stable line can be added later without changing
+  the session facade.
 - [The breaking API change inconveniences the CLI's own verbs] → the sync facade keeps one-shot
   commands unchanged in shape, and the migration is documented in the generated README.
 
@@ -115,7 +115,5 @@ so there is no reachable consumer to keep compatible; shims would only obscure t
 
 ## Open Questions
 
-- Which Ruby line is the flake's default lane (Ruby 4.0.x versus 3.4.x) — decided by the first CI run
-  on both lanes; both remain supported either way.
 - Whether the sync facade also wraps the photo/slideshow path, or only the command verbs — a
   convenience decision taken when the CLI change lands.

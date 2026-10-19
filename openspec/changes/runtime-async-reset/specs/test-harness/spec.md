@@ -45,7 +45,8 @@ assert on wire content, ordering and timing.
 
 The virtual receiver SHALL support per-test fault configuration covering delayed or absent
 responses, dropped or truncated payloads, connection resets, error status codes, authentication
-challenges, and corrupted authentication tags.
+challenges, and corrupted payload bytes. Corrupted authentication tags are added by the pairing
+mode that first parses them.
 
 #### Scenario: Fault is selected per test
 
