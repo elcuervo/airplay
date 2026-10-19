@@ -1,5 +1,9 @@
 schema: spec-driven
 
+rules:
+  specs:
+    - Include a Ruby code sample for every requirement that defines an API, a wire format or a workflow, so a reviewer can see the intended usage.
+
 # Project context (optional)
 # Add only constraints that should guide OpenSpec artifacts and workflows.
 # Include constraints an agent cannot infer by reading the code.

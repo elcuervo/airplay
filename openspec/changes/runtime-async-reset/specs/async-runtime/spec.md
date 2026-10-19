@@ -14,6 +14,15 @@ The library SHALL run one Async reactor per process and SHALL expose each device
 session created through `Airplay::Session.open(device) { |session| ... }`, which SHALL close every
 socket, task and timer it opened before returning to the caller.
 
+```ruby
+device = Airplay::Device.new(name: "Apple TV", host: "192.168.1.12", port: 7000)
+
+Airplay::Session.open(device) do |session|
+  response = session.get("/server-info")
+  puts response.status
+end
+```
+
 #### Scenario: Session releases its resources
 
 - **WHEN** a session block finishes after connecting and issuing a command
@@ -28,6 +37,18 @@ socket, task and timer it opened before returning to the caller.
 
 Every network operation SHALL be bounded by a timeout, and cancelling or failing a session SHALL
 cancel its child tasks and close their sockets instead of leaving them running.
+
+```ruby
+Airplay::Session.open(device, timeout: 0.5) do |session|
+  session.get("/server-info") # raises Airplay::TimeoutError when the receiver stalls
+end
+```
+
+```ruby
+session = Airplay::Session.new(device)
+session.spawn { loop { sleep 0.1 } }
+session.cancel # child task stopped, client closed
+```
 
 #### Scenario: Device accepts then stalls
 
@@ -45,6 +66,18 @@ Failures SHALL be raised as typed errors carrying a stable machine-readable code
 least transport, protocol, authentication, playback and timing failures, so callers never match on
 message text.
 
+```ruby
+begin
+  Airplay.open(device) { |session| session.get("/server-info") }
+rescue Airplay::TimeoutError => error
+  warn "#{error.code}: #{error.message}" # timeout: GET /server-info timed out after 5.0s
+rescue Airplay::TransportError => error
+  warn "#{error.code}: #{error.message}" # connection_refused: connection refused by ...
+rescue Airplay::AuthRequiredError, Airplay::AuthFailedError => error
+  warn "#{error.code}: #{error.message}" # auth_required / auth_failed
+end
+```
+
 #### Scenario: Unreachable device
 
 - **WHEN** a session targets a device whose port refuses connections
@@ -60,6 +93,17 @@ message text.
 Name resolution and other potentially blocking calls SHALL be performed without stalling the
 reactor, so a slow operation in one session SHALL NOT delay progress in another.
 
+```ruby
+Airplay.sync do |task|
+  slow = task.async do
+    Airplay::Session.open(slow_device) { |session| session.get("/server-info") }
+  end
+
+  Airplay::Session.open(fast_device) { |session| session.get("/server-info") }
+  slow.stop
+end
+```
+
 #### Scenario: Slow resolution does not block a peer
 
 - **WHEN** one session is resolving a hostname that takes seconds to answer
@@ -69,6 +113,16 @@ reactor, so a slow operation in one session SHALL NOT delay progress in another.
 
 Session lifecycle and playback status SHALL be emitted as structured events with stable field names,
 so a user interface can consume them without parsing human-readable text.
+
+```ruby
+Airplay.configure do |config|
+  config.log_level = :debug
+  config.output = $stdout
+end
+
+Airplay::Status.emit("playback.progress", position: 4, duration: 10)
+# {"severity":"info","subject":"playback.progress","position":4,"duration":10,...}
+```
 
 #### Scenario: Status events carry fields
 
@@ -84,6 +138,17 @@ so a user interface can consume them without parsing human-readable text.
 
 Process-scoped configuration SHALL be settable for log level, discovery and the advertised address,
 and SHALL load without raising on the supported Ruby versions.
+
+```ruby
+Airplay.configure do |config|
+  config.log_level = :debug
+  config.autodiscover = true
+  config.advertised_address = "192.168.1.20"
+  config.timeout = 2
+end
+
+Airplay.reset_configuration!
+```
 
 #### Scenario: Configure then run
 

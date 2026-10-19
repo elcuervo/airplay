@@ -123,14 +123,8 @@ nix develop -c bundle install
 nix develop -c bundle exec rake
 ```
 
-The canonical development machine is macOS on Apple silicon. Linux is the CI
-system and runs the same commands inside the flake.
-
-### Integration shell
-
-`nix develop .#integration` adds the optional simulators nixpkgs provides for the
-platform: `ffmpeg`, `avahi` and `uxplay` on macOS, plus `shairport-sync` and
-`owntone` on Linux. None of them is a runtime dependency of the library.
+The canonical development machine is macOS on Apple silicon. Continuous
+integration is out of scope: the host is the reference environment.
 
 ### Without Nix
 
@@ -152,7 +146,7 @@ Tests are split into three lanes:
   and the injectable clock. No sockets, no reactor.
 - `rake test:protocol` — the in-process virtual receiver (`airplay-fake-device`)
   driving sessions over loopback: request recording, timeouts, cancellation,
-  reactor safety and fault injection. No Apple TV, avahi or ffmpeg required.
+  reactor safety and fault injection. No Apple TV and no external service required.
 - `rake test:hardware` — opt-in validation against a real receiver. Set
   `AIRPLAY_HARDWARE_HOST` (and optionally `AIRPLAY_HARDWARE_PORT`) to run it;
   without them every test skips and the lane succeeds.

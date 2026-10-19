@@ -14,9 +14,9 @@ Development and hardware validation now happen on macOS on Apple silicon (darwin
 it runs the toolchain natively (Ruby 3.4.9, Bundler 2.7.2, Nix 2.29.1) and it is fully
 AirPlay-compatible, so it doubles as the receiver every route is validated against. The
 repository still pins the dead `2.7.6` in `.ruby-version` and has no `flake.nix`, so the
-toolchain must be declared rather than inherited. Linux remains a CI lane, not the primary
-host. Nothing else in the revival can be built, run or tested until the runtime, the
-dependency set and the development environment are replaced together.
+toolchain must be declared rather than inherited. Nothing else in the revival can be built,
+run or tested until the runtime, the dependency set and the development environment are
+replaced together.
 
 ## What Changes
 
@@ -31,22 +31,18 @@ dependency set and the development environment are replaced together.
 - **BREAKING**: delete the dead stack — celluloid, reel, reel-rack, cuba, net-ptth, log4r,
   micromachine, fakeweb, vcr, minitest-given — and adopt the latest async stack: `async`
   2.46.0, `async-http` 0.105.0, `console` 1.38.0 (already an `async` runtime dependency),
-  `plist`, and minitest 5. Discovery encodes and
-  decodes DNS messages with the standard library's `Resolv::DNS::Message`, so no separate DNS
-  dependency is added.
-  `mime-types` and `net-http-digest-auth` (or a small in-repo replacement) stay.
+  and minitest 5. Discovery encodes and decodes DNS messages with the standard library's
+  `Resolv::DNS::Message`, so no separate DNS dependency is added. Protocol changes add
+  `plist`, `mime-types` and digest support when they first use them.
 - Add the project's development environment as a **`flake.nix` + `flake.lock`** pinned to
-  nixpkgs, so every dependency for every part of this plan is declared and reproducible on the
-  canonical host and in CI:
-  - default dev shell on `aarch64-darwin`: Ruby 4.0.7 (latest stable), `bundler`,
-    `libssl`/`openssl`, `pkg-config`, `jq`, `git`;
+  nixpkgs, so every dependency for this plan is declared and reproducible on the canonical
+  macOS arm64 host:
+  - default dev shell: Ruby 4.0.7 (latest stable), `bundler`, `libssl`/`openssl`,
+    `pkg-config`, `jq`, `git`;
   - isolated gem state per project (`GEM_HOME`/`BUNDLE_PATH` inside the shell) so the system
     Ruby and any user-installed gems can never shadow the project's;
-  - a second shell carrying the optional integration and simulator packages nixpkgs provides
-    on each supported system: `ffmpeg`, `avahi`, `shairport-sync`, `owntone`, `uxplay`; the
-    Mac itself is the hardware target for `test:hardware`;
-  - `nix flake check` and CI that runs the test lanes inside `nix develop` on Linux,
-    replacing `.travis.yml` (which still targets Ruby 2.0/2.1).
+  - `nix flake check`, and removal of `.travis.yml` (which still targets Ruby 2.0/2.1).
+    Continuous integration is out of scope; the host is the reference environment.
 - Replace log4r with structured `console` logging and progress reporting driven from the
   reactor.
 - Introduce an error taxonomy (connection, protocol, authentication, playback, timing) with
@@ -63,8 +59,7 @@ dependency set and the development environment are replaced together.
 - `async-runtime`: one reactor per process, session task tree with structured cancellation and
   timeouts, error taxonomy with machine-readable codes, and structured logging/progress.
 - `development-environment`: a flake-pinned, reproducible toolchain on the macOS arm64 host
-  (latest stable Ruby, isolated gem state), a Linux CI lane, optional integration packages,
-  the test lanes, and CI parity with the dev shell.
+  (latest stable Ruby, isolated gem state) and the test lanes.
 - `test-harness`: the in-process virtual receiver and its conformance tiers (unit, protocol
   vectors, virtual receiver, capture replay, opt-in hardware) that validate each part of the
   system without physical AirPlay hardware.
@@ -80,8 +75,8 @@ dependency set and the development environment are replaced together.
 - Both gemspecs (`required_ruby_version`, dependencies), `Gemfile`, `Gemfile.lock`, `Rakefile`
   lanes, `test/test_helper.rb` and `test/integration_helper.rb` (the `TEST_TV_URL` helper that
   needs a real Apple TV), and the removal of `.travis.yml`.
-- Adds `flake.nix`, `flake.lock` (`aarch64-darwin` and `x86_64-linux`), a dev-only
-  fake-device package, and a CI configuration that consumes the flake.
+- Adds `flake.nix`, `flake.lock` (`aarch64-darwin`), and a dev-only fake-device package.
+  No CI configuration is added.
 - `mdns-discovery`, `airplay1-legacy-sender`, `airplay2-pairing-control`,
   `airplay2-video-playqueue` and `raop-audio-stream` all depend on the session facade, the
-  error taxonomy, the plist/crypto baseline and the harness introduced here.
+  error taxonomy and the harness introduced here.

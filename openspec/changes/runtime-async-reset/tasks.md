@@ -3,10 +3,8 @@
 ## 1. Toolchain and development environment
 
 - [x] 1.1 Add `flake.nix` declaring the default dev shell on the canonical macOS arm64 host
-      (Ruby 4.0.7, bundler, OpenSSL bindings, `pkg-config`, `jq`, git) and the integration shell
-      with `ffmpeg`, `avahi` and `uxplay` there, plus `shairport-sync` and `owntone` on Linux;
-      commit `flake.lock`; verify `nix develop -c ruby -v`, `nix develop -c bundle -v` and
-      `nix develop .#integration -c ffmpeg -version` all succeed
+      (Ruby 4.0.7, bundler, OpenSSL bindings, `pkg-config`, `jq`, git); commit `flake.lock`;
+      verify `nix develop -c ruby -v`, `nix develop -c bundle -v` and `nix flake check` succeed
 - [x] 1.2 Configure isolated gem state inside the shell (`GEM_HOME` and `BUNDLE_PATH` under the
       project or the flake's own store) and verify `nix develop -c bundle install` succeeds while
       the host's system Ruby remains untouched
@@ -14,16 +12,16 @@
       `test:all`, with `default` = unit + protocol) and verify `nix develop -c bundle exec rake`
       passes and `bundle exec rake test:hardware` reports skips rather than failures with no
       hardware configured
-- [x] 1.4 Replace `.travis.yml` with a CI workflow that runs the lanes through the flake on Linux,
-      and verify the same commands run green locally through `nix develop` before anything else lands
+- [x] 1.4 Remove `.travis.yml`. No CI workflow is added in this change; verify the lane commands
+      run green locally through `nix develop` before anything else lands
 - [x] 1.5 Document the environment, lanes and contributor setup in `doc/`, regenerate `README.md` via
       `rake doc:generate`, and verify the documented commands run as written
 
 ## 2. Dependency surgery and clean cutover
 
 - [x] 2.1 Rewrite both gemspecs and `Gemfile` (`required_ruby_version`, runtime set `async`,
-      `async-http`, `console`, `plist`, `mime-types`; development set minitest 5) and verify
-      `bundle install` and `bundle exec ruby -Ilib -e 'require "airplay"'` succeed
+      `async-http`, `console`; development set minitest 5) and verify `bundle install` and
+      `bundle exec ruby -Ilib -e 'require "airplay"'` succeed
 - [x] 2.2 Remove celluloid, reel, reel-rack, cuba, net-ptth, log4r, micromachine, fakeweb, vcr and
       minitest-given from the code and manifests, and verify no `require` or constant from those gems
       remains anywhere under `lib/`, `bin/` or `test/`
@@ -64,7 +62,7 @@
 - [x] 5.2 Implement the virtual receiver's lifecycle (start and stop on a loopback port), its
       configurable service record (name, port, model, capability mask) and its recorded-exchange
       accessor, and verify the smoke scenario connects to it at that address and reads back the
-      configured record with no avahi installed; the multicast responder that advertises it is
+      configured record without any external service; the multicast responder that advertises it is
       delivered by the `mdns-discovery` change, which consumes this lifecycle
 - [x] 5.3 Implement per-test fault configuration (delay, drop, truncate, reset, error status,
       authentication challenge, corrupted payload bytes) and verify one test per fault observes the

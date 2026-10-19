@@ -17,12 +17,9 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = ">= 4.0"
 
-  s.add_dependency("async",                "~> 2.46")
-  s.add_dependency("async-http",           "~> 0.105")
-  s.add_dependency("console",              "~> 1.38")
-  s.add_dependency("plist",                "~> 3.7")
-  s.add_dependency("mime-types",           "~> 3.7")
-  s.add_dependency("net-http-digest_auth", "~> 1.4")
+  s.add_dependency("async",      "~> 2.46")
+  s.add_dependency("async-http", "~> 0.105")
+  s.add_dependency("console",    "~> 1.38")
 
   s.add_development_dependency("minitest", "~> 5.25")
   s.add_development_dependency("rake",     "~> 13.4")

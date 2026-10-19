@@ -10,9 +10,8 @@ See `proposal.md` — Why. The constraints that shape this design:
 - The canonical development and hardware-validation host is macOS on Apple silicon (darwin 25.6,
   arm64). It runs Ruby 3.4.9, Bundler 2.7.2 and Nix 2.29.1 natively, and it is fully
   AirPlay-compatible, so it is the receiver every route is validated against.
-- nixpkgs carries `ruby_4_0` 4.0.7, `ffmpeg`, `avahi` and `uxplay` for `aarch64-darwin`;
-  `shairport-sync` and `owntone` are Linux-only, so the integration shell provides them on
-  `x86_64-linux` only and CI covers that lane. Linux remains the CI system, not the primary host.
+- nixpkgs carries `ruby_4_0` 4.0.7 for `aarch64-darwin`; the flake pins that Ruby and the
+  build tools, and no simulator package is part of the environment.
 - The five sibling changes all build on this one, so the interfaces fixed here — session lifecycle,
   error taxonomy, harness modes — are the project's first real contracts.
 
@@ -67,12 +66,11 @@ on one path.
 inspectable and directly testable, and the dependency is dead anyway.
 
 **The nix flake is the toolchain authority.** Alternatives: `.ruby-version` plus bundler (the
-repository still pins the dead 2.7.6 and neither locks the Ruby build nor the integration
-packages), Docker Compose (duplicates the toolchain and cannot express the simulator set as
-cleanly), `asdf`/`mise` (still share or shadow the global gem home unless reconfigured).
-Rationale: the flake locks Ruby 4.0.7 *and* the optional integration packages (`ffmpeg`, `avahi`,
-`uxplay` on macOS; `shairport-sync` and `owntone` additionally on Linux) that the harness needs,
-and it gives CI the same environment a developer runs. Trade-off: Nix becomes a development
+repository still pins the dead 2.7.6 and neither locks the Ruby build nor its native
+dependencies), Docker Compose (duplicates the toolchain for no benefit on a single host),
+`asdf`/`mise` (still share or shadow the global gem home unless reconfigured). Rationale: the
+flake locks Ruby 4.0.7 and the build tools for the canonical macOS arm64 host, and it keeps
+project gems out of the host's gem directory. Trade-off: Nix becomes a development
 prerequisite; the supported fallback is Ruby 4.0 with an isolated `BUNDLE_PATH`, documented but
 not the reference environment.
 
@@ -92,7 +90,7 @@ so there is no reachable consumer to keep compatible; shims would only obscure t
   a test that proves a multi-second resolution in one session does not delay another.
 - [One session's failure takes down the reactor] → sessions run as child tasks that contain their
   own errors; covered by a test asserting peers survive a session that raises.
-- [Flake evaluation needs network on first use] → commit `flake.lock`, cache in CI, and document the
+- [Flake evaluation needs network on first use] → commit `flake.lock` and document the
   offline/non-Nix fallback.
 - [A single latest-Ruby lane leaves older interpreters unsupported] → accepted: the gem declares
   `required_ruby_version >= 4.0`, and the previous stable line can be added later without changing
@@ -102,8 +100,8 @@ so there is no reachable consumer to keep compatible; shims would only obscure t
 
 ## Migration Plan
 
-1. Land the toolchain first (flake, lanes, CI) while the old code is still present, so red/green is
-   observable before anything is deleted.
+1. Land the toolchain first (flake, isolated gems, lanes) while the old code is still present, so
+   red/green is observable before anything is deleted.
 2. Swap dependencies and delete the dead stack in one commit; the library loads again
    (`require "airplay"` succeeds) with the session facade stubbed to the old behavior where needed.
 3. Replace configuration/logging, then delete the old `Configuration#load`, log4r logger and the

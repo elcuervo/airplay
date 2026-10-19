@@ -6,7 +6,7 @@ Tests are split into three lanes:
   and the injectable clock. No sockets, no reactor.
 - `rake test:protocol` — the in-process virtual receiver (`airplay-fake-device`)
   driving sessions over loopback: request recording, timeouts, cancellation,
-  reactor safety and fault injection. No Apple TV, avahi or ffmpeg required.
+  reactor safety and fault injection. No Apple TV and no external service required.
 - `rake test:hardware` — opt-in validation against a real receiver. Set
   `AIRPLAY_HARDWARE_HOST` (and optionally `AIRPLAY_HARDWARE_PORT`) to run it;
   without them every test skips and the lane succeeds.
