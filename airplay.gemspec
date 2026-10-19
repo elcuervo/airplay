@@ -20,6 +20,7 @@ Gem::Specification.new do |s|
   s.add_dependency("async",      "~> 2.46")
   s.add_dependency("async-http", "~> 0.105")
   s.add_dependency("console",    "~> 1.38")
+  s.add_dependency("plist",      "~> 3.7")
 
   s.add_development_dependency("minitest", "~> 5.25")
   s.add_development_dependency("rake",     "~> 13.4")

@@ -130,5 +130,14 @@ class CapabilitiesTest < Minitest::Test
     assert_equal :authoritative, live.source(:mask)
     assert_equal :authoritative, live.source(:srcvers)
     assert_equal "0x1,0x0", live.txt["features"]
+    assert_equal %w[features srcvers], live.disagreements
+  end
+
+  def test_a_reconciliation_without_disagreement_lists_nothing
+    txt = capabilities("features" => "0x1,0x0", "srcvers" => "354.54.6")
+    live = txt.refresh("srcvers" => "354.54.6")
+
+    assert_equal :authoritative, live.source(:srcvers)
+    assert_empty live.disagreements
   end
 end

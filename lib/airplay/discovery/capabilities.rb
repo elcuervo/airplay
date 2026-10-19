@@ -28,13 +28,16 @@ module Airplay
       BUFFERED_AUDIO_VERSION = "354.54.6"
       PTP_VERSION = "366"
 
-      attr_reader :txt
+      attr_reader :txt, :disagreements
 
       def initialize(txt = nil, effective: nil, authoritative_keys: [], **keywords)
         txt = keywords.merge(txt || {})
         @txt = stringify(txt).freeze
         @effective = stringify(effective || txt).freeze
         @authoritative_keys = authoritative_keys.map(&:to_s).freeze
+        @disagreements = @authoritative_keys.select do |key|
+          @txt.key?(key) && @txt[key] != @effective[key]
+        end.freeze
         @mask = parse_mask(@effective["features"] || @effective["ft"])
         @flags = parse_integer(@effective["sf"] || @effective["flags"])
         @srcvers = Version.parse(@effective["srcvers"])

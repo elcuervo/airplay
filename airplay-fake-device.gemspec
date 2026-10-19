@@ -11,7 +11,8 @@ Gem::Specification.new do |s|
   s.email        = ["yo@brunoaguirre.com"]
   s.homepage     = "http://github.com/elcuervo/airplay"
 
-  s.files        = Dir["lib/airplay/fake_device.rb", "lib/airplay/fake_device/**/*.rb"]
+  s.files        = Dir["lib/airplay/fake_device.rb", "lib/airplay/fake_device/**/*.rb"] +
+                   %w[lib/airplay/fake_device/NOTES.md]
   s.require_paths = ["lib"]
 
   s.required_ruby_version = ">= 4.0"

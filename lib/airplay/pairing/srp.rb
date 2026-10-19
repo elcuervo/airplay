@@ -27,7 +27,56 @@ module Airplay
       IDENTITY = "Pair-Setup"
       GROUP_BYTES = (N.num_bits + 7) / 8
 
+      # Internal: SRP-6a arithmetic shared by the client and the harness verifier.
+      module Arithmetic
+        module_function
+
+        def bn(value)
+          return value if value.is_a?(OpenSSL::BN)
+
+          if value.is_a?(Integer)
+            OpenSSL::BN.new(value.to_s, 10)
+          else
+            OpenSSL::BN.new(value.to_s.unpack1("H*"), 16)
+          end
+        end
+
+        def pad(value)
+          bytes = value.is_a?(OpenSSL::BN) ? value.to_s(2) : int_bytes(value)
+          bytes.rjust(GROUP_BYTES, "\0")
+        end
+
+        def int_bytes(value)
+          hex = value.to_i.to_s(16)
+          hex = "0#{hex}" if hex.length.odd?
+          [hex].pack("H*")
+        end
+
+        def int_hash(*parts)
+          hash(*parts).unpack1("H*").to_i(16)
+        end
+
+        def hash(*parts, joiner: "")
+          digest = OpenSSL::Digest::SHA512.new
+          parts.each_with_index do |part, index|
+            digest.update(joiner) if index.positive?
+            digest.update(part.is_a?(String) ? part.b : part.to_s(2))
+          end
+          digest.digest
+        end
+
+        def secure_compare(left, right)
+          return false unless left.bytesize == right.bytesize
+
+          result = 0
+          left.bytes.zip(right.bytes) { |a, b| result |= a ^ b }
+          result.zero?
+        end
+      end
+
       attr_reader :public, :key, :proof
+
+      include Arithmetic
 
       def initialize(pin:, private: nil)
         @pin = pin.to_s
@@ -68,48 +117,40 @@ module Airplay
         secure_compare(@server_proof.to_s, value.to_s)
       end
 
-      private
+      # Public: SRP-6a server side used by the virtual receiver.
+      class Verifier
+        include Arithmetic
 
-      def bn(value)
-        return value if value.is_a?(OpenSSL::BN)
+        attr_reader :salt, :public, :server_proof
 
-        if value.is_a?(Integer)
-          OpenSSL::BN.new(value.to_s, 10)
-        else
-          OpenSSL::BN.new(value.to_s.unpack1("H*"), 16)
+        def initialize(pin:, identity: IDENTITY)
+          @salt = SecureRandom.random_bytes(16)
+          @b = SecureRandom.random_number(2**1024)
+          verifier = G.mod_exp(bn(int_hash(@salt, hash(identity, pin.to_s, joiner: ":"))), N)
+          k = bn(int_hash(pad(N), pad(G)))
+          @public = (k * verifier + G.mod_exp(bn(@b), N)) % N
+          @verifier = verifier
         end
-      end
 
-      def pad(value)
-        bytes = value.is_a?(OpenSSL::BN) ? value.to_s(2) : int_bytes(value)
-        bytes.rjust(GROUP_BYTES, "\0")
-      end
+        # Public: Returns the session key when the client proof matches, nil otherwise.
+        def verify(client_public, proof)
+          a = bn(client_public)
+          u = int_hash(pad(a), pad(@public))
+          premaster = (a * @verifier.mod_exp(bn(u), N)).mod_exp(bn(@b), N)
+          key = hash(premaster)
+          expected = hash(
+            int_bytes(int_hash(N.to_s(2)) ^ int_hash(int_bytes(5))),
+            int_bytes(int_hash(IDENTITY)),
+            @salt,
+            a.to_s(2),
+            @public.to_s(2),
+            key
+          )
+          return nil unless secure_compare(expected, proof.to_s)
 
-      def int_bytes(value)
-        hex = value.to_i.to_s(16)
-        hex = "0#{hex}" if hex.length.odd?
-        [hex].pack("H*")
-      end
-
-      def int_hash(*parts)
-        hash(*parts).unpack1("H*").to_i(16)
-      end
-
-      def hash(*parts, joiner: "")
-        digest = OpenSSL::Digest::SHA512.new
-        parts.each_with_index do |part, index|
-          digest.update(joiner) if index.positive?
-          digest.update(part.is_a?(String) ? part.b : part.to_s(2))
+          @server_proof = hash(a.to_s(2), expected, key)
+          key
         end
-        digest.digest
-      end
-
-      def secure_compare(left, right)
-        return false unless left.bytesize == right.bytesize
-
-        result = 0
-        left.bytes.zip(right.bytes) { |a, b| result |= a ^ b }
-        result.zero?
       end
     end
   end

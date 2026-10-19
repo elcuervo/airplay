@@ -7,11 +7,18 @@ module Airplay
       end
     end
 
-    attr_reader :code
+    attr_reader :code, :device
 
-    def initialize(message = nil, code: self.class.code)
+    def initialize(message = nil, code: self.class.code, device: nil)
       @code = code
+      @device = device
       super(message || code.to_s)
+    end
+
+    # Public: Attaches the device identity once, returning the error.
+    def with_device(value)
+      @device ||= value
+      self
     end
   end
 

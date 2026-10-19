@@ -1,3 +1,6 @@
+require "plist"
+require "stringio"
+
 require "airplay/errors"
 
 module Airplay
@@ -19,6 +22,14 @@ module Airplay
 
       def load(data)
         Binary.decode(data)
+      end
+
+      def dump_xml(value)
+        XML.encode(value)
+      end
+
+      def load_xml(xml)
+        XML.decode(xml)
       end
     end
 
@@ -358,6 +369,41 @@ module Airplay
 
         def unsupported(marker)
           raise DecodeError.new(format("unsupported plist marker 0x%02x", marker), code: :malformed_plist)
+        end
+      end
+    end
+
+    # Public: XML representation via the `plist` gem, sharing the binary value model.
+    module XML
+      class << self
+        def encode(value)
+          ::Plist::Emit.dump(export(value))
+        end
+
+        def decode(xml)
+          import(::Plist.parse_xml(xml, marshal: false))
+        end
+
+        private
+
+        def export(value)
+          case value
+          when Data then StringIO.new(value.bytes.b)
+          when Time then value.utc
+          when Array then value.map { |item| export(item) }
+          when Hash then value.to_h { |key, item| [key, export(item)] }
+          else value
+          end
+        end
+
+        def import(value)
+          case value
+          when DateTime then value.to_time.utc
+          when StringIO then Data.new(value.string.b)
+          when Array then value.map { |item| import(item) }
+          when Hash then value.to_h { |key, item| [key, import(item)] }
+          else value
+          end
         end
       end
     end

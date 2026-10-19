@@ -29,5 +29,17 @@ module Airplay
         end
       end
     end
+
+    # Public: Completes a PIN pairing and pair-verify, returning the framed connection.
+    def establish_pairing(store, receiver, pin: "1234")
+      setup = Airplay::Pairing::Connection.new(host: "127.0.0.1", port: receiver.port).open
+      Airplay::Pairing::Setup.new(code: pin, transient: false, store: store,
+                                  device: "Fake_Apple_TV").run(setup)
+      setup.close
+
+      connection = Airplay::Pairing::Connection.new(host: "127.0.0.1", port: receiver.port).open
+      Airplay::Pairing::Verify.new(store.read("Fake_Apple_TV")).run(connection)
+      connection
+    end
   end
 end

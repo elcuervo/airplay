@@ -13,6 +13,9 @@ require "airplay/session"
 require "airplay/discovery"
 require "airplay/plist"
 require "airplay/pairing"
+require "airplay/control/session"
+require "airplay/control/event_channel"
+require "airplay/route"
 
 # Public: AirPlay sender for Ruby 4.
 module Airplay

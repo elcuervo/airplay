@@ -87,6 +87,18 @@ class PlistTest < Minitest::Test
     assert_raises(Airplay::Plist::DecodeError) { Airplay::Plist.load(data) }
   end
 
+  def test_xml_fixture_round_trips_through_the_value_model
+    value = Airplay::Plist.load_xml(File.read("test/fixtures/pairing/sample.xml.plist"))
+
+    assert_equal [1, "two"], value["array"]
+    assert_equal({ "a" => 3 }, value["dict"])
+    assert_equal Time.utc(2020, 1, 2, 3, 4, 5), value["date"]
+    assert_equal "\x00\xFF\x01".b, value["data"].bytes
+    assert_equal "héllo 世界", value["unicode"]
+    assert_equal value, Airplay::Plist.load_xml(Airplay::Plist.dump_xml(value))
+    assert_equal value, Airplay::Plist.load(Airplay::Plist.dump(value))
+  end
+
   def test_reads_an_independent_binary_fixture
     data = File.binread("test/fixtures/pairing/sample.bplist")
     expected = JSON.parse(File.read("test/fixtures/pairing/sample.json"))

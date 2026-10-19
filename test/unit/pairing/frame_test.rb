@@ -49,4 +49,16 @@ class FrameTest < Minitest::Test
     error = assert_raises(Airplay::ProtocolError) { receiver.decrypt(truncated) }
     assert_equal :truncated_frame, error.code
   end
+
+  def test_notes_match_the_frame_codec
+    notes = File.read(File.expand_path("../../../doc/pairing.md", __dir__))
+    frame = Airplay::Pairing::Frame.new(KEY).encrypt(PLAINTEXT)
+
+    assert_equal PLAINTEXT.bytesize, frame.byteslice(0, 2).unpack1("v")
+    assert_equal 2 + PLAINTEXT.bytesize + Airplay::Pairing::Frame::TAG_LENGTH, frame.bytesize
+    assert_includes notes, "2-byte little-endian"
+    assert_includes notes, "16-byte tag"
+    assert_includes notes, "additional authenticated data"
+    assert_includes notes, Airplay::Pairing::Frame::MAX_LENGTH.to_s
+  end
 end

@@ -56,6 +56,20 @@ Airplay.open(device) do |session|
 end
 ```
 
+#### AirPlay 2
+
+This build opens the HomeKit-style pairing gate: transient and PIN pair-setup,
+pair-verify, HKDF channel keys, ChaCha20-Poly1305 control framing, per-device
+credentials outside the repository, the authenticated control plane (`GET /info`,
+`POST /setup`, the reverse event channel, feedback, parameters, teardown) and a
+capability-driven route decision.
+
+Deferred: FairPlay, MFi, HAP accessory mode and PTP timing (NTP is used). A
+receiver that demands FairPlay, MFi or HAP accessory mode fails with
+`Airplay::UnsupportedError` (`:unsupported_feature`) naming the mechanism, and a
+receiver that confirms only PTP fails with `Airplay::TimingError`
+(`:timing_error`).
+
 #### Status events
 
 Lifecycle and playback status are emitted as structured fields, so a UI can
