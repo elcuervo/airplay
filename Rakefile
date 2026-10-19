@@ -1,104 +1,38 @@
-$: <<  File.expand_path("../lib", __FILE__)
-
 require "rake/testtask"
-require "fileutils"
-require "airplay/version"
-require "airplay/cli/version"
 
-class RuleBuilder
-  attr_reader :task, :info
-
-  TASKS = [:lib, :cli]
-
-  def initialize(options = {})
-    @task = options[:task]
-
-    @info = {
-      lib: { name: "airplay", version: Airplay::VERSION },
-      cli: { name: "airplay-cli", version: Airplay::CLI::VERSION }
-    }
-  end
-
-  def construct(action)
-    -> n {
-      task.call(:all) do
-        TASKS.each { |task| Rake::Task["#{action}:#{task}"].invoke }
-      end
-
-      TASKS.each do |task_name|
-        task.call(task_name) { action_method(action, task_name) }
-      end
-    }
-  end
-
-  private
-
-  def action_method(action, task_name)
-    method("#{action}_gem".to_sym).call(task_name)
-  end
-
-  def build_gem(type)
-    name = info[type][:name]
-    version = info[type][:version]
-
-    gem_name = "#{name}-#{version}.gem"
-
-    FileUtils.mkdir_p("pkg")
-    `gem build #{name}.gemspec`
-    FileUtils.mv(gem_name, "pkg")
-
-    puts "#{name} (v#{version}) builded!"
-
-    "./pkg/#{gem_name}"
-  end
-
-  def install_gem(type)
-    name = info[type][:name]
-    gem_path = build_gem(type)
-    `gem install --local #{gem_path}`
-
-    puts "#{gem_path} installed!"
-  end
-
-  def release_gem(type)
-    name = info[type][:name]
-    gem_path = build_gem(type)
-    `gem push #{gem_path}`
-
-    puts "#{gem_path} released!"
-  end
+Rake::TestTask.new("test:unit") do |task|
+  task.libs << "test"
+  task.pattern = "test/unit/**/*_test.rb"
 end
 
-
-
-builder = RuleBuilder.new(task: method(:task))
-namespace :build,   &builder.construct(:build)
-namespace :install, &builder.construct(:install)
-namespace :release, &builder.construct(:release)
-
-Rake::TestTask.new("test:all") do |t|
-  t.libs << "test"
-  t.pattern = "test/**/*_test.rb"
+Rake::TestTask.new("test:protocol") do |task|
+  task.libs << "test"
+  task.pattern = "test/protocol/**/*_test.rb"
 end
 
-Rake::TestTask.new("test:unit") do |t|
-  t.libs << "test"
-  t.pattern = "test/unit/**/*_test.rb"
+Rake::TestTask.new("test:hardware") do |task|
+  task.libs << "test"
+  task.pattern = "test/hardware/**/*_test.rb"
 end
 
-Rake::TestTask.new("test:integration") do |t|
-  t.libs << "test"
-  t.pattern = "test/integration**/*_test.rb"
-end
-
-task :default => "test:all"
+task "test:all" => %w[test:unit test:protocol test:hardware]
+task default: %w[test:unit test:protocol]
 
 namespace :doc do
   task :generate do
-    structure = %w(header toc installation usage testing documentation contributors)
+    structure = %w[
+      header toc installation usage development testing documentation contributors
+    ]
 
-    File.open("README.md", "w+") do |f|
-      structure.each { |part| f << File.read("doc/#{part}.md") + "\n" }
+    File.open("README.md", "w") do |file|
+      structure.each { |part| file << File.read("doc/#{part}.md") << "\n" }
     end
+  end
+end
+
+namespace :build do
+  task :all do
+    sh "gem build airplay.gemspec"
+    sh "gem build airplay-cli.gemspec"
   end
 end
