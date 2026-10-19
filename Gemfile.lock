@@ -2,138 +2,108 @@ PATH
   remote: .
   specs:
     airplay (1.0.5)
-      CFPropertyList (~> 2.2)
-      celluloid (>= 0.17.0)
-      cuba (~> 3.1.0)
-      dnssd (~> 3.0)
-      log4r (~> 1.1.10)
-      micromachine (~> 1.0.4)
-      mime-types (>= 1.16)
-      net-http-digest_auth (~> 1.2.1)
-      net-ptth (= 0.0.17)
-      reel (~> 0.5.0)
-      reel-rack (~> 0.2.2)
+      async (~> 2.46)
+      async-http (~> 0.105)
+      console (~> 1.38)
+      mime-types (~> 3.7)
+      net-http-digest_auth (~> 1.4)
+      plist (~> 3.7)
     airplay-cli (1.0.3)
       airplay (>= 1.0.5)
-      clap (~> 1.0.0)
-      ruby-progressbar (~> 1.2.0)
+    airplay-fake-device (1.0.5)
+      airplay (>= 1.0.5)
+      async-http (~> 0.105)
 
 GEM
-  remote: http://rubygems.org/
+  remote: https://rubygems.org/
   specs:
-    CFPropertyList (2.3.1)
-    addressable (2.3.8)
-    celluloid (0.17.0)
-      bundler
-      celluloid-essentials
-      celluloid-extras
-      celluloid-fsm
-      celluloid-pool
-      celluloid-supervision
-      dotenv
-      nenv
-      rspec-logsplit (>= 0.1.2)
-      timers (~> 4.0.0)
-    celluloid-essentials (0.20.1.1)
-      bundler
-      dotenv
-      nenv
-      rspec-logsplit (>= 0.1.2)
-      timers (~> 4.0.0)
-    celluloid-extras (0.20.0)
-      bundler
-      dotenv
-      nenv
-      rspec-logsplit (>= 0.1.2)
-      timers (~> 4.0.0)
-    celluloid-fsm (0.20.0)
-      bundler
-      dotenv
-      nenv
-      rspec-logsplit (>= 0.1.2)
-      timers (~> 4.0.0)
-    celluloid-io (0.16.2)
-      celluloid (>= 0.16.0)
-      nio4r (>= 1.1.0)
-    celluloid-pool (0.20.0)
-      bundler
-      dotenv
-      nenv
-      rspec-logsplit (>= 0.1.2)
-      timers (~> 4.0.0)
-    celluloid-supervision (0.20.0)
-      bundler
-      dotenv
-      nenv
-      rspec-logsplit (>= 0.1.2)
-      timers (~> 4.0.0)
-    clap (1.0.0)
-    cuba (3.1.1)
-      rack
-    dnssd (3.0.1)
-    domain_name (0.5.24)
-      unf (>= 0.0.5, < 1.0.0)
-    dotenv (2.0.2)
-    fakeweb (1.3.0)
-    given_core (3.0.0)
-      sorcerer (>= 0.3.7)
-    hitimes (1.2.2)
-    http (0.9.0)
-      addressable (~> 2.3)
-      http-cookie (~> 1.0)
-      http-form_data (~> 1.0.1)
-      http_parser.rb (~> 0.6.0)
-    http-cookie (1.0.2)
-      domain_name (~> 0.5)
-    http-form_data (1.0.1)
-    http_parser.rb (0.6.0)
-    log4r (1.1.10)
-    micromachine (1.0.4)
-    mime-types (2.6.1)
-    minitest (4.4.0)
-    minitest-given (3.0.0)
-      given_core (= 3.0.0)
-      minitest (> 4.3)
-    nenv (0.2.0)
-    net-http-digest_auth (1.2.1)
-    net-ptth (0.0.17)
-      celluloid-io (>= 0.15.0)
-      http_parser.rb (>= 0.6.0.beta.2)
-      rack (>= 1.4.5)
-    nio4r (1.1.1)
-    rack (1.6.4)
-    rake (10.4.2)
-    reel (0.5.0)
-      celluloid (>= 0.15.1)
-      celluloid-io (>= 0.15.0)
-      http (>= 0.6.0.pre)
-      http_parser.rb (>= 0.6.0)
-      websocket_parser (>= 0.1.6)
-    reel-rack (0.2.2)
-      rack (>= 1.4.0)
-      reel (>= 0.5.0)
-    rspec-logsplit (0.1.3)
-    ruby-progressbar (1.2.0)
-    sorcerer (1.0.2)
-    timers (4.0.1)
-      hitimes
-    unf (0.1.4)
-      unf_ext
-    unf_ext (0.0.7.1)
-    vcr (2.4.0)
-    websocket_parser (1.0.0)
+    async (2.46.0)
+      console (~> 1.29)
+      fiber-annotation
+      io-event (~> 1.21)
+    async-http (0.105.0)
+      async (>= 2.35.1)
+      async-pool (~> 0.12)
+      io-endpoint (~> 0.18)
+      io-stream (~> 0.14)
+      protocol-http (~> 0.72)
+      protocol-http1 (~> 0.41)
+      protocol-http2 (~> 0.28)
+      protocol-url (~> 0.2)
+    async-pool (0.12.0)
+      async (>= 2.0)
+    console (1.38.0)
+      fiber-annotation
+      fiber-local (~> 1.1)
+      json
+    fiber-annotation (0.2.0)
+    fiber-local (1.1.0)
+      fiber-storage
+    fiber-storage (1.0.1)
+    io-endpoint (0.19.0)
+      openssl (>= 3.3.0)
+    io-event (1.22.3)
+    io-stream (0.14.0)
+      openssl (>= 3.3)
+    json (3.1.0)
+    logger (1.7.0)
+    mime-types (3.7.0)
+      logger
+      mime-types-data (~> 3.2025, >= 3.2025.0507)
+    mime-types-data (3.2026.1013)
+    minitest (5.27.0)
+    net-http-digest_auth (1.4.1)
+    openssl (4.0.2)
+    plist (3.7.2)
+    protocol-hpack (1.5.1)
+    protocol-http (0.72.0)
+    protocol-http1 (0.41.0)
+      protocol-http (~> 0.68)
+    protocol-http2 (0.29.1)
+      protocol-hpack (~> 1.4)
+      protocol-http (~> 0.62)
+    protocol-url (0.19.0)
+    rake (13.4.2)
 
 PLATFORMS
+  arm64-darwin-25
   ruby
 
 DEPENDENCIES
   airplay!
   airplay-cli!
-  fakeweb (~> 1.3.0)
-  minitest (~> 4.4.0)
-  minitest-given (~> 3.0.0)
-  rake
-  vcr (~> 2.4.0)
+  airplay-fake-device!
+  minitest (~> 5.25)
+  rake (~> 13.4, >= 0)
+
+CHECKSUMS
+  airplay (1.0.5)
+  airplay-cli (1.0.3)
+  airplay-fake-device (1.0.5)
+  async (2.46.0) sha256=34f984733dbf63a997376346451ec995e858cacc3105e86ccfeaf8877b4f490b
+  async-http (0.105.0) sha256=55191969d5cf61be5fbc2e0aadd51d77085318ba192a5ff5e12e3aba0826906a
+  async-pool (0.12.0) sha256=5580493dc024bd704dab2ed0bf1307100722e49cbb825c7965f8501194f58506
+  console (1.38.0) sha256=35b82f59130e95e9be6b832d9e539c8b3988fc192e4a8e9a86ab4922f44ad5de
+  fiber-annotation (0.2.0) sha256=7abfadf1d119f508867d4103bf231c0354d019cc39a5738945dec2edadaf6c03
+  fiber-local (1.1.0) sha256=c885f94f210fb9b05737de65d511136ea602e00c5105953748aa0f8793489f06
+  fiber-storage (1.0.1) sha256=f48e5b6d8b0be96dac486332b55cee82240057065dc761c1ea692b2e719240e1
+  io-endpoint (0.19.0) sha256=547aaefe9a78bc57fe25f9f7661b460395ebdfda506f70fdf4cc71d2ae5ca578
+  io-event (1.22.3) sha256=1b12f144898bd36b689ee1e0898750fc04adf039188c7e24a05f21fa63cc6adb
+  io-stream (0.14.0) sha256=07d9b13ea2066ccbbc761fff8d69ad5a31e47561d31e02cc271f3ed9c1a8f1cd
+  json (3.1.0) sha256=3ce7ccf8fde58960177a3a756c31f292a4c1e1dedee884547096a5b0604e3bd8
+  logger (1.7.0) sha256=196edec7cc44b66cfb40f9755ce11b392f21f7967696af15d274dde7edff0203
+  mime-types (3.7.0) sha256=dcebf61c246f08e15a4de34e386ebe8233791e868564a470c3fe77c00eed5e56
+  mime-types-data (3.2026.1013) sha256=370f152f2a47e54e58829766492ea2cbe130a45358374b8788a6a8ad4e961c96
+  minitest (5.27.0) sha256=2d3b17f8a36fe7801c1adcffdbc38233b938eb0b4966e97a6739055a45fa77d5
+  net-http-digest_auth (1.4.1) sha256=4b8ad50ed8d180a58db5d6c49449b987dd0466fe01e24037945bc007562a08db
+  openssl (4.0.2) sha256=1037ad2868ae58df9ad917891c0c0f9815a1172f6846d4bcdd508e4c2ee747c2
+  plist (3.7.2) sha256=d37a4527cc1116064393df4b40e1dbbc94c65fa9ca2eec52edf9a13616718a42
+  protocol-hpack (1.5.1) sha256=6feca238b8078da1cd295677d6f306c6001af92d75fe0643d33e6956cbc3ad91
+  protocol-http (0.72.0) sha256=b153474785979495b9f2df78f0fdc2e02edc7e92c1f7ea00425eed73bd02194c
+  protocol-http1 (0.41.0) sha256=9863874a1228948a896c3e7ea16d13a680c8f3ed50706007c78b7033018b0ea3
+  protocol-http2 (0.29.1) sha256=3f4ee667b5730b7d05c70d3771bd5d5cdbb31beedaa9d05f2bdac68c9c984d19
+  protocol-url (0.19.0) sha256=3f6b9f6aa742a259a0b3610fbbd9685dcd9506adf6734f428ff96259faabfb21
+  rake (13.4.2) sha256=cb825b2bd5f1f8e91ca37bddb4b9aaf345551b4731da62949be002fa89283701
 
 BUNDLED WITH
-   2.3.24
+  4.0.20

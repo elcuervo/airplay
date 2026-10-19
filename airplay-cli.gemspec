@@ -1,4 +1,4 @@
-$: <<  File.expand_path("../lib", __FILE__)
+$: << File.expand_path("../lib", __FILE__)
 require "airplay/cli/version"
 
 Gem::Specification.new do |s|
@@ -11,11 +11,11 @@ Gem::Specification.new do |s|
   s.authors      = ["elcuervo"]
   s.email        = ["yo@brunoaguirre.com"]
   s.homepage     = "http://github.com/elcuervo/airplay"
-  s.files        = %w(bin/air lib/airplay/cli.rb)
 
-  s.required_ruby_version = ">= 2.7.0"
+  s.files        = %w(bin/air lib/airplay/cli.rb lib/airplay/cli/version.rb)
+  s.require_paths = ["lib"]
 
-  s.add_dependency("airplay",           ">=  1.0.5")
-  s.add_dependency("clap",              "~> 1.0.0")
-  s.add_dependency("ruby-progressbar",  "~> 1.2.0")
+  s.required_ruby_version = ">= 4.0"
+
+  s.add_dependency("airplay", ">= 1.0.5")
 end

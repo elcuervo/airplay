@@ -1,4 +1,4 @@
-$: <<  File.expand_path("../lib", __FILE__)
+$: << File.expand_path("../lib", __FILE__)
 require "airplay/version"
 
 Gem::Specification.new do |s|
@@ -10,25 +10,20 @@ Gem::Specification.new do |s|
   s.authors      = ["elcuervo"]
   s.email        = ["yo@brunoaguirre.com"]
   s.homepage     = "http://github.com/elcuervo/airplay"
-  s.files        = `git ls-files`.split("\n")
-  s.test_files   = `git ls-files test`.split("\n")
 
-  s.required_ruby_version = ">= 2.7.0"
+  s.files        = Dir["lib/**/*.rb"].reject { |file| file.start_with?("lib/airplay/fake_device") } +
+                   %w[README.md LICENSE]
+  s.require_paths = ["lib"]
 
-  s.add_dependency("dnssd",                "~> 3.0")
-  s.add_dependency("CFPropertyList",       "~> 2.2")
-  s.add_dependency("mime-types",           ">= 1.16")
-  s.add_dependency("log4r",                "~> 1.1.10")
-  s.add_dependency("cuba",                 "~> 3.1.0")
-  s.add_dependency("micromachine",         "~> 1.0.4")
-  s.add_dependency("celluloid",            ">= 0.17.0")
-  s.add_dependency("reel",                 "~> 0.5.0")
-  s.add_dependency("reel-rack",            "~> 0.2.2")
-  s.add_dependency("net-ptth",             "=  0.0.17")
-  s.add_dependency("net-http-digest_auth", "~> 1.2.1")
+  s.required_ruby_version = ">= 4.0"
 
-  s.add_development_dependency("minitest",        "~> 4.4.0")
-  s.add_development_dependency("minitest-given",  "~> 3.0.0")
-  s.add_development_dependency("fakeweb",         "~> 1.3.0")
-  s.add_development_dependency("vcr",             "~> 2.4.0")
+  s.add_dependency("async",                "~> 2.46")
+  s.add_dependency("async-http",           "~> 0.105")
+  s.add_dependency("console",              "~> 1.38")
+  s.add_dependency("plist",                "~> 3.7")
+  s.add_dependency("mime-types",           "~> 3.7")
+  s.add_dependency("net-http-digest_auth", "~> 1.4")
+
+  s.add_development_dependency("minitest", "~> 5.25")
+  s.add_development_dependency("rake",     "~> 13.4")
 end
