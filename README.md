@@ -1,7 +1,6 @@
 # Airplay
 
-[![Code Climate](https://codeclimate.com/github/elcuervo/airplay.png)](https://codeclimate.com/github/elcuervo/airplay)
-[![Build Status](https://travis-ci.org/elcuervo/airplay.png?branch=master)](https://travis-ci.org/elcuervo/airplay)
+[![CI](https://github.com/elcuervo/airplay/actions/workflows/ci.yml/badge.svg)](https://github.com/elcuervo/airplay/actions/workflows/ci.yml)
 
 ![Airplay](doc/img/logo.png)
 
@@ -23,11 +22,14 @@ much as you want in: [Paypal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclic
 * [Usage](#usage)
   * [CLI](#cli-1)
   * [Library](#library-1)
+* [Development environment](#development-environment)
 * [Testing](#testing)
 * [Documentation](#documentation)
 * [Contributors](#contributors)
 
 ## Installation
+
+Ruby 4.0 or newer is required.
 
 ### Library
 
@@ -41,32 +43,13 @@ much as you want in: [Paypal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclic
 
 ### CLI
 
-#### View devices
-
-`air list`
-
-![air list](doc/img/cli_list.png)
-
 ```text
-* Apple TV (AppleTV2,1 running 11A502)
-  ip: 192.168.1.12
-  resolution: 1280x720
+air help
+air version
 ```
 
-#### Play a video
-
-`air play [url to video or local file]`
-
-![air play](doc/img/cli_play.png)
-
-```text
-Playing http://movietrailers.apple.com/movies/universal/rush/rush-tlr3_480p.mov?width=848&height=352
-Time: 00:00:13 [=====                                              ] 7% Apple TV
-```
-
-### Show images
-
-`air view [url to image or image folder]`
+Protocol verbs (`list`, `play`, `view`, `doctor`) are added by the protocol
+changes that implement them.
 
 ### Library
 
@@ -74,133 +57,110 @@ Time: 00:00:13 [=====                                              ] 7% Apple TV
 
 ```ruby
 Airplay.configure do |config|
-  config.log_level      # Log4r levels (Default: Log4r::ERROR)
-  config.autodiscover   # Allows to search for nodes (Default: true)
-  config.host           # In which host to bind the server (Default: 0.0.0.0)
-  config.port           # In which port to bind the server (Default: will find one)
-  config.output         # Where to log (Default: Log4r::Outputter.stdout)
+  config.log_level         # :debug, :info, :warn, :error or :fatal (Default: :info)
+  config.autodiscover      # Allows discovery to run for one-shot commands (Default: true)
+  config.advertised_address # Address handed to receivers (Default: nil, chosen per interface)
+  config.timeout           # Per-request timeout in seconds (Default: 5.0)
+  config.output            # Structured event sink (Default: $stdout)
 end
 ```
 
-#### Devices
+Configuration is process-scoped. `Airplay.reset_configuration!` restores the
+defaults, which is what the test suite uses between cases.
+
+#### Sessions
 
 ```ruby
 require "airplay"
 
-Airplay.devices.each do |device|
-  puts device.name
+device = Airplay::Device.new(name: "Apple TV", host: "192.168.1.12", port: 7000)
+
+Airplay::Session.open(device) do |session|
+  response = session.get("/server-info")
+  puts response.status
 end
 ```
 
-#### Accessing and Grouping
+A session owns one HTTP client, every child task it starts and every socket it
+opens. `Session.open` closes all of them before returning, including when the
+block raises. Requests are bounded by `config.timeout` and failures raise
+`Airplay::Error` subclasses carrying a stable `code`.
+
+The synchronous facade runs the same block in the process reactor:
 
 ```ruby
-# You can access a known device easily
-device = Airplay["Apple TV"]
-
-# And add the password of the device if needed
-device.password = "my super secret password"
-
-# Or you can group known devices to have them do a given action together
-Airplay.group["Backyard"] << Airplay["Apple TV"]
-Airplay.group["Backyard"] << Airplay["Room TV"]
-
-# The groups can later do some actions like:
-Airplay.group["Backyard"].play("video")
+Airplay.open(device) do |session|
+  session.get("/server-info")
+end
 ```
 
-#### Images
+#### Status events
+
+Lifecycle and playback status are emitted as structured fields, so a UI can
+consume them without parsing text:
 
 ```ruby
-require "airplay"
-
-apple_tv = Airplay["Apple TV"]
-
-# You can send local files
-apple_tv.view("my_image.png")
-
-# Or use remote files
-apple_tv.view("https://github.com/elcuervo/airplay/raw/master/doc/img/logo.png")
-
-# And define a transition
-apple_tv.view("url_to_the_image", transition: "Dissolve")
-
-# View all transitions
-apple_tv.transitions
+Airplay::Status.emit("playback.progress", position: 4, duration: 10)
 ```
 
-#### Video
+When the configured output is a terminal, `Airplay::Status.progress` renders a
+progress bar; otherwise it returns `nil` and the structured events are the only
+output.
 
-```ruby
-require "airplay"
+## Development environment
 
-apple_tv = Airplay["Apple TV"]
-trailer = "http://movietrailers.apple.com/movies/dreamworks/needforspeed/needforspeed-tlr1xxzzs2_480p.mov"
+The reference toolchain is pinned in `flake.nix` and `flake.lock`:
 
-player = apple_tv.play(trailer)
+- Ruby 4.0.7, the latest stable release
+- Bundler, OpenSSL bindings, `pkg-config`, `jq` and `git`
+
+Enter it with `nix develop`. Gems resolve into `.nix/gems` through
+`GEM_HOME`/`BUNDLE_PATH`, so the host's Ruby and global gem directory are never
+used:
+
+```sh
+nix develop -c bundle install
+nix develop -c bundle exec rake
 ```
 
-##### Playlist
+The canonical development machine is macOS on Apple silicon. Linux is the CI
+system and runs the same commands inside the flake.
 
-```ruby
-# You can also add videos to a playlist and let the library handle them
-player.playlist << "video_url"
-player.playlist << "video_path"
-player.play
+### Integration shell
 
-# Or control it yourself
-player.next
-player.previous
+`nix develop .#integration` adds the optional simulators nixpkgs provides for the
+platform: `ffmpeg`, `avahi` and `uxplay` on macOS, plus `shairport-sync` and
+`owntone` on Linux. None of them is a runtime dependency of the library.
 
-# Or if you prefer you can have several playlists
-player = apple_tv.player
-player.playlists["Star Wars Classic"] << "Star Wars Episode IV: A New Hope"
-player.playlists["Star Wars Classic"] << "Star Wars Episode V: The Empire Strikes Back"
-player.playlists["Star Wars Classic"] << "Star Wars Episode VI: Return of the Jedi"
+### Without Nix
 
-player.playlists["Star Wars"] << "Star Wars Episode I: The Phantom Menace"
-player.playlists["Star Wars"] << "Star Wars Episode II: Attack of the Clones"
-player.playlists["Star Wars"] << "Star Wars Episode III: Revenge of the Sith"
+Ruby 4.0 with an isolated `BUNDLE_PATH` works:
 
-player.use("Star Wars Classic")
-player.play
-player.wait
+```sh
+bundle config set --local path .bundle/gems
+bundle install
+bundle exec rake
 ```
 
-##### Player
-
-```ruby
-# Wait until the video is finished
-player.wait
-
-# Actions
-player.pause
-player.resume
-player.stop
-player.scrub
-player.info
-player.seek
-
-# Access the playback time per second
-player.progress -> progress {
-  puts "I'm viewing #{progress.position} of #{progress.duration}"
-}
-```
+That path is supported but is not the reference environment.
 
 # Testing
 
-Now there are two types of tests: Regular unit tests and integration tests.
-Thanks to the magic of the internet and a raspberry pi there are integration
-tests with a real Apple TV that is currently accessible.
+Tests are split into three lanes:
 
-![Block TV](doc/img/block_tv.jpg)
+- `rake test:unit` — configuration, device model, error taxonomy, status events
+  and the injectable clock. No sockets, no reactor.
+- `rake test:protocol` — the in-process virtual receiver (`airplay-fake-device`)
+  driving sessions over loopback: request recording, timeouts, cancellation,
+  reactor safety and fault injection. No Apple TV, avahi or ffmpeg required.
+- `rake test:hardware` — opt-in validation against a real receiver. Set
+  `AIRPLAY_HARDWARE_HOST` (and optionally `AIRPLAY_HARDWARE_PORT`) to run it;
+  without them every test skips and the lane succeeds.
 
-The Apple TV is password protected to avoid issues with the tests but is
-configured in Travis CI. For that reason you won't be able to run those tests if
-you don't have an Apple TV.
+`rake` runs unit and protocol. `rake test:all` runs all three.
 
-Run unit tests with: `rake test:unit` and integration ones with: `rake test:integration`
-You can run all of them together with: `rake test:all`
+The virtual receiver is a dev-only package: it is absent from both runtime
+gemspecs and is never loaded by the library.
 
 ## Documentation
 

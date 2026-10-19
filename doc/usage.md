@@ -2,32 +2,13 @@
 
 ### CLI
 
-#### View devices
-
-`air list`
-
-![air list](doc/img/cli_list.png)
-
 ```text
-* Apple TV (AppleTV2,1 running 11A502)
-  ip: 192.168.1.12
-  resolution: 1280x720
+air help
+air version
 ```
 
-#### Play a video
-
-`air play [url to video or local file]`
-
-![air play](doc/img/cli_play.png)
-
-```text
-Playing http://movietrailers.apple.com/movies/universal/rush/rush-tlr3_480p.mov?width=848&height=352
-Time: 00:00:13 [=====                                              ] 7% Apple TV
-```
-
-### Show images
-
-`air view [url to image or image folder]`
+Protocol verbs (`list`, `play`, `view`, `doctor`) are added by the protocol
+changes that implement them.
 
 ### Library
 
@@ -35,115 +16,52 @@ Time: 00:00:13 [=====                                              ] 7% Apple TV
 
 ```ruby
 Airplay.configure do |config|
-  config.log_level      # Log4r levels (Default: Log4r::ERROR)
-  config.autodiscover   # Allows to search for nodes (Default: true)
-  config.host           # In which host to bind the server (Default: 0.0.0.0)
-  config.port           # In which port to bind the server (Default: will find one)
-  config.output         # Where to log (Default: Log4r::Outputter.stdout)
+  config.log_level         # :debug, :info, :warn, :error or :fatal (Default: :info)
+  config.autodiscover      # Allows discovery to run for one-shot commands (Default: true)
+  config.advertised_address # Address handed to receivers (Default: nil, chosen per interface)
+  config.timeout           # Per-request timeout in seconds (Default: 5.0)
+  config.output            # Structured event sink (Default: $stdout)
 end
 ```
 
-#### Devices
+Configuration is process-scoped. `Airplay.reset_configuration!` restores the
+defaults, which is what the test suite uses between cases.
+
+#### Sessions
 
 ```ruby
 require "airplay"
 
-Airplay.devices.each do |device|
-  puts device.name
+device = Airplay::Device.new(name: "Apple TV", host: "192.168.1.12", port: 7000)
+
+Airplay::Session.open(device) do |session|
+  response = session.get("/server-info")
+  puts response.status
 end
 ```
 
-#### Accessing and Grouping
+A session owns one HTTP client, every child task it starts and every socket it
+opens. `Session.open` closes all of them before returning, including when the
+block raises. Requests are bounded by `config.timeout` and failures raise
+`Airplay::Error` subclasses carrying a stable `code`.
+
+The synchronous facade runs the same block in the process reactor:
 
 ```ruby
-# You can access a known device easily
-device = Airplay["Apple TV"]
-
-# And add the password of the device if needed
-device.password = "my super secret password"
-
-# Or you can group known devices to have them do a given action together
-Airplay.group["Backyard"] << Airplay["Apple TV"]
-Airplay.group["Backyard"] << Airplay["Room TV"]
-
-# The groups can later do some actions like:
-Airplay.group["Backyard"].play("video")
+Airplay.open(device) do |session|
+  session.get("/server-info")
+end
 ```
 
-#### Images
+#### Status events
+
+Lifecycle and playback status are emitted as structured fields, so a UI can
+consume them without parsing text:
 
 ```ruby
-require "airplay"
-
-apple_tv = Airplay["Apple TV"]
-
-# You can send local files
-apple_tv.view("my_image.png")
-
-# Or use remote files
-apple_tv.view("https://github.com/elcuervo/airplay/raw/master/doc/img/logo.png")
-
-# And define a transition
-apple_tv.view("url_to_the_image", transition: "Dissolve")
-
-# View all transitions
-apple_tv.transitions
+Airplay::Status.emit("playback.progress", position: 4, duration: 10)
 ```
 
-#### Video
-
-```ruby
-require "airplay"
-
-apple_tv = Airplay["Apple TV"]
-trailer = "http://movietrailers.apple.com/movies/dreamworks/needforspeed/needforspeed-tlr1xxzzs2_480p.mov"
-
-player = apple_tv.play(trailer)
-```
-
-##### Playlist
-
-```ruby
-# You can also add videos to a playlist and let the library handle them
-player.playlist << "video_url"
-player.playlist << "video_path"
-player.play
-
-# Or control it yourself
-player.next
-player.previous
-
-# Or if you prefer you can have several playlists
-player = apple_tv.player
-player.playlists["Star Wars Classic"] << "Star Wars Episode IV: A New Hope"
-player.playlists["Star Wars Classic"] << "Star Wars Episode V: The Empire Strikes Back"
-player.playlists["Star Wars Classic"] << "Star Wars Episode VI: Return of the Jedi"
-
-player.playlists["Star Wars"] << "Star Wars Episode I: The Phantom Menace"
-player.playlists["Star Wars"] << "Star Wars Episode II: Attack of the Clones"
-player.playlists["Star Wars"] << "Star Wars Episode III: Revenge of the Sith"
-
-player.use("Star Wars Classic")
-player.play
-player.wait
-```
-
-##### Player
-
-```ruby
-# Wait until the video is finished
-player.wait
-
-# Actions
-player.pause
-player.resume
-player.stop
-player.scrub
-player.info
-player.seek
-
-# Access the playback time per second
-player.progress -> progress {
-  puts "I'm viewing #{progress.position} of #{progress.duration}"
-}
-```
+When the configured output is a terminal, `Airplay::Status.progress` renders a
+progress bar; otherwise it returns `nil` and the structured events are the only
+output.

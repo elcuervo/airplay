@@ -1,14 +1,17 @@
 # Testing
 
-Now there are two types of tests: Regular unit tests and integration tests.
-Thanks to the magic of the internet and a raspberry pi there are integration
-tests with a real Apple TV that is currently accessible.
+Tests are split into three lanes:
 
-![Block TV](doc/img/block_tv.jpg)
+- `rake test:unit` — configuration, device model, error taxonomy, status events
+  and the injectable clock. No sockets, no reactor.
+- `rake test:protocol` — the in-process virtual receiver (`airplay-fake-device`)
+  driving sessions over loopback: request recording, timeouts, cancellation,
+  reactor safety and fault injection. No Apple TV, avahi or ffmpeg required.
+- `rake test:hardware` — opt-in validation against a real receiver. Set
+  `AIRPLAY_HARDWARE_HOST` (and optionally `AIRPLAY_HARDWARE_PORT`) to run it;
+  without them every test skips and the lane succeeds.
 
-The Apple TV is password protected to avoid issues with the tests but is
-configured in Travis CI. For that reason you won't be able to run those tests if
-you don't have an Apple TV.
+`rake` runs unit and protocol. `rake test:all` runs all three.
 
-Run unit tests with: `rake test:unit` and integration ones with: `rake test:integration`
-You can run all of them together with: `rake test:all`
+The virtual receiver is a dev-only package: it is absent from both runtime
+gemspecs and is never loaded by the library.
