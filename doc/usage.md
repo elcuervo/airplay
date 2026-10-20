@@ -3,15 +3,36 @@
 ### CLI
 
 ```text
-air help
-air version
-air list     # discovered devices
-air doctor   # per-device type, host, port, addresses and capabilities
+air help                      # usage, every action and every option
+air version                   # CLI version
+air list                      # discovered devices
+air doctor                    # per-device type, host, port, addresses, capabilities
+air play URL|FILE             # play on the selected device
+air pause                     # pause the current playback
+air resume                    # resume the current playback
+air stop                      # stop the current playback
+air seek SECONDS              # seek within the current item
+air next                      # select the next queue item
+air previous                  # select the previous queue item
+air rate VALUE                # set the playback rate
+air view PICTURE|FOLDER       # display a picture or a slideshow
 ```
 
 `air list` and `air doctor` browse the local network; `--interface` and `--window`
-narrow the browse. Protocol verbs (`play`, `view`) are added by the protocol
-changes that implement them.
+narrow the browse. `play` reports the route it chose before it starts:
+
+```text
+route: queue (the receiver reports modern video control on firmware 870.14.1)
+firmware: 870.14.1 profile: tvos-26.5
+```
+
+The same lines name the route for a legacy receiver and for a receiver whose
+firmware is unknown (the conservative policy keeps it on the legacy route).
+
+Options: `--device NAME`, `--url URL` (skip discovery), `--password PASS`,
+`--legacy` (force the AirPlay 1 route), `--no-now-playing`, `--position SECONDS`,
+`--wait [SECONDS]`, `--transition NAME`, `--interface NAME`, `--window SECONDS`,
+`--interactive`, `--help` and `--version`.
 
 ### Library
 
@@ -26,6 +47,9 @@ Airplay.configure do |config|
   config.timeout           # Per-request timeout in seconds (Default: 5.0)
   config.digest_username   # Overrides the realm-derived digest username (Default: nil)
   config.output            # Structured event sink (Default: $stdout)
+  config.now_playing       # Push now-playing on the modern route (Default: true)
+  config.conservative_route # Keep unknown firmware on the legacy route (Default: true)
+  config.timing_port       # Local timing port advertised in SETUP (Default: 7001)
 end
 ```
 
@@ -95,6 +119,31 @@ server, which serves byte ranges (`206`, `Content-Range`, `HEAD`) for the life
 of the session and returns a stable, opaque URL. AirPlay 2 devices use the
 modern route; pass `--legacy` (or `legacy: true` to the session) to force the
 legacy plane.
+
+#### Selecting a route and playing
+
+`Airplay::Player.open` decides the playback route from the capability model,
+hands the media to it and exposes the transport verbs and the state model:
+
+```ruby
+Airplay::Player.open(device, capabilities: record.capabilities) do |player|
+  player.play("http://host/movie.mp4", position: 5.0)
+  puts player.decision.route       # :queue or :legacy
+  puts player.state.status         # :unknown, :stopped, :loading, :playing, :paused
+  player.wait { |state| puts state.position }
+  player.pause
+  player.resume
+  player.seek(30.0)
+  player.rate(2.0)
+  player.next
+  player.previous
+  player.stop
+end
+```
+
+The modern route additionally exposes `add`, `remove`, `request_snapshot` and
+`now_playing` (the MediaRemote pushes). See `doc/protocol.md` for the wire
+contract, the profile table and the error matrix.
 
 #### AirPlay 2
 

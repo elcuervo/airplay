@@ -60,7 +60,7 @@ module Airplay
           payload = serialize(method, path, body, headers)
 
           if encrypted?
-            @io.write(@writer.encrypt(payload), flush: true)
+            write_framed(payload)
             read_framed
           else
             @io.write(payload, flush: true)
@@ -79,6 +79,17 @@ module Airplay
       end
 
       private
+
+      # Internal: One request may span several frames when it exceeds a frame.
+      def write_framed(payload)
+        bytes = payload.to_s.b
+        offset = 0
+        while offset < bytes.bytesize
+          chunk = bytes.byteslice(offset, Frame::MAX_LENGTH)
+          @io.write(@writer.encrypt(chunk), flush: true)
+          offset += chunk.bytesize
+        end
+      end
 
       def serialize(method, path, body, headers)
         body = body.to_s.b
@@ -112,14 +123,31 @@ module Airplay
         @io.read_until("\r\n")
       end
 
+      # Internal: Accumulates frames until the HTTP message they carry is complete.
       def read_framed
-        header = @io.read_exactly(2)
-        length = header.unpack1("v")
-        if length > Frame::MAX_LENGTH
-          raise Airplay::TransportError.new("oversized frame length #{length}", code: :connect_failed)
-        end
+        buffer = +"".b
+        loop do
+          header = @io.read_exactly(2)
+          length = header.unpack1("v")
+          if length > Frame::MAX_LENGTH
+            raise Airplay::TransportError.new("oversized frame length #{length}", code: :connect_failed)
+          end
 
-        parse_response(@reader.decrypt(header + @io.read_exactly(length + Frame::TAG_LENGTH)))
+          buffer << @reader.decrypt(header + @io.read_exactly(length + Frame::TAG_LENGTH))
+          return parse_response(buffer) if complete_message?(buffer)
+        end
+      end
+
+      def complete_message?(bytes)
+        head_end = bytes.index("\r\n\r\n")
+        return false unless head_end
+
+        length = 0
+        bytes.byteslice(0, head_end).split("\r\n").drop(1).each do |line|
+          name, value = line.split(":", 2)
+          length = value.to_s.strip.to_i if name.to_s.strip.downcase == "content-length"
+        end
+        bytes.bytesize >= head_end + 4 + length
       end
 
       def parse_response(bytes)

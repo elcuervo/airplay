@@ -7,12 +7,49 @@ require "airplay/cli/version"
 module Airplay
   # Public: Terminal entry point.
   module CLI
-    ACTIONS = %w[help version list doctor play view].freeze
+    ACTIONS = %w[help version list doctor play pause resume stop seek next previous rate view].freeze
 
     class << self
       def run(argv)
         options = {}
-        parser = OptionParser.new do |opts|
+        parser = option_parser(options)
+
+        action, *arguments = parser.parse(argv)
+        configure(options)
+        return help if options[:help]
+        return version if options[:version]
+
+        case action || "help"
+        when "help" then help
+        when "version" then version
+        when "list" then list
+        when "doctor" then doctor
+        when "play" then play(arguments.first, options)
+        when "pause" then transport(options, &:pause)
+        when "resume" then transport(options, &:resume)
+        when "stop" then transport(options, &:stop)
+        when "next" then transport(options, &:next)
+        when "previous" then transport(options, &:previous)
+        when "seek" then seek(arguments.first, options)
+        when "rate" then rate(arguments.first, options)
+        when "view" then view(arguments.first, options)
+        else
+          warn "unknown action: #{action}"
+          help
+          false
+        end
+      rescue Airplay::Error => error
+        error.emit!
+        warn "#{error.code}: #{error.message}"
+        false
+      rescue OptionParser::ParseError => error
+        warn error.message
+        false
+      end
+
+      # Internal: The one option surface; help is rendered from it as well.
+      def option_parser(options = {})
+        OptionParser.new do |opts|
           opts.banner = "Usage: air [OPTIONS] ACTION [SOURCE]"
           opts.on("--interface NAME", "Interface(s) to browse (comma separated)") do |value|
             options[:interfaces] = value.split(",")
@@ -32,55 +69,36 @@ module Airplay
             options[:wait] = value || true
           end
           opts.on("--legacy", "Force the legacy AirPlay 1 route") { options[:legacy] = true }
+          opts.on("--no-now-playing", "Do not push now-playing to the receiver") do
+            options[:now_playing] = false
+          end
+          opts.on("--position SECONDS", Float, "Start position for play") do |value|
+            options[:position] = value
+          end
           opts.on("--interactive", "View photos driven by arrow keys") { options[:interactive] = true }
           opts.on("--help", "Show this help") { options[:help] = true }
           opts.on("--version", "Show the CLI version") { options[:version] = true }
         end
-
-        action, *arguments = parser.parse(argv)
-        configure(options)
-        return help if options[:help]
-        return version if options[:version]
-
-        case action || "help"
-        when "help" then help
-        when "version" then version
-        when "list" then list
-        when "doctor" then doctor
-        when "play" then play(arguments.first, options)
-        when "view" then view(arguments.first, options)
-        else
-          warn "unknown action: #{action}"
-          help
-          false
-        end
-      rescue Airplay::Error => error
-        warn "#{error.code}: #{error.message}"
-        false
-      rescue OptionParser::ParseError => error
-        warn error.message
-        false
       end
 
       def help
+        puts option_parser
         puts <<~TEXT
-          Usage: air [OPTIONS] ACTION [SOURCE]
 
           Actions:
-            help    - This help.
-            version - The current airplay-cli version.
-            list    - Lists the discovered devices and their server information.
-            doctor  - Shows discovery and capability details.
-            play    - Plays a URL or a local file.
-            view    - Displays a picture or a folder slideshow.
-
-          Options:
-            --url URL          Target a receiver directly, skipping discovery.
-            --device NAME      Target a discovered device.
-            --password PASS    Receiver password.
-            --transition NAME  Photo transition: None, Dissolve, SlideLeft or SlideRight.
-            --wait [SECONDS]   Wait for playback, or the slideshow interval.
-            --legacy           Force the legacy AirPlay 1 route.
+            help     - This help.
+            version  - The current airplay-cli version.
+            list     - Lists the discovered devices and their server information.
+            doctor   - Shows discovery and capability details.
+            play     - Plays a URL or a local file.
+            pause    - Pauses the current playback.
+            resume   - Resumes the current playback.
+            stop     - Stops the current playback.
+            seek     - Seeks to a position in seconds.
+            next     - Selects the next item.
+            previous - Selects the previous item.
+            rate     - Sets the playback rate.
+            view     - Displays a picture or a folder slideshow.
         TEXT
         true
       end
@@ -148,11 +166,32 @@ module Airplay
       def play(source, options)
         return usage_failure("play needs a URL or a file") unless source
 
-        with_session(options) do |session|
-          session.play(source)
-          session.wait if options[:wait]
+        with_player(options) do |player|
+          report_route(player.decision)
+          player.play(source, position: options[:position] || 0.0)
+          wait_with_progress(player) if options[:wait]
         end
         true
+      end
+
+      def transport(options)
+        with_player(options) do |player|
+          report_route(player.decision)
+          yield player
+        end
+        true
+      end
+
+      def seek(position, options)
+        return usage_failure("seek needs a position in seconds") unless position
+
+        transport(options) { |player| player.seek(Float(position)) }
+      end
+
+      def rate(value, options)
+        return usage_failure("rate needs a value") unless value
+
+        transport(options) { |player| player.rate(Float(value)) }
       end
 
       def view(source, options)
@@ -187,6 +226,46 @@ module Airplay
 
         key += $stdin.getc.to_s + $stdin.getc.to_s if key == "\e"
         key
+      end
+
+      # Public: Drives the progress display from state changes, never from polling.
+      def wait_with_progress(player)
+        bar = nil
+        last = 0.0
+        player.wait do |state|
+          Airplay::Status.emit("playback.state", status: state.status,
+                                                 position: state.position,
+                                                 duration: state.duration)
+          next unless state.duration.to_f.positive?
+
+          bar ||= Airplay::Status.progress("playback", state.duration)
+          step = state.position.to_f - last
+          bar&.increment(step) if step.positive?
+          last = state.position.to_f
+        end
+      end
+
+      def report_route(decision)
+        return unless decision
+
+        puts "route: #{decision.route} (#{decision.reason})"
+        puts "firmware: #{decision.firmware || 'unknown'} " \
+             "profile: #{decision.profile&.id || 'none'}"
+      end
+
+      def with_player(options)
+        Airplay.sync do
+          options[:record] = options[:url] ? nil : selected_record(options)
+          device = target_device(options)
+          capabilities = options[:record]&.capabilities
+          Airplay::Player.open(device, capabilities: capabilities,
+                                       force_legacy: options[:legacy],
+                                       now_playing: options[:now_playing],
+                                       password: options[:password],
+                                       base_url: options[:url]) do |player|
+            yield player
+          end
+        end
       end
 
       def with_session(options)

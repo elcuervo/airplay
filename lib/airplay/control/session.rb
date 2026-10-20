@@ -15,7 +15,7 @@ module Airplay
 
       attr_reader :connection, :capabilities, :session_id, :group_id,
                   :timing_protocol, :timing_port, :info, :event_channel,
-                  :feedback_interval
+                  :feedback_interval, :stream_id, :channel_id
       attr_accessor :device_name
 
       def initialize(connection, capabilities: nil, device_identity: nil,
@@ -27,7 +27,7 @@ module Airplay
         @group_id = SecureRandom.uuid
         @requested_timing = timing_protocol
         @timing_port = timing_port
-        @event_channel = event_key && EventChannel.new(event_key).start
+        @event_channel = event_key && EventChannel.new(event_key, on_event: method(:event_received)).start
         @feedback_interval = DEFAULT_FEEDBACK_INTERVAL
         @closed = false
       end
@@ -83,6 +83,81 @@ module Airplay
       def set_parameter(fields)
         request("SET_PARAMETER", "/command", body: Airplay::Plist.dump(fields), headers: BINARY_PLIST)
       end
+
+      # Public: Registers the reverse-channel listener; nil when the channel is absent.
+      def on_event(&block)
+        @event_listener = block
+        self
+      end
+
+      # Public: Requests a URL control stream and exposes the identifier it returned.
+      def register_control_stream(profile:, client_uuid: nil)
+        @channel_id = derive_channel_id(profile)
+        entry = {
+          "type" => 130,
+          "controlType" => 1,
+          "clientUUID" => client_uuid || @device_identity,
+          "clientType" => profile.client_type,
+          "channelID" => @channel_id
+        }
+        response = request("POST", "/setup", body: Airplay::Plist.dump("streams" => [entry]),
+                                               headers: BINARY_PLIST)
+        unless response.status == 200
+          raise Airplay::ProtocolError.new("control stream SETUP answered #{response.status}",
+                                           code: :control_stream, status: response.status)
+        end
+
+        payload = begin
+          Airplay::Plist.load(response.body)
+        rescue Airplay::Error
+          nil
+        end
+        stream = payload.is_a?(Hash) ? Array(payload["streams"]).find { |item| item["type"] == 130 } : nil
+        identifier = stream && (stream["streamID"] || stream["streamId"])
+        if identifier.nil?
+          raise Airplay::ProtocolError.new("control stream SETUP answer carries no stream identifier",
+                                           code: :control_stream, status: response.status)
+        end
+
+        @stream_id = identifier
+      end
+
+      # Public: Sends one command wrapped as a nested binary plist on the control stream.
+      def command(payload, stream_id:, profile:)
+        nested = Airplay::Plist.dump(payload)
+        body = Airplay::Plist.dump("command" => Airplay::Plist::Data.new(nested))
+        headers = BINARY_PLIST.merge(
+          "user-agent" => profile.sender,
+          "x-apple-session-id" => session_id,
+          profile.stream_header => stream_id.to_s
+        )
+        request("POST", "/command", body: body, headers: headers)
+      end
+
+      # Public: Sends the receiver's record request.
+      def record
+        response = request("POST", "/record", body: Airplay::Plist.dump({}), headers: BINARY_PLIST)
+        unless response.status.between?(200, 299)
+          raise Airplay::TransportError.new("POST /record answered #{response.status}",
+                                            code: :connect_failed, status: response.status)
+        end
+
+        response
+      end
+
+      # Public: Returns [status, payload]; a failing endpoint is data, not a state failure.
+      def playback_info_document
+        response = request("GET", "/playback-info")
+        return [response.status, nil] unless response.status.between?(200, 299)
+
+        body = response.body.to_s
+        return [response.status, {}] if body.empty?
+
+        [response.status, Airplay::Plist.load(body)]
+      rescue Airplay::Error
+        [0, nil]
+      end
+      alias playback_info playback_info_document
 
       # Public: Ends the session: closes the event channel, stops feedback and sends no more.
       def teardown
@@ -174,6 +249,22 @@ module Airplay
         payload
       rescue Airplay::Plist::DecodeError
         raise Airplay::TransportError.new("SETUP response is not a binary plist", code: :connect_failed)
+      end
+
+      def event_received(event)
+        @event_listener&.call(event)
+      rescue StandardError => error
+        Airplay::Status.emit("event.handler_failed", error: error.class.name)
+      end
+
+      # Internal: Channel identity comes from the receiver or the sender, per profile.
+      def derive_channel_id(profile)
+        case profile.channel_identity
+        when :receiver
+          capabilities.identity || capabilities.device_id || @device_identity
+        else
+          @device_identity
+        end
       end
 
       # Public: Sends one control request; a failure marks the session inactive.

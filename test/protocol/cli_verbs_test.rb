@@ -10,8 +10,8 @@ class CLIVerbsTest < Airplay::TestCase
         assert Airplay::CLI.run(["play", "http://example.com/movie.mp4", "--url", receiver.url])
       end
 
-      assert_empty output
       assert_empty error
+      assert_includes output, "route: legacy"
       assert_includes receiver.exchanges.last.body, "Content-Location: http://example.com/movie.mp4"
     end
   end

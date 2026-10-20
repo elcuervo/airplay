@@ -1,0 +1,58 @@
+{
+  "profile": "tvos-26.5",
+  "firmware": "870.14.1",
+  "provenance": {
+    "reference": "pyatv 0.16.1 airplay play-queue implementation (derivation)",
+    "firmware": "tvOS 26.5 (23L5)",
+    "recorded": "2026-09-14"
+  },
+  "sender": "AirPlay/870.14.1",
+  "stream_header": "x-apple-stream-id",
+  "channel_identity": "receiver",
+  "action_at_item_end": true,
+  "media_kind": "file",
+  "commands": [
+    {
+      "type": "insertPlayQueueItem",
+      "params": {
+        "uuid": "0E5F0A1B-6C7D-4E8F-9A0B-1C2D3E4F5061",
+        "url": "http://192.0.2.10:7000/2F0A9C1E-3B4D-4E5F-8A6B-7C8D9E0F1A2B",
+        "mediaType": "file",
+        "secure": false,
+        "startPosition": 12.5
+      }
+    },
+    {
+      "type": "setProperty",
+      "params": {
+        "name": "isInterestedInDateRange",
+        "value": true
+      }
+    },
+    {
+      "type": "setProperty",
+      "params": {
+        "name": "actionAtItemEnd",
+        "value": true
+      }
+    },
+    {
+      "type": "setRate",
+      "params": {
+        "rate": 1.0
+      }
+    }
+  ],
+  "registration": {
+    "type": 130,
+    "controlType": 1,
+    "clientType": "com.apple.airplay.remotectl",
+    "channelID": "receiver-reported",
+    "clientUUID": "sender-device-identifier"
+  },
+  "headers": {
+    "user-agent": "AirPlay/870.14.1",
+    "x-apple-session-id": "session UUID",
+    "x-apple-stream-id": "stream identifier from the registration answer"
+  }
+}

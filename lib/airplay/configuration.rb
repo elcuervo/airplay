@@ -7,8 +7,9 @@ module Airplay
     DEFAULT_TIMEOUT = 5.0
 
     attr_accessor :autodiscover, :advertised_address, :output,
-                  :discovery_port, :discovery_interfaces, :media_port, :digest_username
-    attr_reader :log_level, :timeout, :discovery_window
+                  :discovery_port, :discovery_interfaces, :media_port, :digest_username,
+                  :now_playing, :conservative_route
+    attr_reader :log_level, :timeout, :discovery_window, :timing_port
 
     def initialize
       @log_level = :info
@@ -21,6 +22,9 @@ module Airplay
       @discovery_window = 2.0
       @media_port = 0
       @digest_username = nil
+      @timing_port = 7001
+      @now_playing = true
+      @conservative_route = true
     end
 
     def log_level=(value)
@@ -35,6 +39,13 @@ module Airplay
       value = Float(value)
       raise ConfigurationError, "timeout must be positive" unless value.positive?
       @timeout = value
+    end
+
+    def timing_port=(value)
+      port = Integer(value)
+      raise ConfigurationError, "timing port must be within 1..65535" unless port.between?(1, 65_535)
+
+      @timing_port = port
     end
 
     def discovery_window=(value)

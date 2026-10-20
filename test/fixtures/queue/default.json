@@ -1,0 +1,58 @@
+{
+  "profile": "default",
+  "firmware": "unknown",
+  "provenance": {
+    "reference": "AirPlay 2 sender reference, default shape (derivation)",
+    "firmware": "unknown firmware; the default selection",
+    "recorded": "2026-10-19"
+  },
+  "sender": "AirPlay/960.13.1",
+  "stream_header": "x-apple-streamid",
+  "channel_identity": "sender",
+  "action_at_item_end": true,
+  "media_kind": "file",
+  "commands": [
+    {
+      "type": "insertPlayQueueItem",
+      "params": {
+        "uuid": "0E5F0A1B-6C7D-4E8F-9A0B-1C2D3E4F5061",
+        "url": "http://192.0.2.10:7000/2F0A9C1E-3B4D-4E5F-8A6B-7C8D9E0F1A2B",
+        "mediaType": "file",
+        "secure": false,
+        "startPosition": 12.5
+      }
+    },
+    {
+      "type": "setProperty",
+      "params": {
+        "name": "isInterestedInDateRange",
+        "value": true
+      }
+    },
+    {
+      "type": "setProperty",
+      "params": {
+        "name": "actionAtItemEnd",
+        "value": true
+      }
+    },
+    {
+      "type": "setRate",
+      "params": {
+        "rate": 1.0
+      }
+    }
+  ],
+  "registration": {
+    "type": 130,
+    "controlType": 1,
+    "clientType": "com.apple.airplay.remotectl",
+    "channelID": "sender-derived",
+    "clientUUID": "sender-device-identifier"
+  },
+  "headers": {
+    "user-agent": "AirPlay/960.13.1",
+    "x-apple-session-id": "session UUID",
+    "x-apple-streamid": "stream identifier from the registration answer"
+  }
+}

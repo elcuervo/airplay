@@ -124,9 +124,24 @@ module Airplay
 
     # Public: Reads GET /playback-info into a snapshot.
     def playback_info
+      status, payload = playback_info_document
+      unless status.between?(200, 299)
+        raise Airplay::ProtocolError.new("receiver answered #{status}", status: status)
+      end
+      @snapshot = Media::Snapshot.new(payload)
+    end
+
+    # Public: Returns [status, payload] for GET /playback-info without raising.
+    def playback_info_document
       response = get("/playback-info", retryable: true)
-      expect!(response, Airplay::ProtocolError)
-      @snapshot = Media::Snapshot.new(decode_plist(response.body))
+      return [response.status, nil] unless response.status.between?(200, 299)
+
+      body = response.body.to_s
+      return [response.status, {}] if body.strip.empty?
+
+      [response.status, decode_plist(body)]
+    rescue Airplay::Error
+      [0, nil]
     end
 
     # Public: Reads GET /scrub or seeks with POST /scrub?position=<seconds>.

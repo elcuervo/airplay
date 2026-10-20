@@ -8,26 +8,31 @@ require "socket"
 
 require "airplay"
 require "airplay/fake_device/fake_clock"
+require "airplay/fake_device/queue_mode"
 
 module Airplay
   module FakeDevice
     # Public: In-process AirPlay receiver double used by the protocol lane.
     class Receiver
-      Exchange = Struct.new(:method, :path, :headers, :body, :plist, :connection, :serial, keyword_init: true)
-      Record = Struct.new(:name, :model, :features, :password, keyword_init: true)
+      include QueueMode
+
+      Exchange = Struct.new(:method, :path, :headers, :body, :plist, :connection, :serial,
+                            :command, keyword_init: true)
+      Record = Struct.new(:name, :model, :features, :password, :srcvers, keyword_init: true)
       Request = Struct.new(:method, :path, :headers, :body, :connection, keyword_init: true)
 
       DEFAULT_RECORD = {
         name: "Fake Apple TV",
         model: "AppleTV6,2",
         features: 0,
-        password: nil
+        password: nil,
+        srcvers: nil
       }.freeze
 
       attr_reader :record, :exchanges, :faults, :port, :pairing_messages, :clock, :events,
                   :control_keys, :event_keys, :pairings, :framed_requests, :parameters,
                   :photo_digest, :photo_transition, :photo_bytes, :digest_attempts,
-                  :digest_missing, :digest_wrong
+                  :digest_missing, :digest_wrong, :commands, :media_fetches, :event_acks
       attr_accessor :connections, :open_sockets, :feedback_interval
 
       PAIRING_PATHS = %w[/pair-setup /pair-verify].freeze
@@ -63,7 +68,7 @@ module Airplay
         reject_authentication: false
       }.freeze
 
-      def initialize(record: {}, faults: {}, pairing: nil, legacy: nil)
+      def initialize(record: {}, faults: {}, pairing: nil, legacy: nil, queue: nil)
         @record = Record.new(**DEFAULT_RECORD.merge(record))
         @faults = faults.dup
         @exchanges = []
@@ -78,6 +83,17 @@ module Airplay
         @photo_transition = nil
         @photo_bytes = nil
         @pairing = pairing && PAIRING_DEFAULTS.merge(pairing)
+        @queue = queue && QueueMode::DEFAULTS.merge(queue)
+        @commands = []
+        @media_fetches = []
+        @event_acks = 0
+        @event_stream = nil
+        @event_writer = nil
+        @event_reader = nil
+        @fault_budget = {}
+        @stream_registered = false
+        @recorded = false
+        @feedback_outstanding = false
         @clock = @pairing && (@pairing[:clock] || FakeClock.new)
         @feedback_interval = @pairing && @pairing[:feedback_interval]
         @events = @pairing ? Array(@pairing[:events]) : []
@@ -108,6 +124,8 @@ module Airplay
 
       def stop
         @task&.stop
+        @event_stream&.close
+        @event_stream = nil
         @bound&.close
         @task = nil
         @server = nil
@@ -136,10 +154,12 @@ module Airplay
           body: body,
           plist: decode_plist(body),
           connection: request.respond_to?(:connection) ? request.connection : nil,
-          serial: connection_serial(request)
+          serial: connection_serial(request),
+          command: queue_mode? && request.path == "/command" ? nested_command(body) : nil
         )
 
         return handle_legacy(request, body) if @legacy
+        return queue_plaintext_drop(request) if queue_plaintext_violation?(request)
 
         fault = @faults[index] || {}
         if @pairing && @pairing[:demand]
@@ -152,11 +172,16 @@ module Airplay
         end
         if @pairing && request.path == "/setup"
           setup = decode_plist(body)
+          return queue_stream_response if queue_mode? && setup.is_a?(Hash) && setup["streams"]
+
           @last_feedback_at = @clock.now
           deliver_events(setup)
           return respond(200, setup_response(setup),
                          { "content-type" => "application/x-apple-binary-plist" })
         end
+
+        queue = handle_queue(request)
+        return queue if queue
 
         if @pairing && request.method == "SET_PARAMETER"
           @parameters = @parameters.merge(decode_plist(body) || {})
@@ -349,33 +374,53 @@ module Airplay
 
         host, port = explicit || ["127.0.0.1", port]
         stream = IO::Stream(Socket.tcp(host, port))
-        writer = Airplay::Pairing::Frame.new((@pairing[:event_write_key] || @event_keys&.first).to_s)
+        key = (@pairing[:event_write_key] || @event_keys&.first).to_s
+        writer = Airplay::Pairing::Frame.new(key)
         @events.each do |event|
           bytes = event.is_a?(String) ? event : Airplay::Plist.dump(event)
           stream.write(writer.encrypt(bytes), flush: true)
         end
+        if queue_mode?
+          @event_stream = stream
+          @event_writer = writer
+          @event_reader = Airplay::Pairing::Frame.new(key)
+          return stream
+        end
       rescue SystemCallError, IOError
         nil
       ensure
-        stream&.close
+        stream&.close unless queue_mode? && @event_stream.equal?(stream)
       end
 
       def read_frames(stream, connection)
         reader = Airplay::Pairing::Frame.new((@control_keys&.first || @pairing[:control_write_key]).to_s)
         writer = Airplay::Pairing::Frame.new((@control_keys&.last || @pairing[:control_read_key]).to_s)
         injected = false
+        buffer = +"".b
 
         loop do
           header = stream.read_exactly(2)
           length = header.unpack1("v")
           return if length > Airplay::Pairing::Frame::MAX_LENGTH
 
-          plaintext = reader.decrypt(header + stream.read_exactly(length + Airplay::Pairing::Frame::TAG_LENGTH))
+          buffer << reader.decrypt(header + stream.read_exactly(length + Airplay::Pairing::Frame::TAG_LENGTH))
           @framed_requests += 1
           return if feedback_overdue?
+          next unless complete_request?(buffer)
 
+          plaintext = buffer
+          buffer = +"".b
           request = parse_request(plaintext, connection)
+          if queue_mode? && queue_order_violation?(request)
+            return
+          end
+          note_queue_request(request) if queue_mode?
           @last_feedback_at = @clock.now if request.path == "/feedback"
+          if queue_mode? && request.path == "/feedback"
+            next if @queue[:feedback_pending]
+
+            @feedback_outstanding = false
+          end
           bytes = writer.encrypt(serialize(control_response(request)))
           fault = injected ? nil : framed_fault
           injected ||= !fault.nil?
@@ -388,6 +433,18 @@ module Airplay
         nil
       ensure
         stream.close
+      end
+
+      def complete_request?(bytes)
+        head_end = bytes.index("\r\n\r\n")
+        return false unless head_end
+
+        length = 0
+        bytes.byteslice(0, head_end).split("\r\n").drop(1).each do |line|
+          name, value = line.split(":", 2)
+          length = value.to_s.strip.to_i if name.to_s.strip.downcase == "content-length"
+        end
+        bytes.bytesize >= head_end + 4 + length
       end
 
       def control_response(request)

@@ -21,6 +21,17 @@ require "airplay/pairing"
 require "airplay/control/session"
 require "airplay/control/event_channel"
 require "airplay/route"
+require "airplay/playback/state"
+require "airplay/playback/events"
+require "airplay/playback/polling"
+require "airplay/playback/monitor"
+require "airplay/queue/command"
+require "airplay/queue/profile"
+require "airplay/queue/client"
+require "airplay/queue/now_playing"
+require "airplay/player/queue"
+require "airplay/player/legacy"
+require "airplay/player"
 
 # Public: AirPlay sender for Ruby 4.
 module Airplay

@@ -1,3 +1,5 @@
+require "airplay/status"
+
 module Airplay
   # Public: Base error carrying a stable machine-readable code.
   class Error < StandardError
@@ -19,6 +21,16 @@ module Airplay
     # Public: Attaches the device identity once, returning the error.
     def with_device(value)
       @device ||= value
+      self
+    end
+
+    # Public: Emits the failure once on the machine-readable status line.
+    def emit!
+      return self if @emitted
+
+      @emitted = true
+      Airplay::Status.emit("error", code: code, status: status, device: device,
+                                   message: message)
       self
     end
   end
